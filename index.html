@@ -1,259 +1,276 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="light">
+<html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>KIVA — Rompe el silencio · Protege tu voz</title>
+  <title>KIVA — Voz y apoyo</title>
   <meta name="description" content="KIVA: sitio interactivo para niñas, niños y adolescentes sobre prevención del abuso infantil.">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="styles.mobile.css" media="(max-width: 600px)">
 </head>
-<body>
-  <canvas id="bg" aria-hidden="true"></canvas>
-
-  <!-- Mascota / diálogo (sin cambios de lógica) -->
-  <button class="buddy" id="buddyBtn" aria-label="Abrir guía de Kiva" title="Hablar con Kiva">
-    <svg viewBox="0 0 120 120" class="cat" aria-hidden="true">
-      <circle cx="60" cy="64" r="42" class="c-face"/>
-      <path d="M36 40 L50 26 L52 44" class="c-ear"/>
-      <path d="M84 40 L70 26 L68 44" class="c-ear"/>
-      <circle cx="48" cy="64" r="5" class="c-eye"/>
-      <circle cx="72" cy="64" r="5" class="c-eye"/>
-      <circle cx="60" cy="74" r="2.8" class="c-nose"/>
-      <path d="M50 82 Q60 88 70 82" class="c-mouth"/>
-      <circle cx="60" cy="20" r="6" class="c-charm"/>
-    </svg>
-  </button>
-
-  <dialog id="buddyDialog" class="buddy-dialog" aria-labelledby="buddyTitle">
-    <div class="buddy-card">
-      <div class="buddy-head">
-        <svg viewBox="0 0 120 120" class="cat small" aria-hidden="true">
-          <circle cx="60" cy="64" r="42" class="c-face"/>
-          <path d="M36 40 L50 26 L52 44" class="c-ear"/>
-          <path d="M84 40 L70 26 L68 44" class="c-ear"/>
-          <circle cx="48" cy="64" r="5" class="c-eye"/>
-          <circle cx="72" cy="64" r="5" class="c-eye"/>
-          <circle cx="60" cy="74" r="2.8" class="c-nose"/>
-          <path d="M50 82 Q60 88 70 82" class="c-mouth"/>
-        </svg>
-        <div>
-          <h3 id="buddyTitle">Kiva</h3>
-          <p>Tu guía. Puedo leer en voz alta, explicar y acompañarte paso a paso.</p>
-        </div>
+<body data-bg="inicio">
+  <!-- Header -->
+  <header class="site-header">
+    <a class="brand" href="#inicio" aria-label="Inicio">
+      <div class="title-multi">
+        <b class="kiva">KIVA</b> <b class="voz">Voz</b> <b class="y">y</b> <b class="apoyo">apoyo</b>
       </div>
-
-      <div class="buddy-tabs" role="tablist">
-        <button class="bt active" data-tab="inicio" role="tab" aria-selected="true">Inicio</button>
-        <button class="bt" data-tab="aprende" role="tab">Aprende</button>
-        <button class="bt" data-tab="explora" role="tab">Explora</button>
-        <button class="bt" data-tab="ayuda" role="tab">Ayuda</button>
-      </div>
-
-      <div class="buddy-body">
-        <div class="pane" data-pane="inicio">
-          <ul class="buddy-list">
-            <li>Activa el narrador para escuchar cada sección.</li>
-            <li>En <strong>Aprende</strong> Encontrarás información breve y clara.</li>
-            <li>En <strong>Explora</strong> Practica con juegos.</li>
-            <li>En <strong>Ayuda</strong> Verás contactos verificados.</li>
-          </ul>
-        </div>
-        <div class="pane hidden" data-pane="aprende"><p>Señales, consentimiento y cómo pedir apoyo.</p></div>
-        <div class="pane hidden" data-pane="explora"><p>Rompe muros, arma mensajes y usa el emocionómetro.</p></div>
-        <div class="pane hidden" data-pane="ayuda"><p>Desliza para ver Ayuda Local y Global.</p></div>
-      </div>
-
-      <div class="buddy-actions">
-        <button class="btn ghost" id="buddyRead">Leer esta sección</button>
-        <form method="dialog"><button class="btn" id="buddyClose">Cerrar</button></form>
-      </div>
-    </div>
-  </dialog>
-
-  <header class="topbar">
-    <a class="brand" href="#/home" aria-label="Inicio">
-      <span class="brand-a">KIVA</span>
-      <span class="brand-dot"></span>
-      <span class="brand-b">Rompe el silencio</span>
     </a>
-
-    <nav class="topnav" id="topnav" aria-label="Navegación principal">
-      <a href="#/home" class="topnav-item" data-icon="home">Inicio</a>
-      <a href="#/aprende" class="topnav-item" data-icon="book">Aprende</a>
-      <a href="#/explora" class="topnav-item" data-icon="spark">Explora</a>
-      <a href="#/galeria" class="topnav-item" data-icon="image">Imágenes</a>
-      <a href="#/foro" class="topnav-item" data-icon="chat">Foro</a>
-      <a href="#/ayuda" class="topnav-item" data-icon="help">Ayuda</a>
-      <a href="#/blog" class="topnav-item" data-icon="note">Reflexiones</a>
-      <a href="#/sobre" class="topnav-item" data-icon="info">Sobre</a>
-    </nav>
-
-    <div class="top-actions">
-      <button id="themeBtn" class="icon-btn" title="Tema" aria-label="Cambiar tema">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5" stroke="currentColor" fill="none"/></svg>
-      </button>
-      <button id="tipsBtn" class="icon-btn" title="Tips" aria-label="Tips">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v3M12 18v3M3 12h3M18 12h3" stroke="currentColor" fill="none"/></svg>
-      </button>
-      <button id="narratorBtn" class="icon-btn" title="Activar narrador" aria-label="Activar narrador">
-        <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
-          <path d="M7 10v4c0 .55.45 1 1 1h2l5 5V5l-5 5H8c-.55 0-1 .45-1 1zm11 1c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM16 4.27v1.88c2.43 1.13 4 3.5 4 6.2s-1.57 5.07-4 6.2v1.88c3.48-1.22 6-4.5 6-8.08s-2.52-6.86-6-8.08z"/>
-        </svg>
-      </button>
-      <button id="navToggle" class="hamburger" aria-label="Abrir menú"><span></span><span></span><span></span></button>
-    </div>
+    <button class="hamburger" id="navOpen" aria-label="Abrir menú">
+      <span></span><span></span><span></span>
+    </button>
   </header>
 
-  <main class="viewport" id="app" tabindex="-1" aria-live="polite">
-    <!-- HOME -->
-    <section class="view active" data-route="home" aria-labelledby="homeTitle">
-      <div class="hero-wrap vk-hero">
-        <div class="hero-card">
-          <div class="hero-copy">
-            <h1 id="homeTitle" class="title">
-              <span class="row big">KIVA</span>
-              <span class="sub">Rompe el silencio · Protege tu voz</span>
-            </h1>
-            <p class="lead">
-              Un espacio seguro para aprender, practicar y pedir apoyo con personas de confianza.
-            </p>
-            <button class="btn primary" data-go="ayuda">Ir a Ayuda</button>
-          </div>
-          <div class="hero-media">
-            <img src="https://img.freepik.com/foto-gratis/nina-pintando_23-2148022489.jpg"
-              alt="Niña escribiendo con colores pastel">
-          </div>
+  <!-- Mascota -->
+  <button class="buddy" id="buddyBtn" aria-label="Kiva te saluda" title="Kiva">
+    <svg class="cat-svg" viewBox="0 0 120 120" aria-hidden="true">
+      <circle cx="60" cy="64" r="42" class="c-face"/>
+      <path d="M36 40 L50 24 L54 44 Z" class="c-ear left"/>
+      <path d="M84 40 L70 24 L66 44 Z" class="c-ear right"/>
+      <circle cx="48" cy="64" r="5" class="c-eye"/><circle cx="72" cy="64" r="5" class="c-eye"/>
+      <circle cx="44" cy="74" r="3.5" class="c-blush"/><circle cx="76" cy="74" r="3.5" class="c-blush"/>
+      <path class="c-nose-heart" d="M56 74c0-1.9 1.5-3.4 3.4-3.4c1 0 1.9.5 2.6 1.2c.7-.7 1.6-1.2 2.6-1.2c1.9 0 3.4 1.5 3.4 3.4c0 3-3.8 5.2-6 7c-2.2-1.8-6-4-6-7z"/>
+      <path d="M48 84 Q60 92 72 84" class="c-mouth"/>
+      <circle cx="36" cy="96" r="10" class="c-paw"/><circle cx="36" cy="96" r="4" class="c-pawpad"/>
+    </svg>
+    <span class="buddy-pop" id="buddyPop" aria-hidden="true">¡Hola! :3</span>
+  </button>
+
+  <!-- Menú lateral -->
+  <nav class="sidenav" id="sidenav" aria-label="Navegación lateral">
+    <button class="sidenav-close" id="navClose" aria-label="Cerrar">×</button>
+
+    <a class="snav-link" href="#inicio">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 12l9-9 9 9"/><path d="M9 21V9h6v12"/></svg> Inicio
+    </a>
+    <a class="snav-link" href="#aprende">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4h16v13H6.5A2.5 2.5 0 0 0 4 19.5z"/></svg> Aprende & Galería
+    </a>
+    <a class="snav-link" href="#explora">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="8" cy="12" r="3"/><circle cx="16" cy="12" r="3"/><path d="M12 3v2M12 19v2"/></svg> Explora
+    </a>
+    <a class="snav-link" href="#foro">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg> Foro seguro
+    </a>
+    <a class="snav-link" href="#ayuda">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 3v5M12 16v5M3 12h5M16 12h5"/></svg> Ayuda
+    </a>
+    <a class="snav-link" href="#reflexiones">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m12 17.27-5.18 3.05 1.64-5.81L3 9.24l6-.52L12 3l3 5.72 6 .52-5.46 5.27 1.64 5.81z"/></svg> Reflexiones
+    </a>
+    <a class="snav-link" href="#sobre">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 22l7.8-8.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg> Sobre
+    </a>
+  </nav>
+  <div id="navBackdrop" class="nav-backdrop" hidden></div>
+
+  <!-- ===== INICIO ===== -->
+  <main id="inicio" class="section gate-keep" tabindex="-1" aria-labelledby="homeTitle" data-bg="inicio">
+    <div class="hero two-col clean">
+      <div class="hero-left">
+        <h1 id="homeTitle" class="title">
+          <span class="kiva-multi">
+            <b class="kiva">KIVA</b> <b class="voz">Voz</b> <b class="y">y</b> <b class="apoyo">apoyo</b>
+          </span>
+          <span class="sub">Cuidarte es importante. Aquí encontrarás apoyo y herramientas para hacerlo.</span>
+        </h1>
+        <div class="cta-row">
+          <button class="btn cta" data-open="aprende">Aprende</button>
+          <button class="btn alt cta" data-open="explora">Explora</button>
         </div>
       </div>
 
-      <!-- Tabs tipo stickers (Programas · Docentes · Opiniones · Precios) -->
-      <section class="vk-tabs container">
-        <a href="#/aprende" class="vk-tab vk-burst mint">Programas</a>
-        <a href="#/sobre"   class="vk-tab vk-burst peach">Docentes</a>
-        <a href="#/blog"    class="vk-tab vk-burst sky">Opiniones</a>
-        <a href="#/ayuda"   class="vk-tab vk-burst sand">Precios</a>
-      </section>
-
-      <!-- Servicios/atajos grandes -->
-      <section class="vk-services container">
-        <a class="vk-service peach"   href="#/explora">Clases con acompañamiento</a>
-        <a class="vk-service mint"    href="#/aprende">Contenido para principiantes</a>
-        <a class="vk-service lavender" href="#/ayuda">Preparación y apoyo</a>
-      </section>
-    </section>
-
-    <!-- APRENDE -->
-    <section class="view" data-route="aprende">
-      <div class="section-head lilac">
-        <h2 class="h-doodles">Aprende</h2>
-        <p>Señales, consentimiento y qué hacer si alguien te lo cuenta.</p>
-        <div class="wave top"></div>
-      </div>
-      <div class="cards">
-        <article class="card mint"><h3>¿Qué es?</h3><p>Abuso infantil: daño físico, emocional, sexual o negligencia. No es tu culpa.</p></article>
-        <article class="card sky"><h3>Señales</h3><p>Cambios de ánimo, evitar lugares/personas, lesiones sin explicación.</p></article>
-        <article class="card coral"><h3>Si alguien te lo confía</h3><p>Escucha y cree. No prometas secreto absoluto; busca apoyo.</p></article>
-        <article class="card banana"><h3>Consentimiento</h3><p>Debe ser libre y con ganas. Sin presión.</p></article>
-      </div>
-    </section>
-
-    <!-- EXPLORA (juegos) -->
-    <section class="view" data-route="explora">
-      <div class="section-head peach">
-        <h2 class="h-doodles">Explora</h2>
-        <p>Juega y practica habilidades que te cuidan.</p>
-        <div class="wave top"></div>
-      </div>
-
-      <div class="game-card" id="emociono">
-        <h3>Emocionómetro</h3>
-        <p class="muted small">Mueve el control y nombra lo que sientes.</p>
-        <div class="emo-wrap">
-          <input type="range" min="0" max="100" value="45" id="emoRange" aria-label="Emocionómetro">
-          <div class="emo-face" aria-hidden="true">
-            <div class="brow l"></div><div class="brow r"></div>
-            <div class="eye l"></div><div class="eye r"></div>
-            <div class="mouth"></div><div class="tear"></div>
+      <!-- Carrusel de imágenes (solo cambia los src) -->
+      <aside class="hero-media">
+        <div class="home-carousel" id="homeCarousel" aria-label="Imágenes destacadas">
+          <button class="hc-btn prev" aria-label="Anterior">‹</button>
+          <div class="hc-track">
+            <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1200&auto=format" alt="Imagen 1">
+            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1200&auto=format" alt="Imagen 2">
+            <img src="https://images.unsplash.com/photo-1520975928316-56cddf6b80b3?q=80&w=1200&auto=format" alt="Imagen 3">
+            <img src="https://images.unsplash.com/photo-1517816428104-797678c7cf0d?q=80&w=1200&auto=format" alt="Imagen 4">
           </div>
-          <div class="emo-label" aria-live="polite"></div>
+          <button class="hc-btn next" aria-label="Siguiente">›</button>
         </div>
-      </div>
-
-      <div class="game-card" id="muros">
-        <h3>Rompe el muro</h3>
-        <p class="muted small">Toca cada bloque para derribarlo.</p>
-        <div class="wall"></div>
-        <p class="why" aria-live="polite"></p>
-        <button class="btn reset-btn icon-only" data-game="muros" aria-label="Reiniciar Muros">⟲</button>
-      </div>
-
-      <div class="game-card" id="memoria">
-        <h3>Descifra pares</h3>
-        <p class="muted small">Encuentra cada par y descubre su significado.</p>
-        <div class="memory-grid"></div>
-        <div class="memory-info muted small"></div>
-        <div class="memory-desc" aria-live="polite"></div>
-        <button class="btn reset-btn icon-only" data-game="memoria" aria-label="Reiniciar Memoria">⟲</button>
-      </div>
-
-      <div class="game-card" id="mensaje">
-        <h3>Arma el mensaje</h3>
-        <p class="muted small">Ordena los fragmentos para formar la frase.</p>
-        <div class="chips"></div>
-        <div class="msg-out" aria-live="polite"></div>
-        <button class="btn reset-btn icon-only" data-game="mensaje" aria-label="Reiniciar Mensaje">⟲</button>
-      </div>
-    </section>
-
-    <!-- Resto de vistas (galería, foro, ayuda, blog, sobre) igual que ya tienes -->
-    <section class="view" data-route="galeria"> … </section>
-    <section class="view" data-route="foro"> … </section>
-    <section class="view" data-route="ayuda"> … </section>
-    <section class="view" data-route="blog"> … </section>
-    <section class="view" data-route="sobre"> … </section>
+      </aside>
+    </div>
   </main>
 
-  <dialog id="tips" aria-labelledby="tipsTitle" class="tips-dialog">
-    <div class="tips-card">
-      <h3 id="tipsTitle">Tips rápidos</h3>
-      <ul class="tips-list">
-        <li>Usa el menú superior con íconos para navegar.</li>
-        <li>En “Explora” están los juegos.</li>
-        <li>El botón de la portada te lleva a Ayuda.</li>
-      </ul>
-      <form method="dialog"><button class="btn">Listo</button></form>
+  <!-- ===== APRENDE ===== -->
+  <section id="aprende" class="section gate-keep hidden" aria-labelledby="aprendeTitle" data-bg="aprende">
+    <h2 id="aprendeTitle" class="h-doodles">Aprende</h2>
+
+    <div class="learn-grid">
+      <article class="learn-card lilac"><div class="learn-top"></div><div class="learn-body">
+        <div class="learn-ico"><svg viewBox="0 0 24 24"><path d="M3 6h18v12H3zM3 10h18" stroke="currentColor" fill="none"/></svg></div>
+        <div class="learn-text"><h3>¿Qué es el abuso?</h3><p>Daño físico, emocional, sexual o negligencia. No es tu culpa.</p></div>
+      </div></article>
+      <article class="learn-card blue"><div class="learn-top"></div><div class="learn-body">
+        <div class="learn-ico"><svg viewBox="0 0 24 24"><path d="M12 3l8 5v8l-8 5-8-5V8z" stroke="currentColor" fill="none"/></svg></div>
+        <div class="learn-text"><h3>Señales</h3><p>Cambios de ánimo o conducta; evitar personas/lugares.</p></div>
+      </div></article>
+      <article class="learn-card pink"><div class="learn-top"></div><div class="learn-body">
+        <div class="learn-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" stroke="currentColor" fill="none"/></svg></div>
+        <div class="learn-text"><h3>Si te lo confían</h3><p>Escucha y cree. No prometas secreto absoluto.</p></div>
+      </div></article>
+      <article class="learn-card peach"><div class="learn-top"></div><div class="learn-body">
+        <div class="learn-ico"><svg viewBox="0 0 24 24"><path d="M4 12h16M12 4v16" stroke="currentColor" fill="none"/></svg></div>
+        <div class="learn-text"><h3>Consentimiento</h3><p>Si hay miedo, engaño o presión, no hay consentimiento.</p></div>
+      </div></article>
     </div>
-  </dialog>
 
+    <h3 class="h-doodles mt">Mitos vs realidades</h3>
+    <div class="grid four flip-zone" aria-label="Tarjetas volteables">
+      <div class="flip"><div class="flip__inner" tabindex="0"><div class="flip__front">“Solo pasa con desconocidos.”</div><div class="flip__back">A veces es alguien cercano.</div></div></div>
+      <div class="flip"><div class="flip__inner" tabindex="0"><div class="flip__front">“Si no dices no, consientes.”</div><div class="flip__back">El silencio no es consentimiento.</div></div></div>
+      <div class="flip"><div class="flip__inner" tabindex="0"><div class="flip__front">“Exageras.”</div><div class="flip__back">Tomar en serio salva.</div></div></div>
+      <div class="flip"><div class="flip__inner" tabindex="0"><div class="flip__front">“Contarlo rompe familias.”</div><div class="flip__back">Contarlo protege.</div></div></div>
+    </div>
 
-  <!-- Panel rápido (sólo móvil) -->
-<!-- Panel rápido (móvil) -->
-<div class="quick-panel" id="quickPanel" aria-hidden="true">
-  <!-- Cada botón re-usa la lógica original por “proxy click” -->
-  <button class="qp-item" type="button" data-act="theme" title="Tema" aria-label="Cambiar tema">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5" stroke="currentColor" fill="none"/></svg>
-  </button>
-  <button class="qp-item" type="button" data-act="tips" title="Tips" aria-label="Tips">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6v6m0 6v0M6 12h6m6 0h0" stroke="currentColor" fill="none"/></svg>
-  </button>
-  <button class="qp-item" type="button" data-act="voice" title="Narrador" aria-label="Activar narrador">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10v4h2l5 5V5l-5 5H7z" fill="currentColor"/></svg>
-  </button>
-  <button class="qp-item" type="button" data-act="menu" title="Menú" aria-label="Abrir menú principal">
-    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor"/></svg>
-  </button>
-</div>
+    <h3 class="h-doodles mt">Imágenes & Videos</h3>
+    <div class="carousel contain" id="carousel">
+      <button class="car-btn prev" aria-label="Anterior">‹</button>
+      <div class="car-track">
+        <div class="slide video">
+          <iframe loading="lazy" src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fweb.facebook.com%2Fwatch%2F%3Fv%3D2458157557913320&show_text=false&width=560" allowfullscreen="true" frameborder="0"></iframe>
+          <div class="cap">Video sobre consentimiento</div>
+        </div>
+        <div class="slide"><img loading="lazy" src="https://st2.depositphotos.com/9393460/12292/i/950/depositphotos_122929742-stock-photo-friends-walking-in-the-park.jpg" alt=""><div class="cap">Cuidarnos entre nosotrxs</div></div>
+        <div class="slide"><img loading="lazy" src="https://www.un.org/sites/un2.un.org/files/speakup-community.png" alt=""><div class="cap">Protege tu voz</div></div>
+      </div>
+      <button class="car-btn next" aria-label="Siguiente">›</button>
+    </div>
+  </section>
 
-<!-- Botón flotante (abre/cierra la hilera) -->
-<button class="fab" id="fabToggle" aria-label="Abrir panel rápido" aria-expanded="false">
-  <span class="fab-bar"></span>
-  <span class="fab-bar"></span>
-  <span class="fab-bar"></span>
-</button>
+  <!-- ===== EXPLORA ===== -->
+  <section id="explora" class="section gate-keep hidden" aria-labelledby="exploraTitle" data-bg="explora">
+    <h2 id="exploraTitle" class="h-doodles">Actividades interactivas</h2>
 
+    <!-- Emocionómetro (dial) -->
+    <div class="game-block" id="emociono">
+      <h3>Emocionómetro</h3>
+      <p class="small">Gira el dial o toca un emoji.</p>
 
+      <div class="dial">
+        <svg viewBox="0 0 200 200" class="dial-svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="gMood" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#FFD6E7"/><stop offset="50%" stop-color="#E5D6FF"/><stop offset="100%" stop-color="#FFF4B8"/>
+            </linearGradient>
+          </defs>
+          <circle cx="100" cy="100" r="78" class="dial-bg"/>
+          <path id="dialArc" d="M30,120 A70,70,0,1,1,170,120" class="dial-arc"/>
+          <circle id="dialKnob" cx="30" cy="120" r="10" class="dial-knob"/>
+        </svg>
+        <div class="dial-emoji" id="dialEmoji">😊</div>
+        <input type="range" min="0" max="100" value="20" id="emoRange" aria-label="Emocionómetro" />
+      </div>
+
+      <div class="dial-emojis">
+        <button data-v="10">😊</button><button data-v="35">🙂</button>
+        <button data-v="60">😕</button><button data-v="80">😔</button>
+        <button data-v="100">😠</button>
+      </div>
+
+      <div class="emo-label" aria-live="polite"></div>
+    </div>
+
+    <!-- 1. Rompe el muro -->
+    <div class="game-block" id="muros">
+      <h3>Rompe el muro</h3>
+      <p class="small">Toca cada bloque para derribarlo.</p>
+      <div class="wall" aria-label="Pared de palabras"></div>
+      <p class="why" aria-live="polite"></p>
+      <button class="btn reset-btn icon-only" data-game="muros" aria-label="Reiniciar Rompe el muro">⟲</button>
+    </div>
+
+    <!-- 2. Memorama -->
+    <div class="game-block" id="memoria">
+      <h3>Descifra pares</h3>
+      <p class="small">Encuentra cada par y descubre su significado.</p>
+      <div class="memory-grid" aria-label="Cartas de memoria"></div>
+      <div class="memory-info small"></div>
+      <div class="memory-desc" aria-live="polite"></div>
+      <button class="btn reset-btn icon-only" data-game="memoria" aria-label="Reiniciar Memorama">⟲</button>
+    </div>
+
+    <!-- 3. Arma el mensaje -->
+    <div class="game-block" id="mensaje">
+      <h3>Arma el mensaje</h3>
+      <p class="small">Ordena los fragmentos para formar la frase.</p>
+      <div class="chips" aria-label="Fragmentos para ordenar"></div>
+      <div class="msg-out" aria-live="polite"></div>
+      <button class="btn reset-btn icon-only" data-game="mensaje" aria-label="Reiniciar Arma el mensaje">⟲</button>
+    </div>
+  </section>
+
+  <!-- ===== FORO ===== -->
+  <section id="foro" class="section forum gate-keep hidden" aria-labelledby="foroTitle" data-bg="foro">
+    <h2 id="foroTitle" class="h-doodles">Espacios de confianza</h2>
+    <div class="forum-controls">
+      <label><input type="checkbox" id="anonToggle" checked> Publicar como anónimo</label>
+      <input type="text" id="alias" class="alias" placeholder="Alias (opcional)">
+    </div>
+    <textarea id="postText" rows="3" placeholder="Comparte con respeto."></textarea>
+    <div class="forum-actions"><button class="btn" id="postBtn">Publicar</button></div>
+    <div class="forum-list" id="forumList" aria-live="polite"></div>
+  </section>
+
+  <!-- ===== AYUDA ===== -->
+  <section id="ayuda" class="section help gate-keep hidden" aria-labelledby="ayudaTitle" data-bg="ayuda">
+    <h2 id="ayudaTitle" class="h-doodles">Ayuda cuando la necesites</h2>
+    <p class="small">Si estás en peligro inmediato, llama al número de emergencia de tu país.</p>
+
+    <div class="reveal" data-reveal="mx">
+      <h3>México</h3>
+      <div class="grid three" id="helpGridMX" aria-live="polite"></div>
+
+      <div class="help-whats-wrap">
+        <a class="whats-btn" target="_blank" rel="noopener" href="https://wa.me/525555335533?text=Hola%2C%20necesito%20apoyo%20psicoemocional.">WhatsApp · Consejo Ciudadano</a>
+        <a class="whats-btn" target="_blank" rel="noopener" href="https://wa.me/525579009669?text=Contacto">WhatsApp · Contacto Joven</a>
+      </div>
+
+      <small class="help-note">WhatsApp operado por instituciones verificadas.</small>
+    </div>
+
+    <div class="reveal" data-reveal="global">
+      <h3>Global</h3>
+      <div class="grid three" id="helpGridGlobal" aria-live="polite"></div>
+      <small class="help-note">Los enlaces abren directorios oficiales por país.</small>
+    </div>
+  </section>
+
+  <!-- ===== REFLEXIONES ===== -->
+  <section id="reflexiones" class="section blog gate-keep hidden" aria-labelledby="blogTitle" data-bg="reflexiones">
+    <h2 id="blogTitle" class="h-doodles">Reflexiones</h2>
+    <div class="blog-grid colorful" id="blogGrid"></div>
+  </section>
+
+  <!-- ===== SOBRE ===== -->
+  <section id="sobre" class="section about gate-keep hidden" aria-labelledby="sobreTitle" data-bg="sobre">
+    <h2 id="sobreTitle" class="h-doodles">Sobre nosotros</h2>
+    <div class="about-grid">
+      <article class="about-card tone-lilac"><h3>Misión</h3><p>Acompañar con información y juegos para prevenir el abuso.</p></article>
+      <article class="about-card tone-pink"><h3>Visión</h3><p>Comunidades seguras donde cada voz sea respetada.</p></article>
+      <article class="about-card tone-blue"><h3>Método</h3><p>Contenidos breves, herramientas prácticas y líneas verificadas.</p></article>
+      <article class="about-card tone-peach"><h3>Valores</h3><p>Respeto, cuidado, consentimiento claro y escucha.</p></article>
+      <article class="about-card tone-yellow"><h3>Equipo</h3><p>Psicoeducación, diseño, desarrollo y acompañamiento.</p></article>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="footer-inner">
+      <div class="f-brand">KIVA · Voz y apoyo</div>
+      <nav class="f-links" aria-label="Enlaces">
+        <a href="#inicio" class="snav-link" data-target="inicio">Inicio</a>
+        <a href="#aprende" class="snav-link" data-target="aprende">Aprende</a>
+        <a href="#explora" class="snav-link" data-target="explora">Explora</a>
+        <a href="#ayuda" class="snav-link" data-target="ayuda">Ayuda</a>
+      </nav>
+      <small>Educa, previene y protege infancias.</small>
+    </div>
+  </footer>
 
   <script src="app.js" defer></script>
 </body>
