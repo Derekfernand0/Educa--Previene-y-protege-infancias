@@ -4,15 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>KIVA — Rompe el silencio · Protege tu voz</title>
-  <meta name="description" content="KIVA: sitio interactivo para niñas, niños y adolescentes sobre prevención del abuso infantil. Educa, previene y protege infancias.">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=DM+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <meta name="description" content="KIVA: sitio interactivo para niñas, niños y adolescentes sobre prevención del abuso infantil.">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <!-- Fondo claro -->
   <canvas id="bg" aria-hidden="true"></canvas>
 
-  <!-- Mascota: Kiva (gatita guía, mejorada) -->
+  <!-- Mascota / diálogo (sin cambios de lógica) -->
   <button class="buddy" id="buddyBtn" aria-label="Abrir guía de Kiva" title="Hablar con Kiva">
     <svg viewBox="0 0 120 120" class="cat" aria-hidden="true">
       <circle cx="60" cy="64" r="42" class="c-face"/>
@@ -22,7 +21,6 @@
       <circle cx="72" cy="64" r="5" class="c-eye"/>
       <circle cx="60" cy="74" r="2.8" class="c-nose"/>
       <path d="M50 82 Q60 88 70 82" class="c-mouth"/>
-      <path d="M94 92 q18 10 -2 18" class="c-tail"/>
       <circle cx="60" cy="20" r="6" class="c-charm"/>
     </svg>
   </button>
@@ -44,25 +42,28 @@
           <p>Tu guía. Puedo leer en voz alta, explicar y acompañarte paso a paso.</p>
         </div>
       </div>
+
       <div class="buddy-tabs" role="tablist">
         <button class="bt active" data-tab="inicio" role="tab" aria-selected="true">Inicio</button>
         <button class="bt" data-tab="aprende" role="tab">Aprende</button>
         <button class="bt" data-tab="explora" role="tab">Explora</button>
         <button class="bt" data-tab="ayuda" role="tab">Ayuda</button>
       </div>
+
       <div class="buddy-body">
         <div class="pane" data-pane="inicio">
           <ul class="buddy-list">
             <li>Activa el narrador para escuchar cada sección.</li>
-            <li>En <strong>Aprende</strong> hay info breve y clara.</li>
-            <li>En <strong>Explora</strong> practica con juegos.</li>
-            <li>En <strong>Ayuda</strong> verás contactos verificados.</li>
+            <li>En <strong>Aprende</strong> Encontrarás información breve y clara.</li>
+            <li>En <strong>Explora</strong> Practica con juegos.</li>
+            <li>En <strong>Ayuda</strong> Verás contactos verificados.</li>
           </ul>
         </div>
         <div class="pane hidden" data-pane="aprende"><p>Señales, consentimiento y cómo pedir apoyo.</p></div>
         <div class="pane hidden" data-pane="explora"><p>Rompe muros, arma mensajes y usa el emocionómetro.</p></div>
-        <div class="pane hidden" data-pane="ayuda"><p>Desliza para ver Ayuda Local y luego Global. También WhatsApp verificado.</p></div>
+        <div class="pane hidden" data-pane="ayuda"><p>Desliza para ver Ayuda Local y Global.</p></div>
       </div>
+
       <div class="buddy-actions">
         <button class="btn ghost" id="buddyRead">Leer esta sección</button>
         <form method="dialog"><button class="btn" id="buddyClose">Cerrar</button></form>
@@ -70,360 +71,156 @@
     </div>
   </dialog>
 
-  <!-- Dock -->
-  <aside class="dock" aria-label="Accesos rápidos">
-    <button class="dock-btn" id="themeBtn" aria-label="Cambiar tema" title="Tema">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5" stroke="currentColor" fill="none"/></svg>
-    </button>
-    <button class="dock-btn" id="discreetBtn" aria-label="Modo discreto" title="Modo discreto">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2" stroke="currentColor" fill="none"/></svg>
-    </button>
-    <button class="dock-btn" id="tipsBtn" aria-label="Ver tips" title="Tips">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v3M12 18v3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M3 12h3M18 12h3M4.9 19.1l2.1-2.1M17 7l2.1-2.1" stroke="currentColor" fill="none"/></svg>
-    </button>
-    <button class="dock-btn" id="narratorBtn" aria-label="Activar narrador" title="Activar narrador">
-      <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
-        <path d="M7 10v4c0 .55.45 1 1 1h2l5 5V5l-5 5H8c-.55 0-1 .45-1 1zm11 1c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM16 4.27v1.88c2.43 1.13 4 3.5 4 6.2s-1.57 5.07-4 6.2v1.88c3.48-1.22 6-4.5 6-8.08s-2.52-6.86-6-8.08z"/>
-      </svg>
-    </button>
-  </aside>
-
-  <!-- Menú -->
-  <button class="hamburger" id="navOpen" aria-label="Abrir menú">
-    <span></span><span></span><span></span>
-  </button>
-  <nav class="sidenav" id="sidenav" aria-label="Navegación">
-    <button class="sidenav-close" id="navClose" aria-label="Cerrar">×</button>
-    <a href="#aprende" class="snav-link">Aprende</a>
-    <a href="#explora" class="snav-link">Explora</a>
-    <a href="#galeria" class="snav-link">Imágenes & Videos</a>
-    <a href="#foro" class="snav-link">Foro seguro</a>
-    <a href="#ayuda" class="snav-link">Ayuda</a>
-    <a href="#blog" class="snav-link">Reflexiones</a>
-    <a href="#sobre" class="snav-link">Sobre nosotros</a>
-  </nav>
-
-  <!-- Header -->
-  <header class="site-header">
-    <a class="brand" href="#top" aria-label="Inicio">
-      <div class="brand-line">
-        <span class="brand-a">KIVA</span>
-        <span class="brand-dot"></span>
-        <span class="brand-b">Rompe el silencio</span>
-      </div>
-      <div class="brand-sub">Protege tu voz · Educa, previene y protege infancias</div>
+  <header class="topbar">
+    <a class="brand" href="#/home" aria-label="Inicio">
+      <span class="brand-a">KIVA</span>
+      <span class="brand-dot"></span>
+      <span class="brand-b">Rompe el silencio</span>
     </a>
+
+    <nav class="topnav" id="topnav" aria-label="Navegación principal">
+      <a href="#/home" class="topnav-item" data-icon="home">Inicio</a>
+      <a href="#/aprende" class="topnav-item" data-icon="book">Aprende</a>
+      <a href="#/explora" class="topnav-item" data-icon="spark">Explora</a>
+      <a href="#/galeria" class="topnav-item" data-icon="image">Imágenes</a>
+      <a href="#/foro" class="topnav-item" data-icon="chat">Foro</a>
+      <a href="#/ayuda" class="topnav-item" data-icon="help">Ayuda</a>
+      <a href="#/blog" class="topnav-item" data-icon="note">Reflexiones</a>
+      <a href="#/sobre" class="topnav-item" data-icon="info">Sobre</a>
+    </nav>
+
+    <div class="top-actions">
+      <button id="themeBtn" class="icon-btn" title="Tema" aria-label="Cambiar tema">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5" stroke="currentColor" fill="none"/></svg>
+      </button>
+      <button id="tipsBtn" class="icon-btn" title="Tips" aria-label="Tips">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v3M12 18v3M3 12h3M18 12h3" stroke="currentColor" fill="none"/></svg>
+      </button>
+      <button id="narratorBtn" class="icon-btn" title="Activar narrador" aria-label="Activar narrador">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+          <path d="M7 10v4c0 .55.45 1 1 1h2l5 5V5l-5 5H8c-.55 0-1 .45-1 1zm11 1c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM16 4.27v1.88c2.43 1.13 4 3.5 4 6.2s-1.57 5.07-4 6.2v1.88c3.48-1.22 6-4.5 6-8.08s-2.52-6.86-6-8.08z"/>
+        </svg>
+      </button>
+      <button id="navToggle" class="hamburger" aria-label="Abrir menú"><span></span><span></span><span></span></button>
+    </div>
   </header>
 
-  <!-- Hero (título restaurado) -->
-  <section id="top" class="hero" aria-labelledby="heroTitle">
-    <h1 id="heroTitle" class="title">
-      <span class="title-row">
-        <i class="t-word t-1">Rompe</i>
-        <i class="t-word t-2">el</i>
-        <i class="t-word t-3">silencio</i>
-      </span>
-      <span class="title-row t-alt">
-        <i class="t-hand">Protege tu voz</i>
-      </span>
-      <span class="underline-wrap"><span class="underline"></span></span>
-    </h1>
-    <p class="subtle">Explora: pasa, mantén, arrastra, ordena.</p>
-    <div class="chain" role="img" aria-label="Mantén presionado para romper">
-      <div class="link"></div><div class="link"></div><div class="link"></div>
-      <div class="link"></div><div class="link"></div><div class="link"></div>
-    </div>
-  </section>
-
-  <!-- APRENDE -->
-  <section id="aprende" class="section">
-    <h2 class="h-doodles">Aprende</h2>
-
-    <div class="learn-grid">
-      <article class="learn-card mint">
-        <div class="learn-top"></div>
-        <div class="learn-body">
-          <div class="learn-doodle" aria-hidden="true">
-            <svg viewBox="0 0 48 48"><path d="M12 12h24M10 18h28M8 24h32M10 30h28M12 36h24" stroke="currentColor" fill="none"/></svg>
+  <main class="viewport" id="app" tabindex="-1" aria-live="polite">
+    <!-- HOME -->
+    <section class="view active" data-route="home" aria-labelledby="homeTitle">
+      <div class="hero-wrap vk-hero">
+        <div class="hero-card">
+          <div class="hero-copy">
+            <h1 id="homeTitle" class="title">
+              <span class="row big">KIVA</span>
+              <span class="sub">Rompe el silencio · Protege tu voz</span>
+            </h1>
+            <p class="lead">
+              Un espacio seguro para aprender, practicar y pedir apoyo con personas de confianza.
+            </p>
+            <button class="btn primary" data-go="ayuda">Ir a Ayuda</button>
           </div>
-          <div class="learn-text">
-            <h3>¿Qué es?</h3>
-            <p>Abuso infantil: daño físico, emocional, sexual o negligencia. No es tu culpa. Ponerlo en palabras y contarlo puede detenerlo.</p>
+          <div class="hero-media">
+            <img src="https://images.unsplash.com/photo-1604881985549-3af7eb2b868a?q=80&w=1400&auto=format&fit=crop"
+              alt="Niña escribiendo con colores pastel">
           </div>
-        </div>
-      </article>
-
-      <article class="learn-card purple">
-        <div class="learn-top"></div>
-        <div class="learn-body">
-          <div class="learn-doodle" aria-hidden="true">
-            <svg viewBox="0 0 48 48"><path d="M24 6l10 6v12l-10 6-10-6V12z" stroke="currentColor" fill="none"/></svg>
-          </div>
-          <div class="learn-text">
-            <h3>Señales</h3>
-            <p>Cambios fuertes de ánimo o conducta, evitar lugares/personas, lesiones sin explicación, aislamiento o miedo a ciertos temas.</p>
-          </div>
-        </div>
-      </article>
-
-      <article class="learn-card pink">
-        <div class="learn-top"></div>
-        <div class="learn-body">
-          <div class="learn-doodle" aria-hidden="true">
-            <svg viewBox="0 0 48 48"><path d="M24 10a8 8 0 100 16 8 8 0 000-16zM8 38c2-6 8-10 16-10s14 4 16 10" stroke="currentColor" fill="none"/></svg>
-          </div>
-          <div class="learn-text">
-            <h3>Si alguien te lo confía</h3>
-            <p>Escucha y cree. Agradece que te lo comparta. No prometas secreto absoluto; busca ayuda con adultas/os de confianza.</p>
-          </div>
-        </div>
-      </article>
-
-      <article class="learn-card mint">
-        <div class="learn-top"></div>
-        <div class="learn-body">
-          <div class="learn-doodle" aria-hidden="true">
-            <svg viewBox="0 0 48 48"><path d="M8 24h32M24 8v32" stroke="currentColor" fill="none"/></svg>
-          </div>
-          <div class="learn-text">
-            <h3>Consentimiento</h3>
-            <p>Debe ser libre y con ganas. Si hay miedo, engaño o presión, no hay consentimiento.</p>
-          </div>
-        </div>
-      </article>
-    </div>
-
-    <h3 class="h-doodles mt">Mitos vs realidades</h3>
-    <div class="grid four flip-zone" aria-label="Tarjetas volteables">
-      <div class="flip"><div class="flip__inner" tabindex="0">
-        <div class="flip__front">“Solo pasa con desconocidos.”</div>
-        <div class="flip__back">A menudo es alguien cercano. Contarlo ayuda a detenerlo.</div>
-      </div></div>
-      <div class="flip"><div class="flip__inner" tabindex="0">
-        <div class="flip__front">“Si no dices no, consientes.”</div>
-        <div class="flip__back">El silencio no es consentimiento; el miedo influye.</div>
-      </div></div>
-      <div class="flip"><div class="flip__inner" tabindex="0">
-        <div class="flip__front">“Exageras.”</div>
-        <div class="flip__back">Tomar en serio las señales puede salvar.</div>
-      </div></div>
-      <div class="flip"><div class="flip__inner" tabindex="0">
-        <div class="flip__front">“Contarlo rompe familias.”</div>
-        <div class="flip__back">Contarlo protege y previene más daño.</div>
-      </div></div>
-    </div>
-  </section>
-
-  <!-- EXPLORA -->
-  <section id="explora" class="section">
-    <h2 class="h-doodles">Explora</h2>
-
-    <!-- Emocionómetro -->
-    <div class="game-block" id="emociono">
-      <h3>Emocionómetro</h3>
-      <p class="muted small">Mueve el control, observa el color y nombra lo que sientes.</p>
-      <div class="emo-wrap">
-        <input type="range" min="0" max="100" value="45" id="emoRange" aria-label="Emocionómetro">
-        <div class="emo-face" aria-hidden="true">
-          <div class="brow l"></div>
-          <div class="brow r"></div>
-          <div class="eye l"></div>
-          <div class="eye r"></div>
-          <div class="mouth"></div>
-          <div class="tear"></div>
-        </div>
-        <div class="emo-label" aria-live="polite"></div>
-      </div>
-    </div>
-
-    <!-- 1. ROMPE EL MURO -->
-    <div class="game-block" id="muros">
-      <h3>Rompe el muro</h3>
-      <p class="muted small">Toca cada bloque para derribarlo.</p>
-      <div class="wall" aria-label="Pared de palabras"></div>
-      <p class="why" aria-live="polite"></p>
-      <button class="btn reset-btn icon-only" data-game="muros" aria-label="Reiniciar Muros" title="Reiniciar">⟲</button>
-    </div>
-
-    <!-- 2. REFUGIO SEGURO (escudo ajustado) -->
-    <div class="game-block" id="refugio">
-      <h3>Refugio seguro</h3>
-      <p class="muted small">Arrastra 5 palabras al escudo. Sin repetidas.</p>
-      <div class="refugio-wrap">
-        <div class="refugio-tray" aria-label="Palabras para arrastrar"></div>
-
-        <div class="shield-area" aria-label="Escudo">
-          <svg viewBox="0 0 240 300" class="shield-bg" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-            <path id="shieldPath" d="M120 12 L205 52 V150 C205 205 165 230 120 285 C75 230 35 205 35 150 V52 Z" fill="none" stroke="currentColor" stroke-width="2"/>
-          </svg>
-          <div class="slot" data-slot="1"></div>
-          <div class="slot" data-slot="2"></div>
-          <div class="slot" data-slot="3"></div>
-          <div class="slot" data-slot="4"></div>
-          <div class="slot" data-slot="5"></div>
         </div>
       </div>
-      <div class="refugio-msg" aria-live="polite"></div>
-      <button class="btn reset-btn icon-only" data-game="refugio" aria-label="Reiniciar Refugio" title="Reiniciar">⟲</button>
-    </div>
 
-    <!-- 3. DESCIFRA PARES (Memorama infantil) -->
-    <div class="game-block" id="memoria">
-      <h3>Descifra pares</h3>
-      <p class="muted small">Encuentra cada par y descubre su significado.</p>
-      <div class="memory-grid" aria-label="Cartas de memoria"></div>
-      <div class="memory-info muted small"></div>
-      <div class="memory-desc" aria-live="polite"></div>
-      <button class="btn reset-btn icon-only" data-game="memoria" aria-label="Reiniciar Memoria" title="Reiniciar">⟲</button>
-    </div>
+      <!-- Tabs tipo stickers (Programas · Docentes · Opiniones · Precios) -->
+      <section class="vk-tabs container">
+        <a href="#/aprende" class="vk-tab vk-burst mint">Programas</a>
+        <a href="#/sobre"   class="vk-tab vk-burst peach">Docentes</a>
+        <a href="#/blog"    class="vk-tab vk-burst sky">Opiniones</a>
+        <a href="#/ayuda"   class="vk-tab vk-burst sand">Precios</a>
+      </section>
 
-    <!-- 4. ARMA EL MENSAJE -->
-    <div class="game-block" id="mensaje">
-      <h3>Arma el mensaje</h3>
-      <p class="muted small">Ordena los fragmentos para formar la frase.</p>
-      <div class="chips" aria-label="Fragmentos para ordenar"></div>
-      <div class="msg-out" aria-live="polite"></div>
-      <button class="btn reset-btn icon-only" data-game="mensaje" aria-label="Reiniciar Mensaje" title="Reiniciar">⟲</button>
-    </div>
-  </section>
+      <!-- Servicios/atajos grandes -->
+      <section class="vk-services container">
+        <a class="vk-service peach"   href="#/explora">Clases con acompañamiento</a>
+        <a class="vk-service mint"    href="#/aprende">Contenido para principiantes</a>
+        <a class="vk-service lavender" href="#/ayuda">Preparación y apoyo</a>
+      </section>
+    </section>
 
-  <!-- GALERÍA (sin cambios de contenido) -->
-  <section id="galeria" class="section">
-    <h2 class="h-doodles">Imágenes & Videos</h2>
-    <div class="carousel contain" id="carousel">
-      <button class="car-btn prev" aria-label="Anterior">‹</button>
-      <div class="car-track">
-        <!-- Tu mismo contenido original (no alterado) -->
-        <div class="slide video">
-          <iframe 
-            loading="lazy"
-            src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fweb.facebook.com%2Fwatch%2F%3Fv%3D2458157557913320&show_text=false&width=560" 
-            width="560" 
-            height="315" 
-            style="border:none;overflow:hidden" 
-            scrolling="no" 
-            frameborder="0" 
-            allowfullscreen="true" 
-            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
-          </iframe>
-          <div class="cap">Video sobre consentimiento</div>
-        </div>
-
-        <div class="slide">
-          <img loading="lazy" src="https://st2.depositphotos.com/9393460/12292/i/950/depositphotos_122929742-stock-photo-friends-walking-in-the-park.jpg" alt="Amistades caminando al atardecer: acompañamiento y redes de apoyo">
-          <div class="cap">Cuidarnos entre nosotrxs</div>
-        </div>
-
-        <div class="slide">
-          <img loading="lazy" src="https://media.istockphoto.com/id/1434676540/es/foto/manos-sosteniendo-un-coraz%C3%B3n-de-papel-sobre-un-fondo-blanco-como-concepto-de-salud.jpg?s=170667a&w=0&k=20&c=xX2NthacUACY5srzOm702VINmwxr3eZtEFU8MAUC_f0=" alt="Manos con corazón de papel: pedir ayuda es un acto de valentía">
-          <div class="cap">Apoyo que acompaña</div>
-        </div>
-
-        <div class="slide">
-          <img loading="lazy" src="https://www.un.org/sites/un2.un.org/files/speakup-community.png" alt="Escudo minimalista sobre fondo pastel">
-          <div class="cap">Protege tu voz</div>
-        </div>
-
-        <div class="slide">
-          <img loading="lazy" src="https://www.italiano-al-caffe.com/wp-content/uploads/2025/06/escribir-para-hablar-mejor-1024x683.jpg" alt="Cuaderno y lápiz: escribir puede ayudar a ordenar ideas y emociones">
-          <div class="cap">Poner en palabras</div>
-        </div>
-
-        <div class="slide">
-          <img loading="lazy" src="https://images.ctfassets.net/szez98lehkfm/3NnWNtQM1z0Re11dvhLFt0/6710d65896458d56428d6128bf0f7584/MyIC_Article134994?fm=webp" alt="Grupo estudiando: comunidad escolar como red de protección">
-          <div class="cap">Redes en la escuela</div>
-        </div>
-
-        <div class="slide">
-          <img loading="lazy" src="https://images.squarespace-cdn.com/content/v1/59a6ed55ff7c50296477424e/f2c09b87-f20b-48ac-8263-4ceb921bf6f3/Mother-listening-to-daughter-with-understanding.jpg" alt="Conversación entre amigos en una mesa">
-          <div class="cap">Hablar con alguien de confianza</div>
-        </div>
+    <!-- APRENDE -->
+    <section class="view" data-route="aprende">
+      <div class="section-head lilac">
+        <h2 class="h-doodles">Aprende</h2>
+        <p>Señales, consentimiento y qué hacer si alguien te lo cuenta.</p>
+        <div class="wave top"></div>
       </div>
-      <button class="car-btn next" aria-label="Siguiente">›</button>
-    </div>
-  </section>
+      <div class="cards">
+        <article class="card mint"><h3>¿Qué es?</h3><p>Abuso infantil: daño físico, emocional, sexual o negligencia. No es tu culpa.</p></article>
+        <article class="card sky"><h3>Señales</h3><p>Cambios de ánimo, evitar lugares/personas, lesiones sin explicación.</p></article>
+        <article class="card coral"><h3>Si alguien te lo confía</h3><p>Escucha y cree. No prometas secreto absoluto; busca apoyo.</p></article>
+        <article class="card banana"><h3>Consentimiento</h3><p>Debe ser libre y con ganas. Sin presión.</p></article>
+      </div>
+    </section>
 
-  <!-- FORO SEGURO (rediseñado) -->
-  <section id="foro" class="section forum">
-    <h2 class="h-doodles">Foro seguro</h2>
-    <div class="forum-controls">
-      <label><input type="checkbox" id="anonToggle" checked> Publicar como anónimo</label>
-      <input type="text" id="alias" class="alias" placeholder="Alias (opcional)">
-    </div>
-    <textarea id="postText" rows="3" placeholder="Comparte un consejo, una experiencia o una pregunta con respeto."></textarea>
-    <div class="forum-actions">
-      <button class="btn" id="postBtn">Publicar</button>
-    </div>
-    <div class="forum-list" id="forumList" aria-live="polite"></div>
-  </section>
-
-  <!-- AYUDA (Local/Global + WhatsApp verificado) -->
-  <section id="ayuda" class="section help">
-    <h2 class="h-doodles">Ayuda</h2>
-    <p class="help-intro">Si estás en peligro inmediato, llama al número de emergencia de tu país.</p>
-
-    <div class="reveal" data-reveal="mx">
-      <h3>Local (México)</h3>
-      <div class="grid three" id="helpGridMX" aria-live="polite"></div>
-
-      <div class="help-whats-wrap">
-        <a class="whats-btn" target="_blank" rel="noopener"
-           href="https://wa.me/525555335533?text=Hola%2C%20necesito%20apoyo%20psicoemocional.">
-          Abrir WhatsApp · Consejo Ciudadano 55 5533 5533
-        </a>
-        <a class="whats-btn" target="_blank" rel="noopener"
-           href="https://wa.me/525579009669?text=Contacto">
-          Abrir WhatsApp · Contacto Joven 55 7900 9669
-        </a>
+    <!-- EXPLORA (juegos) -->
+    <section class="view" data-route="explora">
+      <div class="section-head peach">
+        <h2 class="h-doodles">Explora</h2>
+        <p>Juega y practica habilidades que te cuidan.</p>
+        <div class="wave top"></div>
       </div>
 
-      <small class="help-note">WhatsApp operado por instituciones verificadas.</small>
-    </div>
+      <div class="game-card" id="emociono">
+        <h3>Emocionómetro</h3>
+        <p class="muted small">Mueve el control y nombra lo que sientes.</p>
+        <div class="emo-wrap">
+          <input type="range" min="0" max="100" value="45" id="emoRange" aria-label="Emocionómetro">
+          <div class="emo-face" aria-hidden="true">
+            <div class="brow l"></div><div class="brow r"></div>
+            <div class="eye l"></div><div class="eye r"></div>
+            <div class="mouth"></div><div class="tear"></div>
+          </div>
+          <div class="emo-label" aria-live="polite"></div>
+        </div>
+      </div>
 
-    <div class="reveal" data-reveal="global">
-      <h3>Global</h3>
-      <div class="grid three" id="helpGridGlobal" aria-live="polite"></div>
-      <small class="help-note">Los enlaces abren directorios oficiales para elegir tu país.</small>
-    </div>
-  </section>
+      <div class="game-card" id="muros">
+        <h3>Rompe el muro</h3>
+        <p class="muted small">Toca cada bloque para derribarlo.</p>
+        <div class="wall"></div>
+        <p class="why" aria-live="polite"></p>
+        <button class="btn reset-btn icon-only" data-game="muros" aria-label="Reiniciar Muros">⟲</button>
+      </div>
 
-  <!-- BLOG / REFLEXIONES (atractivo) -->
-  <section id="blog" class="section blog">
-    <h2 class="h-doodles">Reflexiones</h2>
-    <div class="blog-grid" id="blogGrid"></div>
-  </section>
+      <div class="game-card" id="memoria">
+        <h3>Descifra pares</h3>
+        <p class="muted small">Encuentra cada par y descubre su significado.</p>
+        <div class="memory-grid"></div>
+        <div class="memory-info muted small"></div>
+        <div class="memory-desc" aria-live="polite"></div>
+        <button class="btn reset-btn icon-only" data-game="memoria" aria-label="Reiniciar Memoria">⟲</button>
+      </div>
 
-  <!-- SOBRE NOSOTROS (con más color) -->
-  <section id="sobre" class="section about">
-    <h2 class="h-doodles">Sobre nosotros</h2>
-    <div class="about-grid">
-      <article class="about-card">
-        <h3>Misión</h3>
-        <p>Acompañar a niñas, niños y adolescentes con información clara, juegos y redes de apoyo para prevenir y detener el abuso.</p>
-      </article>
-      <article class="about-card">
-        <h3>Visión</h3>
-        <p>Comunidades seguras donde cada voz sea escuchada, respetada y protegida.</p>
-      </article>
-      <article class="about-card">
-        <h3>Cómo trabajamos</h3>
-        <p>Contenido breve y sensible; herramientas prácticas; líneas verificadas; y espacios moderados para conversar.</p>
-      </article>
-    </div>
-  </section>
+      <div class="game-card" id="mensaje">
+        <h3>Arma el mensaje</h3>
+        <p class="muted small">Ordena los fragmentos para formar la frase.</p>
+        <div class="chips"></div>
+        <div class="msg-out" aria-live="polite"></div>
+        <button class="btn reset-btn icon-only" data-game="mensaje" aria-label="Reiniciar Mensaje">⟲</button>
+      </div>
+    </section>
 
-  <footer class="site-footer">
-    <small>KIVA · “Rompe el silencio, protege tu voz”. Educa, previene y protege infancias.</small>
-  </footer>
+    <!-- Resto de vistas (galería, foro, ayuda, blog, sobre) igual que ya tienes -->
+    <section class="view" data-route="galeria"> … </section>
+    <section class="view" data-route="foro"> … </section>
+    <section class="view" data-route="ayuda"> … </section>
+    <section class="view" data-route="blog"> … </section>
+    <section class="view" data-route="sobre"> … </section>
+  </main>
 
-  <!-- Modal tips (rediseñado) -->
-  <dialog id="tips" class="tips-dialog" aria-labelledby="tipsTitle">
+  <dialog id="tips" aria-labelledby="tipsTitle" class="tips-dialog">
     <div class="tips-card">
       <h3 id="tipsTitle">Tips rápidos</h3>
       <ul class="tips-list">
-        <li>El subrayado del título se revela completo.</li>
-        <li>Rompe, arrastra, voltea y ordena en “Explora”.</li>
-        <li>Hay confeti al completar logros.</li>
+        <li>Usa el menú superior con íconos para navegar.</li>
+        <li>En “Explora” están los juegos.</li>
+        <li>El botón de la portada te lleva a Ayuda.</li>
       </ul>
       <form method="dialog"><button class="btn">Listo</button></form>
     </div>

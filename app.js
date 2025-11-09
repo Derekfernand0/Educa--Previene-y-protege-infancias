@@ -1,20 +1,43 @@
 /* ===========================
-   HELPERS & ESTADO
+   Helpers & Estado
    =========================== */
 const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 
 const state = {
   theme: localStorage.getItem("theme") || "light",
-  discreet: false,
   narrator: false,
-  narratorAutoTried: false
+  narratorAutoTried: false,
+  route: "home"
 };
 
 /* ===========================
-   CONFETI (sin sonido)
+   Router SPA (hash #/ruta)
    =========================== */
-const CONFETTI_COLORS = ["#CDEEDD","#D5EAF6","#E4D8F2","#FFF4CC"];
+function setRoute(r){
+  state.route = r || "home";
+  $$(".view").forEach(v => v.classList.toggle("active", v.dataset.route === state.route));
+  $$(".topnav-item").forEach(a => a.classList.toggle("active", a.getAttribute("href") === `#/${state.route}`));
+  // mover foco al contenedor para accesibilidad
+  $("#app")?.focus({preventScroll:true});
+}
+function readRouteFromHash(){
+  const m = location.hash.match(/^#\/([\w-]+)/);
+  setRoute(m ? m[1] : "home");
+}
+addEventListener("hashchange", readRouteFromHash);
+readRouteFromHash();
+
+/* Enlaces con data-go para CTA */
+document.addEventListener("click", (e)=>{
+  const go = e.target.closest("[data-go]");
+  if (go) { location.hash = `#/${go.dataset.go}`; }
+});
+
+/* ===========================
+   Confeti (sin sonido)
+   =========================== */
+const CONFETTI_COLORS = ["#B7F4E0","#D8EDFF","#E9DAFF","#FFEAA6"];
 const CONFETTI_SHAPES = ["square","circle","star"];
 
 function launchConfettiRain(duration=2200, density=90){
@@ -59,31 +82,31 @@ function spawnPiece(){
 function celebrate(){ launchConfettiRain(2400, 110); }
 
 /* ===========================
-   DOODLES DE FONDO (opcionales)
+   Doodles de fondo
    =========================== */
 (() => {
   const c = $("#bg");
   const ctx = c.getContext("2d");
   const DPR = Math.min(devicePixelRatio || 1, 2);
   let w, h, t=0;
-  const palette = ["#2E6B54","#94C9AF","#CDEEDD","#D5EAF6"];
-  const icons = ["lock","shield","heart","megaphone"];
+  const palette = ["#6B5CFF","#00C2A8","#B7F4E0","#D8EDFF"];
+  const icons = ["heart","shield","megaphone","star"];
   const ENABLE_DOODLES = true;
 
   function resize(){ w=c.width=innerWidth*DPR; h=c.height=innerHeight*DPR; c.style.width=innerWidth+"px"; c.style.height=innerHeight+"px"; }
   function ico(type, x, y, s, col){
     ctx.save(); ctx.translate(x,y); ctx.scale(s,s);
-    ctx.strokeStyle=col; ctx.lineWidth=1.2; ctx.lineCap="round"; ctx.lineJoin="round";
-    if(type==="lock"){ ctx.strokeRect(-6,0,12,10); ctx.beginPath(); ctx.moveTo(-3,0); ctx.lineTo(-3,-4); ctx.moveTo(3,0); ctx.lineTo(3,-4); ctx.arc(0,-4,6,Math.PI,0); ctx.stroke(); }
-    else if(type==="shield"){ ctx.beginPath(); ctx.moveTo(0,-8); ctx.lineTo(10,-3); ctx.lineTo(10,5); ctx.lineTo(0,12); ctx.lineTo(-10,5); ctx.lineTo(-10,-3); ctx.closePath(); ctx.stroke(); }
-    else if(type==="heart"){ ctx.beginPath(); ctx.moveTo(0,8); ctx.bezierCurveTo(-10,2,-10,-6,-2,-6); ctx.bezierCurveTo(0,-6,0,-4,0,-4); ctx.bezierCurveTo(0,-4,0,-6,2,-6); ctx.bezierCurveTo(10,-6,10,2,0,8); ctx.stroke(); }
-    else if(type==="megaphone"){ ctx.beginPath(); ctx.moveTo(-10,-2); ctx.lineTo(6,-8); ctx.lineTo(6,8); ctx.lineTo(-10,2); ctx.closePath(); ctx.stroke(); }
+    ctx.strokeStyle=col; ctx.lineWidth=1.5; ctx.lineCap="round"; ctx.lineJoin="round";
+    if(type==="heart"){ ctx.beginPath(); ctx.moveTo(0,8); ctx.bezierCurveTo(-10,2,-10,-6,-2,-6); ctx.bezierCurveTo(0,-6,0,-4,0,-4); ctx.bezierCurveTo(0,-4,0,-6,2,-6); ctx.bezierCurveTo(10,-6,10,2,0,8); ctx.stroke(); }
+    if(type==="shield"){ ctx.beginPath(); ctx.moveTo(0,-8); ctx.lineTo(10,-3); ctx.lineTo(10,5); ctx.lineTo(0,12); ctx.lineTo(-10,5); ctx.lineTo(-10,-3); ctx.closePath(); ctx.stroke(); }
+    if(type==="megaphone"){ ctx.beginPath(); ctx.moveTo(-10,-2); ctx.lineTo(6,-8); ctx.lineTo(6,8); ctx.lineTo(-10,2); ctx.closePath(); ctx.stroke(); }
+    if(type==="star"){ ctx.beginPath(); for(let i=0;i<5;i++){ ctx.lineTo(Math.cos((18+i*72)*Math.PI/180)*10, Math.sin((18+i*72)*Math.PI/180)*10); ctx.lineTo(Math.cos((54+i*72)*Math.PI/180)*4, Math.sin((54+i*72)*Math.PI/180)*4); } ctx.closePath(); ctx.stroke(); }
     ctx.restore();
   }
   function step(){
     ctx.clearRect(0,0,w,h);
     if(!ENABLE_DOODLES) return;
-    const spacing = 140*(Math.max(innerWidth,800)/1200);
+    const spacing = 160*(Math.max(innerWidth,800)/1200);
     for(let y=0;y<h;y+=spacing){
       for(let x=0;x<w;x+=spacing){
         const p=(x+y)/spacing;
@@ -100,29 +123,28 @@ function celebrate(){ launchConfettiRain(2400, 110); }
 })();
 
 /* ===========================
-   NAV / THEME / DISCRETO
+   Topbar: tema + menú móvil + tips
    =========================== */
-$("#navOpen").addEventListener("click", ()=> $("#sidenav").classList.add("open"));
-$("#navClose").addEventListener("click", ()=> $("#sidenav").classList.remove("open"));
-
 document.documentElement.setAttribute("data-theme", state.theme);
+
 $("#themeBtn").addEventListener("click", ()=>{
   state.theme = state.theme==="light" ? "dark" : "light";
   document.documentElement.setAttribute("data-theme", state.theme);
   localStorage.setItem("theme", state.theme);
 });
-$("#discreetBtn").addEventListener("click", ()=>{
-  state.discreet=!state.discreet;
-  document.documentElement.toggleAttribute("data-discreet", state.discreet?"on":null);
-  document.title = state.discreet ? "Tareas y bienestar" : "KIVA — Rompe el silencio";
-});
 
-/* Tips dialog */
+const navToggle = $("#navToggle");
+const topnav = $("#topnav");
+navToggle.addEventListener("click", ()=> topnav.classList.toggle("open"));
+
+// Tips dialog
 const tips=$("#tips");
 $("#tipsBtn").addEventListener("click", ()=> tips.showModal());
 tips.addEventListener("click", (e)=>{ if(e.target===tips) tips.close(); });
 
-/* Mascota: panel, parpadeo, seguimiento leve y tips */
+/* ===========================
+   Mascota: panel, seguimiento y narrador
+   =========================== */
 (() => {
   const dlg = $("#buddyDialog");
   const btn = $("#buddyBtn");
@@ -133,7 +155,6 @@ tips.addEventListener("click", (e)=>{ if(e.target===tips) tips.close(); });
 
   let hoverTimer=null;
   btn.addEventListener("mousemove", (e)=>{
-    // leve seguimiento del mouse
     const cat = $(".cat", btn);
     const rect = btn.getBoundingClientRect();
     const dx = (e.clientX - (rect.left+rect.width/2))/rect.width;
@@ -158,10 +179,10 @@ tips.addEventListener("click", (e)=>{ if(e.target===tips) tips.close(); });
     if(activePane) speakText(activePane.innerText, {rate:0.95, pitch:1.08});
   });
 
-  // Globitos de tips contextuales
+  // Globitos de tips
   const tipsMsgs = [
-    "Recuerda: el consentimiento debe ser libre y con ganas.",
-    "Si algo te incomoda, puedes contarlo a una persona de confianza.",
+    "El consentimiento debe ser libre y con ganas.",
+    "Si algo te incomoda, cuéntalo a una persona de confianza.",
     "En Ayuda tienes WhatsApp verificado para escribir."
   ];
   setInterval(()=>{
@@ -175,33 +196,7 @@ tips.addEventListener("click", (e)=>{ if(e.target===tips) tips.close(); });
   }, 15000);
 })();
 
-/* ===========================
-   HERO: CADENA (mantener)
-   =========================== */
-(() => {
-  const chain=$(".chain"); let pressT;
-  const breakIt=()=>{ if(chain.classList.contains("break")) return; chain.classList.add("break"); if(navigator.vibrate) navigator.vibrate([30,20,30]); };
-  chain.addEventListener("mousedown", ()=> pressT=setTimeout(breakIt,650));
-  chain.addEventListener("touchstart", ()=> pressT=setTimeout(breakIt,650), {passive:true});
-  ["mouseup","mouseleave","touchend","touchcancel"].forEach(ev=> chain.addEventListener(ev, ()=> clearTimeout(pressT), {passive:true}));
-})();
-
-/* ===========================
-   Título micro-interactivo
-   =========================== */
-(() => {
-  const words=$$(".t-word");
-  addEventListener("mousemove", (e)=>{
-    words.forEach((w,i)=>{
-      const r=w.getBoundingClientRect(); const dx=(e.clientX-(r.left+r.width/2))/r.width;
-      w.style.transform=`translateY(${dx*1.1}px) rotate(${i%2? -dx*0.7: dx*0.7}deg)`;
-    });
-  });
-})();
-
-/* ===========================
-   NARRADOR ACCESIBLE (calidez)
-   =========================== */
+/* Narrador accesible */
 let speechOK = 'speechSynthesis' in window;
 let synth = speechOK ? window.speechSynthesis : null;
 let voice = null;
@@ -219,7 +214,7 @@ function speakText(text, opts={}){
   voice = voice || pickSpanishFemaleVoice();
   if(voice){ u.voice = voice; u.lang = voice.lang; }
   u.pitch = opts.pitch ?? 1.08;
-  u.rate  = opts.rate  ?? 0.95;   // un poco más lento y cálido
+  u.rate  = opts.rate  ?? 0.95;
   u.volume= opts.volume?? 1.0;
   synth.cancel();
   synth.speak(u);
@@ -232,18 +227,12 @@ function speakText(text, opts={}){
     return;
   }
   function guideIntro(){
-    speakText("Bienvenida, bienvenido. Estás en Kiva. En Aprende hay información breve. En Explora hay juegos para practicar. En Ayuda verás contactos verificados, también por WhatsApp. Toca un texto para escucharlo.");
+    speakText("Bienvenida, bienvenido. Estás en Kiva. Usa el menú para navegar. En Explora hay juegos. En Ayuda verás contactos verificados. Toca un texto para escucharlo.");
   }
   function tryAutoStartMobile(){
     if (state.narratorAutoTried) return;
     state.narratorAutoTried = true;
-    setTimeout(()=>{
-      if (document.visibilityState === "visible") {
-        state.narrator = true;
-        narratorBtn.style.outline = "2px solid var(--ring)";
-        guideIntro();
-      }
-    }, 500);
+    setTimeout(()=>{ if (document.visibilityState === "visible") { state.narrator = true; narratorBtn.style.outline = "2px solid var(--ring)"; guideIntro(); } }, 500);
   }
   narratorBtn.addEventListener("click", () => {
     state.narrator = !state.narrator;
@@ -251,40 +240,35 @@ function speakText(text, opts={}){
     narratorBtn.title = state.narrator ? "Narrador activado (toca un texto)" : "Activar narrador";
     if (state.narrator) guideIntro(); else synth.cancel();
   });
-  window.addEventListener("touchstart", ()=>{
-    if (!state.narrator && !state.narratorAutoTried){ tryAutoStartMobile(); }
-  }, {passive:true});
-
+  window.addEventListener("touchstart", ()=>{ if (!state.narrator && !state.narratorAutoTried){ tryAutoStartMobile(); } }, {passive:true});
   if (/Mobi|Android/i.test(navigator.userAgent)) { tryAutoStartMobile(); }
 
-  // Lectura de frente de mitos (azul) antes del volteo + textos clave
   document.addEventListener("click", (e) => {
     if (!state.narrator || synth.speaking) return;
-    const sel = e.target.closest('h1, h2, h3, p, .flip__front, .brick, .cap, .help-card h4, .help-card p, .snav-link, .learn-text p, .learn-text h3, .slot, .about-card p, .post, .blog-card p, .emo-label');
+    const sel = e.target.closest('h1, h2, h3, p, .flip__front, .brick, .cap, .help-card h4, .help-card p, .topnav-item, .chip, .card, .emo-label');
     if (sel) speakText(sel.textContent.trim(), {rate:0.95, pitch:1.1});
   });
 })();
 
 /* ===========================
-   Emocionómetro — color, rostro y animaciones
+   Emocionómetro
    =========================== */
 (() => {
   const range = $("#emoRange");
+  if (!range) return;
   const label = $(".emo-label");
   const face = $(".emo-face");
   const mouth = $(".mouth", face);
-  const leftEye = $(".eye.l", face);
-  const rightEye = $(".eye.r", face);
   const browL = $(".brow.l", face);
   const browR = $(".brow.r", face);
   const tear = $(".tear", face);
 
   const states = [
-    { max:20,  name:"Tranquila/o",   color:"#CDEEDD", mouth:"smile", anim:"pulse", brows:"relax" },
-    { max:45,  name:"Inquieta/o",    color:"#D5EAF6", mouth:"flat",  anim:"",      brows:"raise" },
-    { max:70,  name:"Tensa/o",       color:"#F9E6AA", mouth:"frown", anim:"shake", brows:"furrow" },
-    { max:85,  name:"Triste",        color:"#E6D6EF", mouth:"sad",   anim:"drop",  brows:"tilt" },
-    { max:100, name:"Enojada/o",     color:"#F5C7C7", mouth:"angry", anim:"shake", brows:"angry" }
+    { max:20,  name:"Tranquila/o",   color:"#B7F4E0", mouth:"smile", anim:"pulse", brows:"relax" },
+    { max:45,  name:"Inquieta/o",    color:"#D8EDFF", mouth:"flat",  anim:"",      brows:"raise" },
+    { max:70,  name:"Tensa/o",       color:"#FFEAA6", mouth:"frown", anim:"shake", brows:"furrow" },
+    { max:85,  name:"Triste",        color:"#E9DAFF", mouth:"sad",   anim:"drop",  brows:"tilt" },
+    { max:100, name:"Enojada/o",     color:"#FFC8BF", mouth:"angry", anim:"shake", brows:"angry" }
   ];
 
   function setMouth(type){
@@ -293,9 +277,9 @@ function speakText(text, opts={}){
     mouth.style.transform = "translateX(-50%)";
     tear.style.opacity = 0;
 
-    if(type==="smile"){ mouth.style.height="18px"; mouth.style.width="38px"; }
-    if(type==="flat"){ mouth.style.height="0px"; mouth.style.width="32px"; mouth.style.borderWidth="0"; mouth.style.borderTop="3px solid #111"; mouth.style.bottom="28px"; }
-    if(type==="frown"){ mouth.style.height="18px"; mouth.style.width="38px"; mouth.style.transform="translateX(-50%) rotate(180deg)"; }
+    if(type==="smile"){ mouth.style.height="18px"; mouth.style.width="40px"; }
+    if(type==="flat"){ mouth.style.height="0px"; mouth.style.width="34px"; mouth.style.borderWidth="0"; mouth.style.borderTop="3px solid #111"; mouth.style.bottom="28px"; }
+    if(type==="frown"){ mouth.style.height="18px"; mouth.style.width="40px"; mouth.style.transform="translateX(-50%) rotate(180deg)"; }
     if(type==="sad"){ mouth.style.height="14px"; mouth.style.width="30px"; mouth.style.transform="translateX(-50%) rotate(180deg)"; tear.style.opacity=1; }
     if(type==="angry"){ mouth.style.height="0px"; mouth.style.width="30px"; mouth.style.borderWidth="0"; mouth.style.borderTop="4px solid #111"; mouth.style.bottom="26px"; }
   }
@@ -322,10 +306,11 @@ function speakText(text, opts={}){
 })();
 
 /* ===========================
-   ROMPE EL MURO
+   Rompe el muro
    =========================== */
 (() => {
   const gameBlock = $("#muros");
+  if(!gameBlock) return;
   const wall = $(".wall", gameBlock);
   const out = $(".why", gameBlock);
   const resetBtn = $("[data-game='muros']", gameBlock);
@@ -355,7 +340,7 @@ function speakText(text, opts={}){
     hostigamiento:"Identificarlo y denunciarlo corta el abuso.",
     normalizar:"No normalizar el daño permite frenarlo."
   };
-  const pastel = ["var(--blue)","var(--mint)","var(--lilac)","var(--yellow)"];
+  const pastel = ["var(--sky)","var(--mint)","var(--lilac)","var(--banana)"];
   let broken = 0; let clickedSet = new Set();
 
   function initWall() {
@@ -367,7 +352,7 @@ function speakText(text, opts={}){
       const b = document.createElement("button");
       b.className = "brick";
       b.textContent = w;
-      b.style.background = pastel[i % pastel.length];
+      b.style.background = `var(${pastel[i % pastel.length].replace("var(","").replace(")","")})`;
 
       b.addEventListener("click", () => {
         if(b.classList.contains("broken-anim") || clickedSet.has(b)) return;
@@ -390,85 +375,11 @@ function speakText(text, opts={}){
 })();
 
 /* ===========================
-   REFUGIO SEGURO (escudo y destello)
-   =========================== */
-(() => {
-  const gameBlock = $("#refugio");
-  const tray = $(".refugio-tray", gameBlock);
-  const area = $(".shield-area", gameBlock);
-  const msg = $(".refugio-msg", gameBlock);
-  const slots = $$(".slot", area);
-  const resetBtn = $("[data-game='refugio']", gameBlock);
-
-  const pool = ["apoyo","confianza","límites","respeto","acompañamiento","escucha","protección","valentía","cuidado","red"];
-  const words = pool.slice(0,10);
-  const used = new Set();
-  let placed = 0;
-  let dragEl=null, ghost=null, offsetX=0, offsetY=0;
-
-  function initRefugio() {
-    tray.innerHTML = '';
-    words.forEach(w=>{
-      const b=document.createElement("button");
-      b.className="word"; b.textContent=w; b.dataset.word=w;
-      tray.appendChild(b);
-    });
-    slots.forEach(s => { s.textContent = ''; s.style.width = ''; });
-    used.clear(); placed = 0;
-    msg.textContent = "Arrastra 5 palabras clave al escudo.";
-  }
-
-  // Drag por pointer
-  function onPointerDown(e){
-    const target = e.target.closest(".word");
-    if(!target) return;
-    e.preventDefault();
-    dragEl = target;
-    ghost = target.cloneNode(true);
-    Object.assign(ghost.style, { position:"fixed", pointerEvents:"none", opacity:"0.95", zIndex:"100", transform:"translate(-50%,-50%)" });
-    document.body.appendChild(ghost);
-    const r = target.getBoundingClientRect();
-    offsetX = e.clientX - (r.left + r.width/2);
-    offsetY = e.clientY - (r.top + r.height/2);
-    moveGhost(e.clientX - offsetX, e.clientY - offsetY);
-    document.addEventListener("pointermove", onPointerMove);
-    document.addEventListener("pointerup", onPointerUp, { once:true });
-  }
-  function onPointerMove(e){ if(!ghost) return; moveGhost(e.clientX - offsetX, e.clientY - offsetY); }
-  function onPointerUp(e){
-    if(!ghost || !dragEl) { cleanup(); return; }
-    const gx = e.clientX, gy = e.clientY;
-    const over = slots.find(s=>{ const r=s.getBoundingClientRect(); return gx>=r.left && gx<=r.right && gy>=r.top && gy<=r.bottom; });
-    const w = dragEl.dataset.word;
-    if(over && !over.textContent && !used.has(w)){
-      over.textContent = w;
-      requestAnimationFrame(()=>{ over.style.width = Math.min(over.scrollWidth+24, area.clientWidth*0.6) +"px"; });
-      used.add(w);
-      placed++;
-      over.classList.add("pop"); setTimeout(() => over.classList.remove("pop"), 300);
-      if(placed===5){ onCompleteShield(); }
-    }
-    cleanup();
-  }
-  function moveGhost(x,y){ ghost.style.left = x+"px"; ghost.style.top = y+"px"; }
-  function cleanup(){ if(ghost) ghost.remove(); ghost = null; dragEl = null; document.removeEventListener("pointermove", onPointerMove); }
-  tray.addEventListener("pointerdown", onPointerDown);
-
-  function onCompleteShield(){
-    msg.textContent="Escudo completo. Pedir ayuda y poner límites es protegerte.";
-    const path = $("#shieldPath");
-    path.animate([{strokeWidth:2, opacity:1},{strokeWidth:5, opacity:1},{strokeWidth:2, opacity:1}],{duration:700, easing:"ease-out"});
-    celebrate();
-  }
-  resetBtn.addEventListener("click", initRefugio);
-  initRefugio();
-})();
-
-/* ===========================
-   MEMORAMA INFANTIL (ilustraciones, tapa arriba, descripciones correctas)
+   Memorama
    =========================== */
 (() => {
   const gameBlock = $("#memoria");
+  if(!gameBlock) return;
   const grid = $(".memory-grid", gameBlock);
   const info = $(".memory-info", gameBlock);
   const desc = $(".memory-desc", gameBlock);
@@ -493,25 +404,14 @@ function speakText(text, opts={}){
     const deck = shuffle(pics.flatMap(p=>[p,p]));
     deck.forEach(p=>{
       const card = document.createElement("button");
-      card.className = "cardm";
-      card.dataset.k = p.key;
+      card.className = "cardm"; card.dataset.k = p.key;
 
-      const inner = document.createElement("div");
-      inner.className = "cardm-inner";
+      const inner = document.createElement("div"); inner.className = "cardm-inner";
+      const front = document.createElement("div"); front.className = "cardm-face cardm-front"; front.textContent = p.label;
+      const back = document.createElement("div"); back.className = "cardm-face cardm-back";
+      const img = document.createElement("img"); img.src = p.src; img.alt = p.label; back.appendChild(img);
 
-      const front = document.createElement("div");
-      front.className = "cardm-face cardm-front";
-      front.textContent = p.label; // frente con palabra (azul) — para que Kiva lo lea si quieres
-
-      const back = document.createElement("div");
-      back.className = "cardm-face cardm-back";
-      const img = document.createElement("img");
-      img.src = p.src; img.alt = p.label;
-      back.appendChild(img);
-
-      inner.appendChild(front); inner.appendChild(back);
-      card.appendChild(inner);
-
+      inner.appendChild(front); inner.appendChild(back); card.appendChild(inner);
       card.addEventListener("click", () => onCardClick(card, p));
       grid.appendChild(card);
     });
@@ -535,7 +435,7 @@ function speakText(text, opts={}){
       }
     }
   }
-  function updateInfo(){ info.textContent = `Pares: ${found} / ${pics.length} | Movimientos: ${moves}`; }
+  function updateInfo(){ info.textContent = `Pares: ${found} / ${pics.length} · Movimientos: ${moves}`; }
   function reveal(el){ el.classList.add("revealed"); }
   function hide(el){ el.classList.remove("revealed"); }
 
@@ -544,10 +444,11 @@ function speakText(text, opts={}){
 })();
 
 /* ===========================
-   ARMA EL MENSAJE
+   Arma el mensaje
    =========================== */
 (() => {
   const gameBlock = $("#mensaje");
+  if(!gameBlock) return;
   const box = $(".chips", gameBlock);
   const out = $(".msg-out", gameBlock);
   const resetBtn = $("[data-game='mensaje']", gameBlock);
@@ -560,7 +461,7 @@ function speakText(text, opts={}){
   function initMensaje() {
     box.innerHTML = ''; out.textContent = ''; dragEl = null;
     shuffle(pieces.map((t,i)=>({t,i}))).forEach(obj=>{
-      const b=document.createElement("button"); b.className="chip"; b.textContent=obj.t; b.dataset.idx=obj.i; b.draggable = true; box.appendChild(b);
+      const b=document.createElement("button"); b.className="chip"; b.textContent=obj.t; b.dataset.idx=obj.i; box.appendChild(b);
     });
   }
   box.addEventListener("pointerdown", e => {
@@ -593,17 +494,18 @@ function speakText(text, opts={}){
 })();
 
 /* ===========================
-   CARRUSEL (botones)
+   Carrusel
    =========================== */
 (() => {
-  const car=$("#carousel"), track=$(".car-track", car), slides=$$(".slide", car);
+  const car=$("#carousel"); if(!car) return;
+  const track=$(".car-track", car), slides=$$(".slide", car);
   let idx=0; const go=(i)=>{ idx=(i+slides.length)%slides.length; track.style.transform=`translateX(-${idx*100}%)`; };
   $(".prev", car).addEventListener("click", ()=> go(idx-1));
   $(".next", car).addEventListener("click", ()=> go(idx+1));
 })();
 
 /* ===========================
-   AYUDA (separado y con reveal al hacer scroll)
+   Ayuda (render + reveal)
    =========================== */
 const HELP_MX = [
   { name:"Emergencias 911 (MX)", type:"Teléfono", value:"911", desc:"Para cualquier peligro inmediato." },
@@ -623,6 +525,7 @@ const HELP_GLOBAL = [
 
 (() => {
   function render(list, mount){
+    if(!mount) return;
     mount.innerHTML = "";
     list.forEach(c=>{
       const el=document.createElement("div"); el.className="help-card";
@@ -631,7 +534,7 @@ const HELP_GLOBAL = [
         <h4>${c.name}</h4>
         <p class="muted">${c.desc}</p>
         <a class="call" target="_blank" rel="noopener" href="${href}">
-          <span style="display:inline-block;width:16px;height:16px;border:1px solid var(--line)"></span>
+          <span style="display:inline-block;width:16px;height:16px;border:1px solid var(--line);border-radius:4px"></span>
           <strong>${c.value}</strong>
         </a>
       `;
@@ -650,7 +553,7 @@ const HELP_GLOBAL = [
 })();
 
 /* ===========================
-   BLOG / REFLEXIONES (atractivo)
+   Blog
    =========================== */
 (() => {
   const items = [
@@ -659,7 +562,7 @@ const HELP_GLOBAL = [
     { t:"Tu red en la escuela", p:"Docentes, orientación y amistades pueden ser parte de tu red. Guarda sus contactos." },
     { t:"Cuídate también en línea", p:"Configura privacidad, evita compartir datos y bloquea cuentas que incomoden." }
   ];
-  const grid = $("#blogGrid");
+  const grid = $("#blogGrid"); if(!grid) return;
   items.forEach(x=>{
     const c = document.createElement("article");
     c.className = "blog-card";
@@ -669,7 +572,7 @@ const HELP_GLOBAL = [
 })();
 
 /* ===========================
-   FORO (simple local, anónimo/alias)
+   Foro local simple
    =========================== */
 (() => {
   const list = $("#forumList");
@@ -677,6 +580,7 @@ const HELP_GLOBAL = [
   const txt = $("#postText");
   const anon = $("#anonToggle");
   const alias = $("#alias");
+  if(!list || !postBtn) return;
 
   function renderPost({author, text, when}){
     const el = document.createElement("article");
@@ -702,7 +606,7 @@ const HELP_GLOBAL = [
   postBtn.addEventListener("click", ()=>{
     const text = txt.value.trim();
     if(!text) return;
-    renderPost({author: anon.checked ? "" : alias.value.trim(), text, when: Date.now()});
+    renderPost({author: anon?.checked ? "" : alias?.value.trim(), text, when: Date.now()});
     txt.value = "";
   });
 })();
