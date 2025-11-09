@@ -610,3 +610,116 @@ const HELP_GLOBAL = [
     txt.value = "";
   });
 })();
+
+// ——— FAB + Panel rápido (móvil) ———
+(function(){
+  const fab = document.getElementById('fabToggle');
+  const panel = document.getElementById('quickPanel');
+  if(!fab || !panel) return;
+
+  const toggle = () => {
+    const isOpen = panel.classList.toggle('open');
+    fab.classList.toggle('open', isOpen);
+    fab.setAttribute('aria-expanded', String(isOpen));
+    panel.setAttribute('aria-hidden', String(!isOpen));
+  };
+
+  fab.addEventListener('click', toggle);
+
+  // Cerrar al tocar fuera
+  document.addEventListener('click', (e)=>{
+    const isMobile = window.matchMedia('(max-width: 600px)').matches;
+    if(!isMobile) return;
+    if(!panel.classList.contains('open')) return;
+    if(e.target === fab || fab.contains(e.target) || panel.contains(e.target)) return;
+    panel.classList.remove('open');
+    fab.classList.remove('open');
+    fab.setAttribute('aria-expanded','false');
+    panel.setAttribute('aria-hidden','true');
+  });
+
+  // Cerrar con Esc
+  document.addEventListener('keydown',(e)=>{
+    if(e.key === 'Escape' && panel.classList.contains('open')){
+      panel.classList.remove('open');
+      fab.classList.remove('open');
+      fab.setAttribute('aria-expanded','false');
+      panel.setAttribute('aria-hidden','true');
+    }
+  });
+})();
+
+
+
+/* === FAB + Panel rápido (móvil) — versión robusta === */
+(function(){
+  const isMobile = () => window.matchMedia('(max-width: 600px)').matches;
+  const fab   = document.getElementById('fabToggle');
+  const panel = document.getElementById('quickPanel');
+  if(!fab || !panel) return;
+
+  // 1) Resolución tolerante de objetivos (IDs, titles, aria-labels)
+  function findBtn(selectorFallbacks){
+    for(const sel of selectorFallbacks){
+      const el = document.querySelector(sel);
+      if(el) return el;
+    }
+    return null;
+  }
+  const targets = {
+    theme:  findBtn(['#themeBtn','button[title*="Tema"]','button[aria-label*="Tema"]']),
+    tips:   findBtn(['#tipsBtn','button[title*="Tips"]','button[aria-label*="Tips"]','#tips ~ button','button[data-tips]']),
+    voice:  findBtn(['#narratorBtn','button[title*="Narrador"]','button[aria-label*="Narrador"]']),
+    menu:   findBtn(['#navToggle','.hamburger[aria-label]'])
+  };
+
+
+  // 3) Acciones: si existe el botón original → .click(); si no, ejecuta la lógica mínima equivalente
+  const minimalActions = {
+    theme(){
+      // Lógica mínima igual a la original
+      if (window.state) {
+        state.theme = state.theme==="light" ? "dark" : "light";
+        document.documentElement.setAttribute("data-theme", state.theme);
+        localStorage.setItem("theme", state.theme);
+      } else {
+        document.documentElement.toggleAttribute('data-theme'); // fallback
+      }
+    },
+    tips(){
+      const dlg = document.getElementById('tips');
+      if (dlg && dlg.showModal) dlg.showModal();
+    },
+    voice(){
+      // Dispara el handler original si existe el botón, si no, solo cambia el estado básico
+      if (window.state) {
+        state.narrator = !state.narrator;
+        // Si el botón original existe, que se encargue de estilos y guía
+        if (targets.voice) { try { targets.voice.click(); } catch(e){} }
+      }
+    },
+    menu(){
+      const nav = document.getElementById('topnav');
+      if (nav) nav.classList.toggle('open');
+    }
+  };
+
+  panel.querySelectorAll('.qp-item').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const act = btn.getAttribute('data-act');          // 'theme' | 'tips' | 'voice' | 'menu'
+      const original = targets[act];
+
+      if (original) {
+        // Proxy click al botón original (funciona aunque esté oculto)
+        try { original.click(); } catch(e) { /* noop */ }
+      } else if (minimalActions[act]) {
+        // Fallback si el original no está en el DOM
+        minimalActions[act]();
+      }
+
+      // Cierra después de accionar (menos cuando es abrir menú principal)
+      if (act !== 'menu') setOpen(false);
+    });
+  });
+})();

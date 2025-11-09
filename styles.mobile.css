@@ -1,0 +1,197 @@
+/* KIVA – Ajustes móviles (≤600px)
+   Este archivo sólo aplica en pantallas pequeñas gracias al media de la etiqueta <link>.
+   No pisa tu desktop: prioriza tamaños, espaciados y navegación táctil.
+*/
+
+/* —— Base y tipografía —— */
+:root{
+  --tap: 14px;            /* radio para botones táctiles */
+  --pad: 14px;            /* padding estándar móvil */
+}
+html, body { overscroll-behavior-y: none; }
+body { font-size: 16px; line-height: 1.25; }
+
+/* Fondo de doodles más suave para no “ensuciar” en móvil */
+#bg { opacity: .04; }
+
+/* —— Topbar / navegación —— */
+/* Muestra el botón hamburguesa grande y esconde la tira de links por defecto */
+.hamburger{ width:44px;height:44px;border-radius:12px }
+.topnav{ 
+  display:none; 
+  position:fixed; inset:auto 0 0 0; 
+  background:var(--paper); 
+  border-top:1px solid var(--line);
+  padding:8px;
+  box-shadow:0 -10px 24px rgba(0,0,0,.08);
+}
+.topnav.open{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.topnav-item{
+  padding:12px; border-radius:14px; justify-content:center;
+  font-weight:900; background:#fff;
+}
+
+/* Marca más compacta */
+.brand-a{ font-size:20px }
+.brand-b{ font-size:14px }
+
+/* —— Contenedor principal —— */
+.viewport{ 
+  padding: var(--pad); 
+  min-height: calc(100dvh - 56px);
+}
+
+/* —— Héroe —— */
+.vk-hero .hero-card{
+  grid-template-columns: 1fr !important;
+  padding: var(--pad);
+  gap: 12px;
+  background-image:
+    radial-gradient(160px 160px at 90% 0%, var(--blush) 0 60%, transparent 61%),
+    radial-gradient(200px 180px at -10% 110%, var(--peach) 0 60%, transparent 61%),
+    radial-gradient(180px 160px at 50% 100%, var(--mint) 0 60%, transparent 61%);
+}
+.title{ font-size: clamp(24px, 8vw, 32px) }
+.title .big{ font-size: clamp(28px, 10vw, 40px) }
+.lead{ font-size: 14px }
+
+/* Botón principal: ancho completo para dedo feliz */
+.btn{ padding:12px 14px; border-radius: var(--tap); }
+.btn.primary{ width:100%; }
+
+/* —— Tabs tipo sticker —— */
+.vk-tabs{ grid-template-columns: repeat(2, minmax(0,1fr)); gap:10px }
+.vk-tab{ padding:14px 10px; border-radius:16px }
+.vk-burst::after{ width:52px; height:52px; inset:-8px auto auto -8px }
+
+/* —— Servicios —— */
+.vk-services{ grid-template-columns: 1fr; gap:12px }
+.vk-service{ padding:16px; border-radius: 18px }
+
+/* —— Tarjetas genéricas —— */
+.cards{ grid-template-columns: 1fr; gap:12px }
+.card{ padding:14px; border-radius:18px }
+
+/* —— Juegos —— */
+.game-card{ padding:14px; border-radius:18px }
+
+/* Rompe el muro */
+#muros .wall{
+  display:grid; 
+  grid-template-columns: repeat(3, 1fr); /* bloques grandes y tocables */
+  gap:8px;
+}
+#muros .brick{
+  min-height:44px; 
+  padding:10px; 
+  font-weight:900; 
+  border-radius:12px; 
+  border:1px solid var(--line);
+}
+
+/* Memorama */
+#memoria .memory-grid{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap:10px;
+}
+#memoria .cardm{ aspect-ratio: 1/1; }
+#memoria .cardm-face{ border-radius:12px; }
+#memoria .memory-info{ font-size:13px }
+
+/* Arma el mensaje */
+#mensaje .chips{
+  display:flex; flex-wrap:wrap; gap:8px;
+}
+#mensaje .chip{
+  padding:10px 12px; border-radius:12px; font-weight:900; border:1px solid var(--line);
+}
+
+/* —— Buddy (gatita) —— */
+.buddy{ left:12px; bottom:12px; width:66px; height:66px; border-radius:16px }
+.cat{ width:52px; height:52px }
+
+/* Diálogo buddy a pantalla completa amigable */
+.buddy-card{
+  width: 100vw; max-width: 100vw;
+  margin: 0; padding: var(--pad);
+  border-radius: 18px 18px 0 0;
+}
+dialog.buddy-dialog::backdrop{ background: rgba(0,0,0,.28); }
+
+/* —— Tips modal —— */
+.tips-card{ margin:0; border-radius: 18px 18px 0 0; padding: var(--pad) }
+
+/* —— Blog / Foro / Listas —— */
+.blog-grid, .forum-list, .about-grid{
+  grid-template-columns: 1fr !important;
+  gap:12px;
+}
+.post, .about-card, .blog-card{ padding:14px }
+
+/* —— Accesibilidad táctil —— */
+:focus-visible{ outline-width:3px }
+.icon-btn{ width:44px;height:44px;border-radius:12px }
+.reset-btn.icon-only{ width:44px;height:44px; border-radius:12px }
+
+/* —— Utilidades —— */
+/* Oculta “ruidos” visuales cuando el teclado está abierto (iOS/Android) */
+@supports (height: 100dvh){
+  .viewport{ min-height: calc(100dvh - 56px); }
+}
+
+/* Espaciados finos */
+.small{ font-size: 13px }
+.muted{ opacity:.85 }
+
+
+
+
+
+
+
+
+
+
+/* ——— FAB & Panel rápido (sólo móvil) ——— */
+
+/* Ocultar la franja de acciones de arriba SOLO en móvil */
+.top-actions{ display:none !important; }
+
+/* ——— FAB & Panel rápido (si no lo tenías) ——— */
+@media (min-width: 601px){ .fab, .quick-panel { display:none !important; } }
+
+.quick-panel{
+  position:fixed; right:16px; bottom:16px; display:flex; flex-direction:column;
+  gap:10px; z-index:80; pointer-events:none;
+}
+.qp-item{
+  width:48px; height:48px; border-radius:14px; background:#fff;
+  border:1px solid var(--border, rgba(0,0,0,.08));
+  box-shadow:0 10px 18px rgba(0,0,0,.12);
+  display:grid; place-items:center;
+  transform:translateY(12px) scale(.95); opacity:0;
+  transition:transform .28s ease, opacity .28s ease;
+}
+.qp-item:nth-child(2){ transition-delay:40ms }
+.qp-item:nth-child(3){ transition-delay:80ms }
+.qp-item:nth-child(4){ transition-delay:120ms }
+.quick-panel.open{ pointer-events:auto; }
+.quick-panel.open .qp-item{ transform:translateY(0) scale(1); opacity:1; }
+
+.fab{
+  position:fixed; right:16px; bottom:16px; width:56px; height:56px; border-radius:16px;
+  background:var(--brand, #7c3aed); color:#fff; border:none; z-index:90;
+  display:grid; place-items:center; box-shadow:0 14px 30px rgba(0,0,0,.18);
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+.fab:active{ transform:scale(.98) }
+.fab .fab-bar{ width:22px; height:2px; background:currentColor; border-radius:2px; display:block; }
+.fab .fab-bar + .fab-bar{ margin-top:5px }
+.fab.open .fab-bar:nth-child(1){ transform:translateY(7px) rotate(45deg) }
+.fab.open .fab-bar:nth-child(2){ opacity:0 }
+.fab.open .fab-bar:nth-child(3){ transform:translateY(-7px) rotate(-45deg) }
+
+@media (prefers-color-scheme: dark){
+  .qp-item{ background:var(--surface-1, #111827); color:var(--text, #e5e7eb); border-color:var(--border, rgba(255,255,255,.08)); }
+}

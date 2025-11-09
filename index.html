@@ -7,6 +7,7 @@
   <meta name="description" content="KIVA: sitio interactivo para niñas, niños y adolescentes sobre prevención del abuso infantil.">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.mobile.css" media="(max-width: 600px)">
 </head>
 <body>
   <canvas id="bg" aria-hidden="true"></canvas>
@@ -121,7 +122,7 @@
             <button class="btn primary" data-go="ayuda">Ir a Ayuda</button>
           </div>
           <div class="hero-media">
-            <img src="https://images.unsplash.com/photo-1604881985549-3af7eb2b868a?q=80&w=1400&auto=format&fit=crop"
+            <img src="https://img.freepik.com/foto-gratis/nina-pintando_23-2148022489.jpg"
               alt="Niña escribiendo con colores pastel">
           </div>
         </div>
@@ -225,6 +226,34 @@
       <form method="dialog"><button class="btn">Listo</button></form>
     </div>
   </dialog>
+
+
+  <!-- Panel rápido (sólo móvil) -->
+<!-- Panel rápido (móvil) -->
+<div class="quick-panel" id="quickPanel" aria-hidden="true">
+  <!-- Cada botón re-usa la lógica original por “proxy click” -->
+  <button class="qp-item" type="button" data-act="theme" title="Tema" aria-label="Cambiar tema">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5" stroke="currentColor" fill="none"/></svg>
+  </button>
+  <button class="qp-item" type="button" data-act="tips" title="Tips" aria-label="Tips">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6v6m0 6v0M6 12h6m6 0h0" stroke="currentColor" fill="none"/></svg>
+  </button>
+  <button class="qp-item" type="button" data-act="voice" title="Narrador" aria-label="Activar narrador">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10v4h2l5 5V5l-5 5H7z" fill="currentColor"/></svg>
+  </button>
+  <button class="qp-item" type="button" data-act="menu" title="Menú" aria-label="Abrir menú principal">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor"/></svg>
+  </button>
+</div>
+
+<!-- Botón flotante (abre/cierra la hilera) -->
+<button class="fab" id="fabToggle" aria-label="Abrir panel rápido" aria-expanded="false">
+  <span class="fab-bar"></span>
+  <span class="fab-bar"></span>
+  <span class="fab-bar"></span>
+</button>
+
+
 
   <script src="app.js" defer></script>
 </body>
