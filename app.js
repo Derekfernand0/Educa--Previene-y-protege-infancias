@@ -28,22 +28,8 @@ $$(".btn.cta").forEach(b=> b.addEventListener("click", ()=> showSection(b.datase
 })();
 
 /* Carrusel portada (botones + arrastre/ swipe) */
-(() => {
-  const car=$("#homeCarousel"); if(!car) return;
-  const track=$(".hc-track",car), slides=$$("img",car);
-  let idx=0, startX=0, cur=0, dragging=false;
 
-  function go(i){ idx=(i+slides.length)%slides.length; track.style.transform=`translateX(-${idx*100}%)`; }
-  $(".prev",car).addEventListener("click",()=>go(idx-1));
-  $(".next",car).addEventListener("click",()=>go(idx+1));
 
-  const onDown=e=>{ dragging=true; startX=(e.touches?e.touches[0].clientX:e.clientX); cur=idx; track.style.transition="none"; };
-  const onMove=e=>{ if(!dragging) return; const x=(e.touches?e.touches[0].clientX:e.clientX)-startX; const pct=x/track.clientWidth*100; track.style.transform=`translateX(calc(${-cur*100}% + ${pct}%))`; };
-  const onUp=e=>{ if(!dragging) return; dragging=false; track.style.transition="transform .35s ease"; const x=(e.changedTouches?e.changedTouches[0].clientX:e.clientX)-startX; if(Math.abs(x)>40) go(idx-(x>0?1:-1)); else go(idx); };
-  track.addEventListener("pointerdown",(e)=>{e.preventDefault(); onDown(e);});
-  window.addEventListener("pointermove",onMove); window.addEventListener("pointerup",onUp);
-  track.addEventListener("touchstart",onDown,{passive:true}); track.addEventListener("touchmove",onMove,{passive:true}); track.addEventListener("touchend",onUp);
-})();
 
 /* ===== Dial Emocionómetro ===== */
 (() => {
