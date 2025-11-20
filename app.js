@@ -333,47 +333,78 @@ function celebrate(){
   }
 
   function buildCard(p) {
-    const card = document.createElement("button");
-    card.type = "button";
-    card.className = "cardm";
-    card.dataset.k = p.key;
+  const card = document.createElement("button");
+  card.type = "button";
+  card.className = "cardm";
+  card.dataset.k = p.key;
 
-    const inner = document.createElement("div");
-    inner.className = "cardm-inner";
+  const inner = document.createElement("div");
+  inner.className = "cardm-inner";
 
-    // Reverso: todas las cartas se ven igual al inicio
-    const back = document.createElement("div");
-    back.className = "cardm-face cardm-back";
-    const backIcon = document.createElement("span");
-    backIcon.textContent = "❓";
-    back.appendChild(backIcon);
-
-    // Frente: imagen + palabra abajo (solo cuando está revelada)
-    const front = document.createElement("div");
-    front.className = "cardm-face cardm-front";
-    front.style.background = p.front;
-
-    const img = document.createElement("img");
-    img.src = p.src;
-    img.alt = p.label;
-    img.className = "cardm-img";
-
-    const caption = document.createElement("span");
-    caption.className = "cardm-label";
-    caption.textContent = p.label;
-
-    front.appendChild(img);
-    front.appendChild(caption);
-
-    // Orden: primero el reverso, luego el frente
-    inner.appendChild(back);
-    inner.appendChild(front);
-    card.appendChild(inner);
-
-    card.addEventListener("click", () => handleClick(card, p));
-
-    return card;
+  /* -------------------------
+     🎨 Color aleatorio bonito
+     ------------------------- */
+  function randomPastel() {
+    const hue = Math.floor(Math.random() * 360);
+    return `hsl(${hue}, 95%, 88%)`; // pastel suave
   }
+
+  const randomColor = randomPastel();
+
+  /* -------------------------
+     🔙 Reverso (lo que se ve tapado)
+     ------------------------- */
+/* 🎨 Color pastel aleatorio para el reverso */
+function randomPastel() {
+  const hue = Math.floor(Math.random() * 360);
+  return `hsl(${hue}, 95%, 90%)`; // pastel suave
+}
+
+/* 🔙 Reverso con color aleatorio */
+const back = document.createElement("div");
+back.className = "cardm-face cardm-back";
+
+/* Fondo pastel aleatorio */
+back.style.background = randomPastel();
+
+const backIcon = document.createElement("span");
+backIcon.textContent = "❓";
+back.appendChild(backIcon);
+
+
+  /* -------------------------
+     🔄 Frente (imagen + palabra) 
+     con fondo aleatorio 🎨
+     ------------------------- */
+  const front = document.createElement("div");
+  front.className = "cardm-face cardm-front";
+
+  // fondo pastel aleatorio
+  front.style.background = randomColor;
+
+  const img = document.createElement("img");
+  img.src = p.src;
+  img.alt = p.label;
+  img.className = "cardm-img";
+
+  const caption = document.createElement("span");
+  caption.className = "cardm-label";
+  caption.textContent = p.label;
+
+  front.appendChild(img);
+  front.appendChild(caption);
+
+  // Orden de caras
+  inner.appendChild(back);
+  inner.appendChild(front);
+  card.appendChild(inner);
+
+  // Evento
+  card.addEventListener("click", () => handleClick(card, p));
+
+  return card;
+}
+
 
   function handleClick(card, p) {
     if (lock || card.classList.contains("solved") || card === first) return;
