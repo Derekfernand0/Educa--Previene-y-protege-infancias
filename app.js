@@ -580,7 +580,6 @@ const HELP_MX=[
 ];
 
 const HELP_VERACRUZ=[
-  {name:"Emergencias 911 (Veracruz)",type:"Teléfono",value:"911",desc:"Peligro inmediato en cualquier municipio de Veracruz."},
   {name:"Denuncia anónima 089 (Veracruz)",type:"Teléfono",value:"089",desc:"Para reportar delitos o violencia de forma anónima."},
   {name:"DIF Veracruz – Denuncias de maltrato",type:"Web",value:"https://www.difver.gob.mx/denuncias-maltrato/",desc:"Reporta maltrato a niñas, niños y adolescentes."},
   {name:"Alerta de Violencia de Género Veracruz (AVGM)",type:"Web",value:"https://www.veracruz.gob.mx/avgm/",desc:"Información y recursos estatales para mujeres y niñas."}
