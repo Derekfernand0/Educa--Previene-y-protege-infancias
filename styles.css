@@ -180,12 +180,65 @@ body[data-bg="sobre"]::before{
 /* Memorama */
 .memory-grid{display:grid; gap:12px; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr))}
 .cardm{height:150px; border:1px solid var(--line); border-radius:14px; background:var(--card); position:relative; cursor:pointer; perspective:800px; box-shadow:var(--shadow-sm)}
-.cardm-inner{position:absolute; inset:0; transform-style:preserve-3d; transition:transform .38s ease}
-.cardm.revealed .cardm-inner{transform:rotateY(180deg)}
-.cardm-face{position:absolute; inset:0; backface-visibility:hidden; border-radius:14px; overflow:hidden; display:grid; place-items:center}
-.cardm-front{border:1px dashed var(--line); font-weight:900; letter-spacing:.4px}
-.cardm-back{transform:rotateY(180deg); border:1px solid var(--line)}
-.cardm-back img{width:100%; height:100%; object-fit:contain; padding:12px}
+.cardm-inner{
+  position:absolute;
+  inset:0;
+  transform-style:preserve-3d;
+  transition:transform .38s ease;
+  /* empieza mostrando el reverso */
+  transform:rotateY(180deg);
+}
+
+.cardm.revealed .cardm-inner{
+  /* al voltear, se ve el frente (imagen + palabra) */
+  transform:rotateY(0deg);
+}
+
+.cardm-face{
+  position:absolute;
+  inset:0;
+  backface-visibility:hidden;
+  border-radius:14px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+
+/* Frente: imagen + texto */
+.cardm-front{
+  border:1px dashed var(--line);
+  font-weight:900;
+  letter-spacing:.4px;
+  text-align:center;
+  gap:6px;
+}
+
+.cardm-img{
+  max-width:60%;
+  max-height:60%;
+  object-fit:contain;
+}
+
+.cardm-label{
+  font-size:.9rem;
+}
+
+/* Reverso: todas iguales */
+.cardm-back{
+  transform:rotateY(180deg);
+  border:1px solid var(--line);
+  background:var(--paper);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.4rem;
+}
+
+.cardm-back span{
+  pointer-events:none;
+}
 
 /* Arma el mensaje */
 .chips{display:flex; gap:10px; flex-wrap:wrap; background:var(--blue); border:1px dashed var(--line); border-radius:14px; padding:10px}

@@ -240,111 +240,201 @@ function celebrate(){
 
 /* ===== Memorama ===== */
 (() => {
-  const game=$("#memoria"); if(!game) return;
-  const grid=$(".memory-grid",game), info=$(".memory-info",game), desc=$(".memory-desc",game), reset=$("[data-game='memoria']",game);
-  const pics=[
-    {key:"apoyo",src:"https://openmoji.org/data/color/svg/1F91D.svg",label:"Apoyo",desc:"Pedir y ofrecer compañía segura.",front:"#FFD9C8"},
-    {key:"escucha",src:"https://openmoji.org/data/color/svg/1F442.svg",label:"Escucha",desc:"Escuchar sin juicios.",front:"#E5D6FF"},
-    {key:"confianza",src:"https://openmoji.org/data/color/svg/1F91E.svg",label:"Confianza",desc:"Elegir a quién contarle.",front:"#CFEAFF"},
-    {key:"limites",src:"https://openmoji.org/data/color/svg/270B.svg",label:"Límites",desc:"Decir alto y cuidar tu espacio.",front:"#FFF4B8"},
-    {key:"valentia",src:"https://openmoji.org/data/color/svg/1F3C6.svg",label:"Valentía",desc:"Hablar aunque cueste.",front:"#FFD6E7"},
-    {key:"cuidado",src:"https://openmoji.org/data/color/svg/2764.svg",label:"Cuidado",desc:"Hábitos que te protegen.",front:"#FFD9C8"},
-    {key:"red",src:"https://openmoji.org/data/color/svg/1F465.svg",label:"Red",desc:"Familia, escuela y servicios.",front:"#B0D8FF"},
-    {key:"respeto",src:"https://openmoji.org/data/color/svg/1F44D.svg",label:"Respeto",desc:"Toda relación debe tenerlo.",front:"#FEE6A8"}
+  const game = $("#memoria");
+  if (!game) return;
+
+  const grid  = $(".memory-grid", game);
+  const info  = $(".memory-info", game);
+  const desc  = $(".memory-desc", game);
+  const reset = $("[data-game='memoria']", game);
+
+  const pics = [
+    {
+      key: "apoyo",
+      src: "https://openmoji.org/data/color/svg/1F91D.svg",
+      label: "Apoyo",
+      desc: "Pedir y ofrecer compañía segura.",
+      front: "#FFD9C8"
+    },
+    {
+      key: "escucha",
+      src: "https://openmoji.org/data/color/svg/1F442.svg",
+      label: "Escucha",
+      desc: "Escuchar sin juicios.",
+      front: "#E5D6FF"
+    },
+    {
+      key: "confianza",
+      src: "https://openmoji.org/data/color/svg/1F91E.svg",
+      label: "Confianza",
+      desc: "Elegir a quién contarle.",
+      front: "#CFEAFF"
+    },
+    {
+      key: "limites",
+      src: "https://openmoji.org/data/color/svg/270B.svg",
+      label: "Límites",
+      desc: "Decir alto y cuidar tu espacio.",
+      front: "#FFF4B8"
+    },
+    {
+      key: "valentia",
+      src: "https://openmoji.org/data/color/svg/1F3C6.svg",
+      label: "Valentía",
+      desc: "Hablar aunque cueste.",
+      front: "#FFD6E7"
+    },
+    {
+      key: "cuidado",
+      src: "https://openmoji.org/data/color/svg/2764.svg",
+      label: "Cuidado",
+      desc: "Hábitos que te protegen.",
+      front: "#FFD9C8"
+    },
+    {
+      key: "red",
+      src: "https://openmoji.org/data/color/svg/1F465.svg",
+      label: "Red",
+      desc: "Familia, escuela y servicios.",
+      front: "#B0D8FF"
+    },
+    {
+      key: "respeto",
+      src: "https://openmoji.org/data/color/svg/1F44D.svg",
+      label: "Respeto",
+      desc: "Toda relación debe tenerlo.",
+      front: "#FEE6A8"
+    }
   ];
-  let first=null, lock=false, found=0, moves=0;
-  const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a;};
 
-  const hasAdjacentPair = (arr) => {
-    for(let i=0;i<arr.length-1;i++){
-      if(arr[i].key===arr[i+1].key) return true;
-    }
-    return false;
-  };
+  let first = null;
+  let lock  = false;
+  let found = 0;
+  let moves = 0;
 
-  function buildDeck(){
-    const base=pics.flatMap(p=>[p,p]);
-    let deck=shuffle(base.slice());
-    let attempts=0;
-    while(hasAdjacentPair(deck) && attempts<80){
-      deck=shuffle(base.slice());
-      attempts++;
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
     }
-    return deck;
+    return arr;
   }
 
-  function init(){
-    grid.innerHTML="";
-    desc.textContent="";
-    first=null;
-    lock=false;
-    found=0;
-    moves=0;
-    update();
-    const deck=buildDeck();
-    deck.forEach(p=>{
-      const card=document.createElement("button");
-      card.className="cardm";
-      card.dataset.k=p.key;
-      const inner=document.createElement("div");
-      inner.className="cardm-inner";
-      const front=document.createElement("div");
-      front.className="cardm-face cardm-front";
-      front.textContent=p.label;
-      front.style.background=p.front;
-      const back=document.createElement("div");
-      back.className="cardm-face cardm-back";
-      const img=document.createElement("img");
-      img.src=p.src;
-      img.alt=p.label;
-      back.appendChild(img);
-      inner.appendChild(front);
-      inner.appendChild(back);
-      card.appendChild(inner);
-      card.addEventListener("click",()=>click(card,p));
-      grid.appendChild(card);
-    });
+  function updateInfo() {
+    info.textContent = `Pares: ${found} / ${pics.length} · Movimientos: ${moves}`;
   }
 
-  function click(c,p){
-    if(lock||c.classList.contains("solved")||c===first) return;
-    reveal(c);
-    if(!first){
-      first=c;
-    } else {
-      lock=true;
-      moves++;
-      if(first.dataset.k===c.dataset.k){
-        first.classList.add("solved");
-        c.classList.add("solved");
-        const got=pics.find(x=>x.key===c.dataset.k);
-        first=null;
-        lock=false;
-        found++;
-        desc.textContent=got?got.desc:"";
-        if(found===pics.length){
-          info.textContent=`Completado en ${moves} movimientos.`;
-          celebrate();
-        } else update();
-      } else {
-        first.classList.add("shake");
-        c.classList.add("shake");
-        setTimeout(()=>{
-          hide(c);
-          hide(first);
-          first.classList.remove("shake");
-          c.classList.remove("shake");
-          first=null;
-          lock=false;
-          update();
-        },850);
+  function reveal(card) {
+    card.classList.add("revealed");
+  }
+
+  function hide(card) {
+    card.classList.remove("revealed");
+  }
+
+  function buildCard(p) {
+    const card = document.createElement("button");
+    card.type = "button";
+    card.className = "cardm";
+    card.dataset.k = p.key;
+
+    const inner = document.createElement("div");
+    inner.className = "cardm-inner";
+
+    // Reverso: todas las cartas se ven igual al inicio
+    const back = document.createElement("div");
+    back.className = "cardm-face cardm-back";
+    const backIcon = document.createElement("span");
+    backIcon.textContent = "❓";
+    back.appendChild(backIcon);
+
+    // Frente: imagen + palabra abajo (solo cuando está revelada)
+    const front = document.createElement("div");
+    front.className = "cardm-face cardm-front";
+    front.style.background = p.front;
+
+    const img = document.createElement("img");
+    img.src = p.src;
+    img.alt = p.label;
+    img.className = "cardm-img";
+
+    const caption = document.createElement("span");
+    caption.className = "cardm-label";
+    caption.textContent = p.label;
+
+    front.appendChild(img);
+    front.appendChild(caption);
+
+    // Orden: primero el reverso, luego el frente
+    inner.appendChild(back);
+    inner.appendChild(front);
+    card.appendChild(inner);
+
+    card.addEventListener("click", () => handleClick(card, p));
+
+    return card;
+  }
+
+  function handleClick(card, p) {
+    if (lock || card.classList.contains("solved") || card === first) return;
+
+    reveal(card);
+
+    if (!first) {
+      first = card;
+      return;
+    }
+
+    moves++;
+
+    if (first.dataset.k === card.dataset.k) {
+      // ¡Par correcto!
+      card.classList.add("solved");
+      first.classList.add("solved");
+
+      const base = pics.find(x => x.key === p.key) || p;
+      desc.textContent = `${base.label}: ${base.desc}`;
+
+      found++;
+      first = null;
+      lock = false;
+      updateInfo();
+
+      if (found === pics.length) {
+        desc.textContent = "Has encontrado todos los pares. ¡Muy bien!";
+        if (typeof celebrate === "function") celebrate();
       }
+    } else {
+      // No coinciden, se tapan otra vez
+      lock = true;
+      const a = first;
+      const b = card;
+      setTimeout(() => {
+        hide(a);
+        hide(b);
+        first = null;
+        lock = false;
+        updateInfo();
+      }, 850);
     }
   }
-  const update=()=> info.textContent=`Pares: ${found} / ${pics.length} · Movimientos: ${moves}`;
-  const reveal=el=> el.classList.add("revealed");
-  const hide=el=> el.classList.remove("revealed");
-  reset.addEventListener("click",init); init();
+
+  function init() {
+    grid.innerHTML = "";
+    desc.textContent = "";
+    first = null;
+    lock  = false;
+    found = 0;
+    moves = 0;
+
+    const deck = shuffle(pics.flatMap(p => [p, p]));
+    deck.forEach(p => grid.appendChild(buildCard(p)));
+
+    updateInfo();
+  }
+
+  reset.addEventListener("click", init);
+  init();
 })();
 
 /* ===== Arma el mensaje ===== */
