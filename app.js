@@ -38,45 +38,115 @@ $$(".btn.cta").forEach(b=> b.addEventListener("click", ()=> showSection(b.datase
 
 /* ===== Dial Emocionómetro ===== */
 (() => {
-  const wrap=$("#emociono"); if(!wrap) return;
-  const range=$("#emoRange",wrap), label=$(".emo-label",wrap), knob=$("#dialKnob",wrap), emoji=$("#dialEmoji",wrap);
+  const wrap = $("#emociono"); 
+  if (!wrap) return;
 
-  const states=[
-    {max:20,name:"Feliz",emoji:"😊"},
-    {max:45,name:"Tranquila/o",emoji:"🙂"},
-    {max:70,name:"Inquieta/o",emoji:"😕"},
-    {max:85,name:"Triste",emoji:"😔"},
-    {max:100,name:"Enojada/o",emoji:"😠"}
+  const range = $("#emoRange", wrap),
+        label = $(".emo-label", wrap),
+        knob  = $("#dialKnob", wrap),
+        emoji = $("#dialEmoji", wrap);
+
+  // agrandamos un poquito la bolita
+  if (knob) knob.setAttribute("r", "14");
+
+  const states = [
+    { max: 20,  name: "Feliz",       emoji: "😊" },
+    { max: 45,  name: "Tranquila/o", emoji: "🙂" },
+    { max: 70,  name: "Inquieta/o",  emoji: "😕" },
+    { max: 85,  name: "Triste",      emoji: "😔" },
+    { max: 100, name: "Enojada/o",   emoji: "😠" }
   ];
 
-  function posAt(v){ // arco de 210° (de 210° a -30°)
-    const a=(210 - (v*210/100))*(Math.PI/180); const R=70; const cx=100, cy=120;
-    return { x: cx + R*Math.cos(a), y: cy - R*Math.sin(a) };
+  // arco de 180° (de 180° a 0°) que coincide con el SVG
+  function posAt(v) {
+    v = Math.max(0, Math.min(100, v));
+    const a  = (180 - (v * 180 / 100)) * (Math.PI / 180); // 0–100 → 180°–0°
+    const R  = 70;
+    const cx = 100, cy = 120;
+    return {
+      x: cx + R * Math.cos(a),
+      y: cy - R * Math.sin(a)
+    };
   }
-  function update(v){
-    v=Math.max(0,Math.min(100,v)); range.value=v;
-    const p=posAt(v); knob.setAttribute("cx",p.x.toFixed(1)); knob.setAttribute("cy",p.y.toFixed(1));
-    const s=states.find(x=>v<=x.max)||states.at(-1); label.textContent=`Emoción: ${s.name}`; emoji.textContent=s.emoji;
+
+  function update(v) {
+    v = Math.max(0, Math.min(100, v));
+    range.value = v;
+    const p = posAt(v);
+    knob.setAttribute("cx", p.x.toFixed(1));
+    knob.setAttribute("cy", p.y.toFixed(1));
+    const s = states.find(x => v <= x.max) || states.at(-1);
+    label.textContent = `Emoción: ${s.name}`;
+    emoji.textContent = s.emoji;
   }
-  range.addEventListener("input",()=>update(+range.value));
-  $$(".dial-emojis button",wrap).forEach(b=> b.addEventListener("click",()=>update(+b.dataset.v)));
 
-  // arrastre del knob con límite de arco
-  const svg=$(".dial-svg",wrap); let dragging=false;
-  svg.addEventListener("pointerdown",(e)=>{
-    const t=e.target.closest("#dialKnob"); if(!t) return;
-    dragging=true; svg.setPointerCapture(e.pointerId);
-  });
-  svg.addEventListener("pointermove",(e)=>{
-    if(!dragging) return;
-    const r=svg.getBoundingClientRect(); const x=e.clientX-r.left, y=e.clientY-r.top; const dx=x-100, dy=120-y;
-    let ang=Math.atan2(dy,dx)*(180/Math.PI);
-    ang=Math.max(-30, Math.min(210, ang));
-    const v=Math.round((210-(ang))/210*100); update(v);
-  });
-  window.addEventListener("pointerup",()=> dragging=false);
+  range.addEventListener("input", () => update(+range.value));
+  $$(".dial-emojis button", wrap).forEach(b =>
+    b.addEventListener("click", () => update(+b.dataset.v))
+  );
 
-  update(+range.value||20);
+  // arrastre del knob con límite de arco (0° a 180°),
+  // sólo si tocas la bolita o la barra del círculo
+  const svg = $(".dial-svg", wrap);
+  let dragging = false;
+
+  // convierte un punto en valor 0–100
+  function valueFromPoint(x, y) {
+    const dx = x - 100;
+    const dy = 120 - y;
+    let ang = Math.atan2(dy, dx) * (180 / Math.PI); // 0–180 en semicírculo superior
+
+    if (ang < 0) ang = 0;
+    if (ang > 180) ang = 180;
+
+    return Math.round((180 - ang) / 180 * 100);
+  }
+
+  svg.addEventListener("pointerdown", (e) => {
+    const rect = svg.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // centro del dial
+    const cx = 100, cy = 120;
+    const dx = x - cx;
+    const dy = y - cy;
+    const distCenter = Math.hypot(dx, dy);
+
+    // posición actual de la bolita
+    const kx = parseFloat(knob.getAttribute("cx"));
+    const ky = parseFloat(knob.getAttribute("cy"));
+    const distKnob = Math.hypot(x - kx, y - ky);
+
+    // parámetros del aro (mismo radio que usamos en posAt)
+    const R = 70;
+    const ringInner = R - 10; // grosor interno
+    const ringOuter = R + 10; // grosor externo
+
+    const touchingRing = (y <= cy) && distCenter >= ringInner && distCenter <= ringOuter;
+    const touchingKnob = distKnob <= 20; // tocar la bolita
+
+    // si no toca ni la bolita ni la barra del círculo, no hacemos nada
+    if (!touchingRing && !touchingKnob) return;
+
+    dragging = true;
+    svg.setPointerCapture(e.pointerId);
+    update(valueFromPoint(x, y));
+  });
+
+  svg.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const rect = svg.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    update(valueFromPoint(x, y));
+  });
+
+  window.addEventListener("pointerup", () => {
+    dragging = false;
+  });
+
+  update(+range.value || 20);
 })();
 
 /* Confeti */
