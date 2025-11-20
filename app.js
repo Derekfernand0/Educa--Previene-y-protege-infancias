@@ -604,7 +604,6 @@ back.appendChild(backIcon);
 
 /* ===== Ayuda y Reflexiones (poblar) ===== */
 const HELP_MX=[
-  {name:"Emergencias 911 (MX)",type:"Teléfono",value:"911",desc:"Peligro inmediato."},
   {name:"Línea de la Vida (MX)",type:"Teléfono",value:"800 911 2000",desc:"Orientación 24/7."},
   {name:"LOCATEL CDMX (MX)",type:"Teléfono",value:"55 5658 1111",desc:"Canalización (CDMX)."},
   {name:"Consejo Ciudadano (CDMX)",type:"Web",value:"https://consejociudadanomx.org/servicios/apoyo-psicologico-626ffa1400068",desc:"Apoyo 24/7; también WhatsApp."}
