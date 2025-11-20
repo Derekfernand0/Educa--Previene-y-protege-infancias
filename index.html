@@ -21,21 +21,6 @@
     </button>
   </header>
 
-  <!-- Mascota -->
-  <button class="buddy" id="buddyBtn" aria-label="Kiva te saluda" title="Kiva">
-    <svg class="cat-svg" viewBox="0 0 120 120" aria-hidden="true">
-      <circle cx="60" cy="64" r="42" class="c-face"/>
-      <path d="M36 40 L50 24 L54 44 Z" class="c-ear left"/>
-      <path d="M84 40 L70 24 L66 44 Z" class="c-ear right"/>
-      <circle cx="48" cy="64" r="5" class="c-eye"/><circle cx="72" cy="64" r="5" class="c-eye"/>
-      <circle cx="44" cy="74" r="3.5" class="c-blush"/><circle cx="76" cy="74" r="3.5" class="c-blush"/>
-      <path class="c-nose-heart" d="M56 74c0-1.9 1.5-3.4 3.4-3.4c1 0 1.9.5 2.6 1.2c.7-.7 1.6-1.2 2.6-1.2c1.9 0 3.4 1.5 3.4 3.4c0 3-3.8 5.2-6 7c-2.2-1.8-6-4-6-7z"/>
-      <path d="M48 84 Q60 92 72 84" class="c-mouth"/>
-      <circle cx="36" cy="96" r="10" class="c-paw"/><circle cx="36" cy="96" r="4" class="c-pawpad"/>
-    </svg>
-    <span class="buddy-pop" id="buddyPop" aria-hidden="true">¡Hola! :3</span>
-  </button>
-
   <!-- Menú lateral -->
   <nav class="sidenav" id="sidenav" aria-label="Navegación lateral">
     <button class="sidenav-close" id="navClose" aria-label="Cerrar">×</button>
@@ -126,12 +111,25 @@
     <div class="carousel contain" id="carousel">
       <button class="car-btn prev" aria-label="Anterior">‹</button>
       <div class="car-track">
+        <!-- Video original -->
         <div class="slide video">
           <iframe loading="lazy" src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fweb.facebook.com%2Fwatch%2F%3Fv%3D2458157557913320&show_text=false&width=560" allowfullscreen="true" frameborder="0"></iframe>
           <div class="cap">Video sobre consentimiento</div>
         </div>
-        <div class="slide"><img loading="lazy" src="https://st2.depositphotos.com/9393460/12292/i/950/depositphotos_122929742-stock-photo-friends-walking-in-the-park.jpg" alt=""><div class="cap">Cuidarnos entre nosotrxs</div></div>
-        <div class="slide"><img loading="lazy" src="https://www.un.org/sites/un2.un.org/files/speakup-community.png" alt=""><div class="cap">Protege tu voz</div></div>
+        <!-- Imágenes originales -->
+        <div class="slide">
+          <img loading="lazy" src="https://st2.depositphotos.com/9393460/12292/i/950/depositphotos_122929742-stock-photo-friends-walking-in-the-park.jpg" alt="">
+          <div class="cap">Cuidarnos entre nosotrxs</div>
+        </div>
+        <div class="slide">
+          <img loading="lazy" src="https://www.un.org/sites/un2.un.org/files/speakup-community.png" alt="">
+          <div class="cap">Protege tu voz</div>
+        </div>
+        <!-- Nuevo video extra -->
+        <div class="slide video">
+          <iframe loading="lazy" src="https://www.youtube.com/embed/dm1Yv-AU1AE" allowfullscreen title="¡Cuéntalo! Prevención del abuso sexual infantil"></iframe>
+          <div class="cap">Video: ¡Cuéntalo! Prevención del abuso sexual infantil</div>
+        </div>
       </div>
       <button class="car-btn next" aria-label="Siguiente">›</button>
     </div>
@@ -153,9 +151,9 @@
               <stop offset="0%" stop-color="#FFD6E7"/><stop offset="50%" stop-color="#E5D6FF"/><stop offset="100%" stop-color="#FFF4B8"/>
             </linearGradient>
           </defs>
-          <circle cx="100" cy="100" r="78" class="dial-bg"/>
-          <path id="dialArc" d="M30,120 A70,70,0,1,1,170,120" class="dial-arc"/>
-          <circle id="dialKnob" cx="30" cy="120" r="10" class="dial-knob"/>
+        <circle cx="100" cy="100" r="78" class="dial-bg"/>
+        <path id="dialArc" d="M30,120 A70,70,0,1,1,170,120" class="dial-arc"/>
+        <circle id="dialKnob" cx="30" cy="120" r="10" class="dial-knob"/>
         </svg>
         <div class="dial-emoji" id="dialEmoji">😊</div>
         <input type="range" min="0" max="100" value="20" id="emoRange" aria-label="Emocionómetro" />
@@ -197,6 +195,31 @@
       <div class="msg-out" aria-live="polite"></div>
       <button class="btn reset-btn icon-only" data-game="mensaje" aria-label="Reiniciar Arma el mensaje">⟲</button>
     </div>
+
+    <!-- 4. Semáforo de las sensaciones -->
+    <div class="game-block" id="semaforo">
+      <h3>Semáforo de las sensaciones</h3>
+      <p class="small">Arrastra cada dibujito al color que se parezca más a cómo se siente.</p>
+      <div class="traffic-game">
+        <div class="traffic-cards" aria-label="Situaciones para clasificar"></div>
+        <div class="traffic-zones" aria-label="Semáforo">
+          <div class="traffic-zone green" data-zone="green">
+            <h4>🟢 Seguro</h4>
+            <p class="small">Se siente bien.</p>
+          </div>
+          <div class="traffic-zone yellow" data-zone="yellow">
+            <h4>🟡 Duda / incómodo</h4>
+            <p class="small">No estás segura/o.</p>
+          </div>
+          <div class="traffic-zone red" data-zone="red">
+            <h4>🔴 No seguro</h4>
+            <p class="small">Se siente mal.</p>
+          </div>
+        </div>
+      </div>
+      <div class="traffic-msg" aria-live="polite"></div>
+      <button class="btn reset-btn icon-only" data-game="semaforo" aria-label="Reiniciar Semáforo">⟲</button>
+    </div>
   </section>
 
   <!-- ===== FORO ===== -->
@@ -215,6 +238,27 @@
   <section id="ayuda" class="section help gate-keep hidden" aria-labelledby="ayudaTitle" data-bg="ayuda">
     <h2 id="ayudaTitle" class="h-doodles">Ayuda cuando la necesites</h2>
     <p class="small">Si estás en peligro inmediato, llama al número de emergencia de tu país.</p>
+
+    <!-- Orden: Veracruz, México, Global -->
+    <div class="reveal" data-reveal="veracruz">
+      <h3>Veracruz</h3>
+      <div class="grid three" id="helpGridVeracruz" aria-live="polite"></div>
+
+      <div class="help-contacts">
+        <h4>Consejeras SEP (hostigamiento y acoso sexual)</h4>
+        <p>
+          <strong>Diana Uribe Martínez</strong><br>
+          <a href="mailto:consejerahsyas.c@nube.sep.gob.mx">consejerahsyas.c@nube.sep.gob.mx</a><br>
+          Cel. 55 1694 5537
+        </p>
+        <p>
+          <strong>Roberto González Núñez</strong><br>
+          <a href="mailto:consejerahsyas.d@nube.sep.gob.mx">consejerahsyas.d@nube.sep.gob.mx</a><br>
+          Tel. 55 5453 4826
+        </p>
+        <small class="help-note">Directorio de personal consejeras para la atención de casos de hostigamiento sexual y acoso sexual de la SEP.</small>
+      </div>
+    </div>
 
     <div class="reveal" data-reveal="mx">
       <h3>México</h3>
