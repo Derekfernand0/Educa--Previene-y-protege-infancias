@@ -2,6 +2,43 @@
 const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
 
+/* ===== Modo oscuro / claro ===== */
+const themeToggle = $("#themeToggle");
+
+function getPreferredTheme(){
+  const stored = localStorage.getItem("kiva-theme");
+  if (stored === "light" || stored === "dark") return stored;
+
+  if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches){
+    return "dark";
+  }
+  return "light";
+}
+
+function applyTheme(theme){
+  const mode = theme === "dark" ? "dark" : "light";
+  document.body.dataset.theme = mode;
+
+  const icon = themeToggle?.querySelector(".mode-toggle__icon");
+  if (icon){
+    // En oscuro mostramos ☀️ para indicar que puedes volver a claro
+    icon.textContent = mode === "dark" ? "☀️" : "🌙";
+  }
+}
+
+// Tema inicial (respeta preferencia guardada o sistema)
+applyTheme(getPreferredTheme());
+
+// Toggle al hacer clic
+if (themeToggle){
+  themeToggle.addEventListener("click", () => {
+    const next = document.body.dataset.theme === "dark" ? "light" : "dark";
+    applyTheme(next);
+    localStorage.setItem("kiva-theme", next);
+  });
+}
+
+
 /* Navegación + fondo por sección */
 const backdrop=$("#navBackdrop"), sidenav=$("#sidenav");
 $("#navOpen")?.addEventListener("click",()=>{sidenav.classList.add("open"); backdrop.hidden=false; document.documentElement.style.overflow="hidden";});

@@ -8,13 +8,64 @@
   --shadow-lg:0 14px 40px rgba(0,0,0,.16);
 }
 
+/* ===== Paleta modo oscuro (usa las mismas variables) ===== */
+body[data-theme="dark"]{
+  --paper:#020617;
+  --card:#020617;
+  --ink:#e5e7eb;
+  --ink-2:#c7d2fe;
+  --muted:#9ca3af;
+  --line:rgba(148,163,184,.55);
+  --ring:#a5b4fc;
+
+  --lilac:#4c3a76;
+  --blue:#1d4ed8;
+  --pink:#db2777;
+  --yellow:#eab308;
+  --peach:#f97316;
+}
+
 *{box-sizing:border-box}
 html,body{height:100%} html{overflow-x:hidden}
 body{margin:0; overflow-x:hidden; font-family:"Nunito",system-ui,-apple-system,Segoe UI,Roboto,Arial; color:var(--ink); background:var(--paper)}
 h1,h2,h3{font-family:"Fredoka", system-ui; margin:0 0 12px; line-height:1.15}
 p{margin:0 0 12px} small{color:var(--muted)}
 
-/* ===== Fondos por sección ===== */
+/* Transiciones suaves entre claro/oscuro */
+html,
+body,
+body::before{
+  transition:
+    background-color .35s ease,
+    color .35s ease,
+    background .45s ease;
+}
+
+.section,
+.game-block,
+.learn-card,
+.sidenav,
+.site-header,
+.site-footer,
+.post,
+.about-card,
+.blog-card,
+.help .help-card,
+.memory-grid .cardm,
+.traffic-zone,
+.forum textarea,
+.forum .alias,
+.btn,
+.chip,
+.traffic-card{
+  transition:
+    background-color .35s ease,
+    color .35s ease,
+    border-color .35s ease,
+    box-shadow .35s ease;
+}
+
+/* ===== Fondos por sección (modo claro) ===== */
 body[data-bg="inicio"]::before{
   content:""; position:fixed; inset:0; z-index:-1;
   background:
@@ -47,6 +98,46 @@ body[data-bg="sobre"]::before{
   #fff;
 }
 
+/* ===== Fondos por sección (modo oscuro) ===== */
+body[data-theme="dark"][data-bg="inicio"]::before{
+  content:""; position:fixed; inset:0; z-index:-1;
+  background:
+    radial-gradient(28rem 22rem at -6% -8%, #4c1d95 0 60%, transparent 61%),
+    radial-gradient(26rem 22rem at 106% 0%, #1d4ed8 0 60%, transparent 61%),
+    radial-gradient(26rem 22rem at 100% 110%, #eab308 0 60%, transparent 61%),
+    radial-gradient(28rem 22rem at 0% 110%, #f97316 0 60%, transparent 61%),
+    radial-gradient(circle at 20% 20%, rgba(15,23,42,.6) 3px, transparent 4px) 0 0/26px 26px,
+    radial-gradient(circle at 80% 70%, rgba(15,23,42,.6) 3px, transparent 4px) 0 0/30px 30px,
+    #020617;
+}
+body[data-theme="dark"][data-bg="aprende"]::before{
+  content:""; position:fixed; inset:0; z-index:-1;
+  background:
+    radial-gradient(16rem 12rem at 8% 10%, #4c1d95 0 70%, transparent 71%),
+    radial-gradient(18rem 14rem at 94% 12%, #1d4ed8 0 70%, transparent 71%),
+    radial-gradient(22rem 16rem at 10% 92%, #eab308 0 70%, transparent 71%),
+    radial-gradient(20rem 14rem at 92% 92%, #f97316 0 70%, transparent 71%),
+    #020617;
+}
+body[data-theme="dark"][data-bg="explora"]::before{
+  content:""; position:fixed; inset:0; z-index:-1;
+  background:
+    radial-gradient(40vmax 30vmax at 15% 15%, #4c1d95 0 40%, transparent 41%),
+    radial-gradient(35vmax 28vmax at 85% 20%, #1d4ed8 0 40%, transparent 41%),
+    radial-gradient(38vmax 30vmax at 50% 95%, #eab308 0 35%, transparent 36%),
+    #020617;
+}
+body[data-theme="dark"][data-bg="foro"]::before,
+body[data-theme="dark"][data-bg="ayuda"]::before,
+body[data-theme="dark"][data-bg="reflexiones"]::before,
+body[data-theme="dark"][data-bg="sobre"]::before{
+  content:""; position:fixed; inset:0; z-index:-1;
+  background:
+    radial-gradient(60vmax 40vmax at 0% 0%, #4c1d95 0 40%, transparent 41%),
+    radial-gradient(60vmax 40vmax at 100% 100%, #db2777 0 40%, transparent 41%),
+    #020617;
+}
+
 /* Header + título */
 .site-header{position:sticky; top:0; z-index:8; padding:14px 20px 10px; border-bottom:1px solid var(--line); background:color-mix(in oklab, var(--paper) 90%, transparent 10%); backdrop-filter:blur(10px)}
 .brand{text-decoration:none; color:inherit; display:block}
@@ -55,6 +146,29 @@ body[data-bg="sobre"]::before{
 .title-multi .voz{color:#3E97FF} .title-multi .y{color:#7C4DFF} .title-multi .apoyo{color:#F2B300}
 .hamburger{position:absolute; right:16px; top:14px; width:46px; height:46px; border:1px solid var(--line); background:var(--card); border-radius:14px; display:grid; place-items:center; cursor:pointer}
 .hamburger span{display:block; width:24px; height:2px; background:var(--ink); margin:3px 0; border-radius:2px}
+
+/* Botón flotante modo claro/oscuro */
+.mode-toggle{
+  position:fixed;
+  top:18px;
+  right:18px;
+  z-index:20;
+  width:44px;
+  height:44px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab, var(--card) 70%, #0f172a 30%);
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+  box-shadow:var(--shadow-md);
+}
+body[data-theme="dark"] .mode-toggle{
+  background:color-mix(in oklab, #020617 80%, var(--card) 20%);
+}
+.mode-toggle__icon{
+  font-size:20px;
+}
 
 /* Menú lateral */
 .nav-backdrop{position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:10}
@@ -313,6 +427,23 @@ body[data-bg="sobre"]::before{
   font-weight:800;
 }
 
+/* Ajustes para semáforo en modo oscuro (fondos menos brillantes) */
+body[data-theme="dark"] .traffic-card{
+  background:var(--card);
+}
+body[data-theme="dark"] .traffic-zone{
+  background:color-mix(in oklab, var(--card) 80%, #020617 20%);
+}
+body[data-theme="dark"] .traffic-zone.green{
+  background:linear-gradient(180deg, rgba(34,197,94,.16), #020617);
+}
+body[data-theme="dark"] .traffic-zone.yellow{
+  background:linear-gradient(180deg, rgba(234,179,8,.18), #020617);
+}
+body[data-theme="dark"] .traffic-zone.red{
+  background:linear-gradient(180deg, rgba(248,113,113,.2), #020617);
+}
+
 /* Foro */
 .forum .alias{border:1px solid var(--line); border-radius:10px; padding:8px 10px; background:var(--card); color:var(--ink)}
 .forum textarea{width:100%; border-radius:14px; border:1px solid var(--line); background:var(--card); color:var(--ink); padding:12px; min-height:120px}
@@ -343,6 +474,11 @@ body[data-bg="sobre"]::before{
 .help-contacts p{margin:0 0 6px; font-size:.9rem;}
 .help-contacts a{color:var(--ink-2);}
 
+/* En oscuro que no sea tan blanco brillante */
+body[data-theme="dark"] .help-contacts{
+  background:rgba(15,23,42,.9);
+}
+
 /* Reflexiones */
 .blog-grid{display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
 .blog-grid.colorful .blog-card{background:linear-gradient(180deg, #ffffff, #fff0f6); border:1px solid var(--line); border-radius:16px; padding:14px; position:relative; overflow:hidden; box-shadow:var(--shadow-md)}
@@ -353,6 +489,14 @@ body[data-bg="sobre"]::before{
 .blog-grid.colorful .blog-card:nth-child(4n+3){background:linear-gradient(180deg,#fff,#fff7de)}
 .blog-grid.colorful .blog-card:nth-child(4n+4){background:linear-gradient(180deg,#fff,#ffefe8)}
 
+/* Blog en modo oscuro: cartas más oscuras pero con toque pastel */
+body[data-theme="dark"] .blog-grid.colorful .blog-card{
+  background:linear-gradient(180deg, rgba(15,23,42,.95), rgba(15,23,42,.8));
+}
+body[data-theme="dark"] .blog-card .tag{
+  background:rgba(148,163,184,.16);
+}
+
 /* Sobre */
 .about-grid{display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
 .about-card{border:1px solid var(--line); border-radius:16px; padding:16px; box-shadow:var(--shadow-md); background:var(--card)}
@@ -361,6 +505,23 @@ body[data-bg="sobre"]::before{
 .tone-blue{background:linear-gradient(180deg,#ffffff,#eef6ff)}
 .tone-peach{background:linear-gradient(180deg,#ffffff,#ffefe8)}
 .tone-yellow{background:linear-gradient(180deg,#ffffff,#fff7de)}
+
+/* Tonos en modo oscuro: más sutiles */
+body[data-theme="dark"] .tone-lilac{
+  background:linear-gradient(180deg,#020617,#111827);
+}
+body[data-theme="dark"] .tone-pink{
+  background:linear-gradient(180deg,#020617,#111827);
+}
+body[data-theme="dark"] .tone-blue{
+  background:linear-gradient(180deg,#020617,#111827);
+}
+body[data-theme="dark"] .tone-peach{
+  background:linear-gradient(180deg,#020617,#111827);
+}
+body[data-theme="dark"] .tone-yellow{
+  background:linear-gradient(180deg,#020617,#111827);
+}
 
 /* Footer centrado */
 .site-footer{margin-top:28px; padding:24px 20px; background:color-mix(in oklab, var(--ink-2) 6%, var(--paper) 94%); border-top:1px solid var(--line)}
