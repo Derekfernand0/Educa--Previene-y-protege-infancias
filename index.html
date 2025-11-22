@@ -440,64 +440,574 @@
   </div>
 
 
-  <div class="denuncia-step" data-step="3" id="denuncia-step-3">
+    <div class="denuncia-step" data-step="3" id="denuncia-step-3">
     <h3>3. ¿Qué llevar al denunciar?</h3>
-    <p>No es obligatorio llevar documentos, pero pueden ayudar:</p>
-    <ul>
-      <li>Identificación de quien denuncia (si tiene).</li>
-      <li>Datos de la víctima (nombre, edad, cómo localizarla).</li>
-      <li>Fechas aproximadas de lo que ocurrió.</li>
-      <li>Lugar donde sucedieron los hechos.</li>
-      <li>Capturas de pantalla, mensajes, fotos o cualquier prueba (si existen).</li>
-      <li>Datos de testigos.</li>
-    </ul>
-    <p><b>Si no tienes pruebas, igual puedes denunciar.</b> El Ministerio Público debe investigar.</p>
+    <p class="small">
+      No es obligatorio llevar documentos para denunciar, pero algunas cosas pueden ayudar a que la autoridad
+      entienda mejor lo que pasó. Marca lo que ya tienes listo:
+    </p>
+
+    <div class="denuncia-checklist" aria-label="Cosas que pueden ayudar al denunciar">
+      <div class="denuncia-checklist-status small">
+        Tienes <span id="denunciaChecklistCount">0</span> de 6 cosas listas.
+        <br>
+        <b>Aunque no tengas ninguna, igual puedes denunciar. La autoridad debe escucharte.</b>
+      </div>
+
+      <div class="denuncia-checklist-grid">
+        <button class="check-pill" type="button" data-item="id-doc">
+          <span class="check-mark" aria-hidden="true">⚫</span>
+          <span class="check-text">Identificación de quien denuncia (si la tiene).</span>
+        </button>
+
+        <button class="check-pill" type="button" data-item="datos-victima">
+          <span class="check-mark" aria-hidden="true">⚫</span>
+          <span class="check-text">Nombre y edad de la niña, niño o persona afectada.</span>
+        </button>
+
+        <button class="check-pill" type="button" data-item="contacto-victima">
+          <span class="check-mark" aria-hidden="true">⚫</span>
+          <span class="check-text">Alguna forma de contacto o dirección aproximada.</span>
+        </button>
+
+        <button class="check-pill" type="button" data-item="fecha-lugar">
+          <span class="check-mark" aria-hidden="true">⚫</span>
+          <span class="check-text">Fechas aproximadas y lugar donde ocurrieron los hechos.</span>
+        </button>
+
+        <button class="check-pill" type="button" data-item="pruebas">
+          <span class="check-mark" aria-hidden="true">⚫</span>
+          <span class="check-text">Capturas de pantalla, mensajes, fotos o cualquier prueba (si existen).</span>
+        </button>
+
+        <button class="check-pill" type="button" data-item="testigos">
+          <span class="check-mark" aria-hidden="true">⚫</span>
+          <span class="check-text">Nombres o formas de contactar a posibles testigos.</span>
+        </button>
+      </div>
+    </div>
+
+    <p class="small mt">
+      Si no tienes alguno de estos datos, <b>no te detengas</b>: la autoridad tiene la obligación de investigar
+      con la información que sí tengas.
+    </p>
   </div>
+
 
   <div class="denuncia-step" data-step="4" id="denuncia-step-4">
     <h3>4. ¿Dónde y cómo se denuncia?</h3>
-    <p>Generalmente se denuncia en el <b>Ministerio Público</b> o <b>Fiscalía</b> más cercana.</p>
+    <p class="small">
+      Denunciar es un proceso que suele tener varios momentos. Aquí lo verás como un caminito de 4 pasos.
+      Toca cada círculo para conocer qué pasa en cada etapa:
+    </p>
+
+    <div class="denuncia-flow">
+      <!-- Stepper de fases -->
+      <div class="denuncia-flow-steps" aria-label="Fases del proceso de denuncia">
+        <button class="flow-node is-active" type="button" data-phase="1">
+          <span class="flow-number">1</span>
+          <span class="flow-label">Antes de ir</span>
+        </button>
+        <button class="flow-node" type="button" data-phase="2">
+          <span class="flow-number">2</span>
+          <span class="flow-label">Al llegar</span>
+        </button>
+        <button class="flow-node" type="button" data-phase="3">
+          <span class="flow-number">3</span>
+          <span class="flow-label">Contar lo que pasó</span>
+        </button>
+        <button class="flow-node" type="button" data-phase="4">
+          <span class="flow-number">4</span>
+          <span class="flow-label">Después de denunciar</span>
+        </button>
+      </div>
+
+      <!-- Paneles de contenido por fase -->
+      <div class="denuncia-flow-panels">
+        <!-- Fase 1 -->
+        <div class="flow-panel" data-phase="1">
+          <h4>1. Antes de ir</h4>
+          <ul>
+            <li>Piensa en una persona adulta de confianza que pueda acompañarte.</li>
+            <li>Anota lo que recuerdes: qué pasó, cuándo y dónde (no tiene que ser perfecto).</li>
+            <li>Si tienes pruebas (mensajes, capturas, etc.), guárdalas en un lugar seguro.</li>
+          </ul>
+          <p class="small">
+            No tienes que tener todo “perfecto” para ir a denunciar. Lo más importante es pedir ayuda.
+          </p>
+        </div>
+
+        <!-- Fase 2 -->
+        <div class="flow-panel" data-phase="2" hidden>
+          <h4>2. Al llegar al Ministerio Público o fiscalía</h4>
+          <ul>
+            <li>Ve a la ventanilla y di que quieres <b>presentar una denuncia</b>.</li>
+            <li>Puedes decir que se trata de una situación que afecta a una niña, niño o adolescente.</li>
+            <li>Te deben canalizar con la persona encargada de recibir tu denuncia.</li>
+          </ul>
+          <p class="small">
+            Si no sabes exactamente el nombre del delito, no pasa nada: basta con explicar qué está ocurriendo.
+          </p>
+        </div>
+
+        <!-- Fase 3 -->
+        <div class="flow-panel" data-phase="3" hidden>
+          <h4>3. Contar lo que pasó</h4>
+          <ul>
+            <li>Te harán preguntas para entender mejor la situación.</li>
+            <li>Puedes pedir que te repitan algo si no lo entendiste.</li>
+            <li>Si eres niña, niño o adolescente, es importante que te traten con respeto y cuidado.</li>
+          </ul>
+          <p class="small">
+            Puedes pedir hacer pausas si te sientes muy abrumada/o. Tu voz es importante, y deben escucharte.
+          </p>
+        </div>
+
+        <!-- Fase 4 -->
+        <div class="flow-panel" data-phase="4" hidden>
+          <h4>4. Después de denunciar</h4>
+          <ul>
+            <li>Se abre una <b>carpeta de investigación</b> con un número de folio o referencia.</li>
+            <li>La autoridad puede tomar más declaraciones, pedir peritajes o buscar pruebas.</li>
+            <li>Puedes preguntar qué medidas de protección hay para la víctima.</li>
+          </ul>
+          <p class="small">
+            Pregunta cómo puedes dar seguimiento a tu denuncia y con quién comunicarte si necesitas
+            saber avances del caso.
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
+
 
   <div class="denuncia-step" data-step="5" id="denuncia-step-5">
     <h3>5. Documentos y elementos que toman en cuenta</h3>
-    <ul>
-      <li>Declaración de la víctima y de quien denuncia.</li>
-      <li>Entrevistas a testigos.</li>
-      <li>Pruebas digitales (mensajes, redes, fotos, videos).</li>
-      <li>Certificados médicos o psicológicos, si los hay.</li>
-      <li>Informes de instituciones (escuela, hospital, DIF, etc.).</li>
-    </ul>
+    <p class="small">
+      La autoridad puede usar varios tipos de información para entender mejor lo que pasó. Toca cada tema
+      para ver ejemplos y saber por qué es importante:
+    </p>
+
+    <div class="evidence-wrap">
+      <div class="evidence-chips" aria-label="Elementos de prueba">
+        <button class="evidence-chip is-active" type="button" data-evidence="declaraciones">
+          🗣️ Declaraciones
+        </button>
+        <button class="evidence-chip" type="button" data-evidence="pruebas-digitales">
+          📱 Pruebas digitales
+        </button>
+        <button class="evidence-chip" type="button" data-evidence="medico">
+          🩺 Certificados médicos
+        </button>
+        <button class="evidence-chip" type="button" data-evidence="psico">
+          🧠 Informes psicológicos
+        </button>
+        <button class="evidence-chip" type="button" data-evidence="instituciones">
+          🏫 Informes de instituciones
+        </button>
+        <button class="evidence-chip" type="button" data-evidence="testigos">
+          👀 Testigos
+        </button>
+      </div>
+
+      <div class="evidence-panel">
+        <!-- Panel: Declaraciones -->
+        <div class="evidence-detail" data-evidence="declaraciones">
+          <h4>🗣️ Declaraciones</h4>
+          <p>
+            Son los relatos que hace la víctima, la persona que denuncia y otras personas que saben algo
+            de lo ocurrido.
+          </p>
+          <ul>
+            <li>Lo que cuenta la niña, niño o adolescente.</li>
+            <li>Lo que cuenta la persona adulta que acompaña.</li>
+            <li>Lo que cuentan otras personas que han visto o escuchado algo.</li>
+          </ul>
+          <p class="small">
+            Aunque no haya otras pruebas, <b>tu palabra y tu experiencia importan</b> y deben ser escuchadas.
+          </p>
+        </div>
+
+        <!-- Panel: Pruebas digitales -->
+        <div class="evidence-detail" data-evidence="pruebas-digitales" hidden>
+          <h4>📱 Pruebas digitales</h4>
+          <p>
+            Son mensajes, publicaciones o archivos que se guardan en teléfonos, computadoras o redes sociales.
+          </p>
+          <ul>
+            <li>Mensajes de texto, WhatsApp, Messenger, etc.</li>
+            <li>Capturas de pantalla de chats o publicaciones.</li>
+            <li>Fotos o videos enviados sin permiso.</li>
+          </ul>
+          <p class="small">
+            No borres ni edites estos contenidos: <b>tómalos como están</b> y guárdalos en un lugar seguro.
+          </p>
+        </div>
+
+        <!-- Panel: Certificados médicos -->
+        <div class="evidence-detail" data-evidence="medico" hidden>
+          <h4>🩺 Certificados médicos</h4>
+          <p>
+            Son documentos emitidos por personal de salud que revisa a la persona afectada.
+          </p>
+          <ul>
+            <li>Certificados de atención médica.</li>
+            <li>Reportes de lesiones físicas.</li>
+            <li>Resultados de estudios relacionados con la agresión.</li>
+          </ul>
+          <p class="small">
+            Si no los tienes todavía, <b>la propia autoridad puede solicitar valoraciones médicas</b>.
+          </p>
+        </div>
+
+        <!-- Panel: Informes psicológicos -->
+        <div class="evidence-detail" data-evidence="psico" hidden>
+          <h4>🧠 Informes psicológicos</h4>
+          <p>
+            Son evaluaciones realizadas por profesionales de la psicología sobre el estado emocional
+            y los efectos de la violencia.
+          </p>
+          <ul>
+            <li>Reportes de atención psicológica.</li>
+            <li>Valoraciones de impacto emocional.</li>
+          </ul>
+          <p class="small">
+            Estos documentos ayudan a entender cómo afectó la situación a la persona, más allá de lo físico.
+          </p>
+        </div>
+
+        <!-- Panel: Informes de instituciones -->
+        <div class="evidence-detail" data-evidence="instituciones" hidden>
+          <h4>🏫 Informes de instituciones</h4>
+          <p>
+            Son documentos que emiten escuelas, hospitales, DIF u otras instituciones que han tenido
+            contacto con la persona afectada.
+          </p>
+          <ul>
+            <li>Reportes escolares (cambios de conducta, inasistencias, etc.).</li>
+            <li>Notas de trabajo social.</li>
+            <li>Informes de hospitales o centros de salud.</li>
+          </ul>
+          <p class="small">
+            Muestran que diferentes personas han observado la situación y se han preocupado por ella.
+          </p>
+        </div>
+
+        <!-- Panel: Testigos -->
+        <div class="evidence-detail" data-evidence="testigos" hidden>
+          <h4>👀 Testigos</h4>
+          <p>
+            Son personas que vieron, escucharon o saben algo sobre lo que pasó.
+          </p>
+          <ul>
+            <li>Vecinas, vecinos o familiares.</li>
+            <li>Compañeras/os de escuela.</li>
+            <li>Personal docente o de salud.</li>
+          </ul>
+          <p class="small">
+            Aunque una persona no haya visto “todo”, su testimonio puede ayudar a armar el rompecabezas
+            de lo que ocurrió.
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
+
 
   <div class="denuncia-step" data-step="6" id="denuncia-step-6">
     <h3>6. ¿Qué pasa después de denunciar?</h3>
-    <ul>
-      <li>La fiscalía investiga y puede llamar a más personas a declarar.</li>
-      <li>Se pueden dictar medidas de protección para la víctima.</li>
-      <li>Si hay suficientes pruebas, se acusa formalmente al agresor.</li>
-      <li>La víctima o su acompañante pueden pedir información sobre avances del caso.</li>
-    </ul>
+    <p class="small">
+      Después de denunciar, el proceso sigue avanzando dentro de la fiscalía o Ministerio Público. Aquí verás
+      una línea de tiempo sencilla con las etapas más comunes:
+    </p>
+
+    <div class="denuncia-timeline">
+      <!-- Etapas de la línea de tiempo -->
+      <div class="timeline-stages" aria-label="Etapas después de denunciar">
+        <button class="timeline-node is-active" type="button" data-stage="1">
+          <span class="timeline-dot"></span>
+          <span class="timeline-label">Se abre la carpeta</span>
+        </button>
+        <button class="timeline-node" type="button" data-stage="2">
+          <span class="timeline-dot"></span>
+          <span class="timeline-label">Investigación</span>
+        </button>
+        <button class="timeline-node" type="button" data-stage="3">
+          <span class="timeline-dot"></span>
+          <span class="timeline-label">Medidas de protección</span>
+        </button>
+        <button class="timeline-node" type="button" data-stage="4">
+          <span class="timeline-dot"></span>
+          <span class="timeline-label">Resolución y seguimiento</span>
+        </button>
+      </div>
+
+      <!-- Paneles de contenido por etapa -->
+      <div class="timeline-panels">
+        <div class="timeline-panel is-active" data-stage="1">
+          <h4>1. Se abre una carpeta de investigación</h4>
+          <ul>
+            <li>La denuncia se registra con un <b>número de carpeta</b> o folio.</li>
+            <li>Se asigna una persona responsable (agente del Ministerio Público).</li>
+            <li>Se recopila la información básica que compartiste al denunciar.</li>
+          </ul>
+          <p class="small">
+            Puedes anotar el número de carpeta y el nombre de la persona que te atendió para dar seguimiento
+            más adelante.
+          </p>
+        </div>
+
+        <div class="timeline-panel" data-stage="2" hidden>
+          <h4>2. Investigación</h4>
+          <ul>
+            <li>Se buscan y analizan <b>pruebas</b> (documentos, mensajes, peritajes, etc.).</li>
+            <li>Se pueden llamar a más personas a declarar o ampliar testimonios.</li>
+            <li>La autoridad decide qué otras diligencias son necesarias.</li>
+          </ul>
+          <p class="small">
+            En esta etapa es normal que haya dudas o que parezca “lento”. Puedes preguntar periódicamente por
+            los avances del caso.
+          </p>
+        </div>
+
+        <div class="timeline-panel" data-stage="3" hidden>
+          <h4>3. Medidas de protección</h4>
+          <ul>
+            <li>Se pueden solicitar medidas para <b>cuidar a la víctima</b> y evitar más daño.</li>
+            <li>Por ejemplo: restricciones para el agresor, protección especial, canalización a refugios.</li>
+            <li>También puede haber apoyo psicológico o acompañamiento institucional.</li>
+          </ul>
+          <p class="small">
+            Pregunta qué medidas existen en tu estado y cuáles podrían aplicarse en tu caso.
+          </p>
+        </div>
+
+        <div class="timeline-panel" data-stage="4" hidden>
+          <h4>4. Resolución y seguimiento</h4>
+          <ul>
+            <li>Con las pruebas, la autoridad decide si se formula una acusación formal.</li>
+            <li>Puede haber audiencias, acuerdos reparatorios o sentencia.</li>
+            <li>La víctima o su representante puede recibir información sobre estas decisiones.</li>
+          </ul>
+          <p class="small">
+            Es importante contar con apoyo emocional y, si es posible, asesoría legal para entender lo que
+            significa cada decisión.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bloque de emociones -->
+    <div class="timeline-emotions">
+      <p class="small">
+        Durante todo este proceso es normal sentir muchas cosas distintas. Elige cómo crees que podrías sentirte
+        para ver un mensaje de acompañamiento:
+      </p>
+      <div class="emotion-buttons" aria-label="Cómo me puedo sentir en el proceso">
+        <button class="emotion-btn" type="button" data-mood="miedo">😟 Tengo miedo</button>
+        <button class="emotion-btn" type="button" data-mood="enojo">😠 Estoy enojada/o</button>
+        <button class="emotion-btn" type="button" data-mood="confusion">😕 Estoy confundida/o</button>
+        <button class="emotion-btn" type="button" data-mood="esperanza">🌱 Tengo un poquito de esperanza</button>
+      </div>
+      <p class="emotion-message small" aria-live="polite"></p>
+    </div>
   </div>
+
 
   <div class="denuncia-step" data-step="7" id="denuncia-step-7">
-    <h3>7. ¿Se puede denunciar en línea?</h3>
-    <p>En algunos estados existe la opción de denuncia o pre-denuncia digital.</p>
-    <ul>
-      <li>Revisa si tu fiscalía cuenta con <b>denuncia digital</b> o formulario en línea.</li>
-      <li>También puedes usar líneas telefónicas como el <b>089</b> para denuncias anónimas, si está disponible.</li>
-    </ul>
+    <h3>7. Formas de denunciar según tu situación</h3>
+    <p class="small">
+      No siempre es posible denunciar de la misma manera. Este carrusel te muestra distintas opciones:
+      desliza o usa las flechitas para verlas todas.
+    </p>
+
+    <div class="method-carousel" aria-label="Formas de denunciar">
+      <button class="method-nav prev" type="button" aria-label="Anterior">‹</button>
+
+      <div class="method-track-wrap">
+        <div class="method-track">
+          <!-- Slide 1: Presencial -->
+          <article class="method-slide" data-method="presencial">
+            <div class="method-slide-inner presencial">
+              <div class="method-tag">Más común</div>
+              <div class="method-header">
+                <span class="method-emoji">🏛️</span>
+                <h4>Denuncia presencial</h4>
+              </div>
+              <p>
+                Vas directamente al <b>Ministerio Público</b> o <b>fiscalía</b> más cercana y cuentas lo que pasó.
+              </p>
+              <ul>
+                <li>Pide iniciar una denuncia: deben escucharte y registrarla.</li>
+                <li>Puedes ir con una persona adulta de confianza.</li>
+                <li>No necesitas saber “términos legales”, solo explicar lo ocurrido.</li>
+                <li>Te dan un número de carpeta para dar seguimiento.</li>
+              </ul>
+              <p class="small">
+                Tip: lleva anotado el número de carpeta y el nombre de quien te atendió.
+              </p>
+            </div>
+          </article>
+
+          <!-- Slide 2: Teléfono -->
+          <article class="method-slide" data-method="telefono">
+            <div class="method-slide-inner telefono">
+              <div class="method-tag">Cuando no puedes salir</div>
+              <div class="method-header">
+                <span class="method-emoji">📞</span>
+                <h4>Teléfono o líneas de ayuda</h4>
+              </div>
+              <p>
+                Llamas para pedir orientación, apoyo emocional o hacer una denuncia (a veces anónima).
+              </p>
+              <ul>
+                <li>Muchas fiscalías tienen líneas de atención y orientación.</li>
+                <li>En algunos lugares existe el <b>089</b> para denuncias anónimas.</li>
+                <li>Te explican qué hacer y a dónde acudir.</li>
+              </ul>
+              <p class="small">
+                Útil si necesitas ayuda urgente para saber el siguiente paso o te da miedo ir sola/o.
+              </p>
+            </div>
+          </article>
+
+          <!-- Slide 3: En línea -->
+          <article class="method-slide" data-method="online">
+            <div class="method-slide-inner online">
+              <div class="method-tag">Depende del estado</div>
+              <div class="method-header">
+                <span class="method-emoji">🌐</span>
+                <h4>Denuncia en línea</h4>
+              </div>
+              <p>
+                En algunos estados puedes llenar un formulario digital o hacer una pre-denuncia desde internet.
+              </p>
+              <ul>
+                <li>Se hace desde una página oficial de la fiscalía o gobierno.</li>
+                <li>Puedes recibir un folio para continuar en persona.</li>
+                <li>También puede haber chats o correos de orientación.</li>
+              </ul>
+              <p class="small">
+                Es útil si te cuesta salir de casa o quieres iniciar el proceso sin ir todavía a la fiscalía.
+              </p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <button class="method-nav next" type="button" aria-label="Siguiente">›</button>
+
+      <div class="method-dots" aria-hidden="true">
+        <button class="method-dot is-active" data-index="0"></button>
+        <button class="method-dot" data-index="1"></button>
+        <button class="method-dot" data-index="2"></button>
+      </div>
+
+      <p class="method-counter small" aria-live="polite">
+        1 de 3
+      </p>
+    </div>
   </div>
 
-  <div class="denuncia-step" data-step="8" id="denuncia-step-8">
-    <h3>8. ¿Dónde recibir más orientación?</h3>
-    <ul>
-      <li>Líneas de ayuda que aparecen en la sección <b>Ayuda</b> de esta página.</li>
-      <li>DIF local o procuradurías de protección de niñas, niños y adolescentes.</li>
-      <li>Organizaciones civiles especializadas en acompañamiento legal y psicológico.</li>
-    </ul>
-    <p>Recuerda: <b>no estás sola/o</b>. Pedir ayuda es un acto de valentía.</p>
+
+<div class="denuncia-step" data-step="8" id="denuncia-step-8">
+  <h3>8. Preguntas frecuentes y apoyo mientras esperas</h3>
+  <p class="small">
+    A veces después de denunciar surgen dudas o emociones nuevas. Toca cada pregunta para ver su respuesta.
+  </p>
+
+  <!-- Acordeones -->
+  <div class="faq-list">
+
+    <div class="faq-item">
+      <button class="faq-question" data-faq="q1">
+        ¿Qué hago si la autoridad tarda en responder?
+      </button>
+      <div class="faq-answer" data-faq="q1" hidden>
+        <p>
+          Puedes acudir nuevamente al Ministerio Público o llamar a la persona que lleva la carpeta.
+          Pregunta por los avances, próximas citas o diligencias pendientes. Tienes derecho a ser informada/o.
+        </p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" data-faq="q2">
+        ¿Me pueden acompañar durante el proceso?
+      </button>
+      <div class="faq-answer" data-faq="q2" hidden>
+        <p>
+          Sí. Puedes ir con una persona adulta de confianza. También existen instituciones que brindan apoyo
+          psicológico y acompañamiento legal gratuito.
+        </p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" data-faq="q3">
+        ¿Qué pasa si tengo miedo de ver al agresor?
+      </button>
+      <div class="faq-answer" data-faq="q3" hidden>
+        <p>
+          Puedes pedir medidas de protección. En muchos lugares se pueden modificar citas para que no coincidan
+          o incluso hacer declaraciones sin contacto directo.
+        </p>
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <button class="faq-question" data-faq="q4">
+        ¿Es normal sentirme confundida/o después de denunciar?
+      </button>
+      <div class="faq-answer" data-faq="q4" hidden>
+        <p>
+          Sí, totalmente. Las emociones pueden mezclarse: alivio, miedo, enojo, dudas. Hablar con alguien
+          de confianza o con una línea profesional puede ayudarte a acomodar lo que sientes.
+        </p>
+      </div>
+    </div>
+
   </div>
+
+  <!-- Bloque de consejos rápidos -->
+  <h4 class="mt">Consejos mientras esperas noticias</h4>
+  <p class="small">Toca uno para leerlo:</p>
+
+  <div class="wait-advice">
+    <button class="advice-chip" data-advice="respira">💛 Respirar un poco</button>
+    <button class="advice-chip" data-advice="apoyo">🤝 Buscar apoyo</button>
+    <button class="advice-chip" data-advice="info">📂 Organizar información</button>
+    <button class="advice-chip" data-advice="calma">🌱 Recordar que avanzaste</button>
+  </div>
+
+  <div class="advice-panel small" id="advicePanel" aria-live="polite"></div>
+
+  <!-- Tarjetas de orientación -->
+  <h4 class="mt">Lugares que pueden orientarte</h4>
+  <div class="support-grid">
+
+<a href="#ayuda" class="support-card" data-target="ayuda">
+  <span class="support-emoji">📞</span>
+  <span class="support-title">Líneas de emergencia y apoyo</span>
+  <p class="support-text small">Contacta a líneas oficiales para orientación inmediata.</p>
+</a>
+
+
+    <a target="_blank" rel="noopener" href="https://www.gob.mx/fgr" class="support-card">
+      <span class="support-emoji">🏛️</span>
+      <span class="support-title">Fiscalía / Ministerio Público</span>
+      <p class="support-text small">Consulta sedes, trámites y orientación oficial.</p>
+    </a>
+
+    <a target="_blank" rel="noopener" href="https://www.difver.gob.mx/" class="support-card">
+      <span class="support-emoji">🧸</span>
+      <span class="support-title">DIF</span>
+      <p class="support-text small">Apoyo psicológico, social y acompañamiento a menores.</p>
+    </a>
+
+  </div>
+</div>
+
 
   <!-- Botones inferiores como otras secciones -->
   <div class="cta-row">

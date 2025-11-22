@@ -56,12 +56,17 @@ function showSection(id){
   t.focus({preventScroll:false});
 }
 document.addEventListener("click",(e)=>{
-  const a=e.target.closest(".snav-link");
+  // sirve tanto para los enlaces del menú como para cualquier cosa con data-target
+  const a = e.target.closest(".snav-link, [data-target]");
   if(!a) return;
+
+  const hash = (a.dataset.target || (a.getAttribute("href") || "").replace(/^.*#/, "")).trim();
+  if(!hash) return;
+
   e.preventDefault();
-  const hash=(a.dataset.target || (a.getAttribute("href")||"").replace(/^.*#/, "")).trim();
   showSection(hash);
 });
+
 $$(".btn.cta").forEach(b=> b.addEventListener("click", ()=> showSection(b.dataset.open?.trim())));
 (function initStart(){
   const start=$("#inicio")||$(".gate-keep");
@@ -865,6 +870,259 @@ if (denunciaSection){
     // Rol inicial
     const firstRole = roleButtons[0]?.dataset.role || "nino";
     setRole(firstRole);
+  }
+
+    // ✅ Paso 3: checklist interactiva
+  const step3 = $("#denuncia-step-3");
+  if (step3){
+    const pills = $$(".check-pill", step3);
+    const countSpan = $("#denunciaChecklistCount");
+    const total = pills.length;
+
+    function updateChecklistCount(){
+      const checked = pills.filter(p => p.classList.contains("is-checked")).length;
+      if (countSpan){
+        countSpan.textContent = String(checked);
+      }
+    }
+
+    pills.forEach(pill => {
+      pill.addEventListener("click", () => {
+        const mark = $(".check-mark", pill);
+
+        const isChecked = pill.classList.toggle("is-checked");
+
+        if (mark){
+          mark.textContent = isChecked ? "✅" : "⚫";
+        }
+
+        updateChecklistCount();
+      });
+    });
+
+    // Estado inicial
+    updateChecklistCount();
+  }
+
+    // 🔁 Paso 4: stepper de proceso
+  const step4 = $("#denuncia-step-4");
+  if (step4){
+    const nodes = $$(".flow-node", step4);
+    const panels = $$(".flow-panel", step4);
+
+    function setPhase(phase){
+      const phaseStr = String(phase);
+
+      nodes.forEach(node => {
+        node.classList.toggle("is-active", node.dataset.phase === phaseStr);
+      });
+
+      panels.forEach(panel => {
+        panel.hidden = panel.dataset.phase !== phaseStr;
+      });
+    }
+
+    nodes.forEach(node => {
+      node.addEventListener("click", () => {
+        const phase = node.dataset.phase || "1";
+        setPhase(phase);
+      });
+    });
+
+    // Fase inicial
+    setPhase(1);
+  }
+
+    // 📄 Paso 5: elementos de prueba interactivos
+  const step5 = $("#denuncia-step-5");
+  if (step5){
+    const chips = $$(".evidence-chip", step5);
+    const details = $$(".evidence-detail", step5);
+
+    function setEvidence(key){
+      chips.forEach(chip => {
+        chip.classList.toggle("is-active", chip.dataset.evidence === key);
+      });
+
+      details.forEach(panel => {
+        panel.hidden = panel.dataset.evidence !== key;
+      });
+    }
+
+    chips.forEach(chip => {
+      chip.addEventListener("click", () => {
+        const key = chip.dataset.evidence || "declaraciones";
+        setEvidence(key);
+      });
+    });
+
+    // Estado inicial
+    setEvidence("declaraciones");
+  }
+
+    // ⏱️ Paso 6: línea de tiempo y emociones
+  const step6 = $("#denuncia-step-6");
+  if (step6){
+    // Línea de tiempo
+    const nodes = $$(".timeline-node", step6);
+    const panels = $$(".timeline-panel", step6);
+
+    function setStage(stage){
+      const stageStr = String(stage);
+      nodes.forEach(node => {
+        node.classList.toggle("is-active", node.dataset.stage === stageStr);
+      });
+      panels.forEach(panel => {
+        const isActive = panel.dataset.stage === stageStr;
+        panel.hidden = !isActive;
+        panel.classList.toggle("is-active", isActive);
+      });
+    }
+
+    nodes.forEach(node => {
+      node.addEventListener("click", () => {
+        const stage = node.dataset.stage || "1";
+        setStage(stage);
+      });
+    });
+
+    setStage(1);
+
+    // Emociones
+    const emotionButtons = $$(".emotion-btn", step6);
+    const emotionMsg = $(".emotion-message", step6);
+
+    function getEmotionText(mood){
+      switch (mood){
+        case "miedo":
+          return "Es muy comprensible sentir miedo. No tienes que pasar por esto sola/o: buscar apoyo es una forma de cuidarte.";
+        case "enojo":
+          return "Sentir enojo puede ser una respuesta natural ante una injusticia. Ese enojo también puede convertirse en fuerza para pedir ayuda.";
+        case "confusion":
+          return "Cuando pasan cosas difíciles, es normal no entender todo. Hacer preguntas y hablar con personas de confianza puede aclarar muchas dudas.";
+        case "esperanza":
+          return "Tener un poquito de esperanza es valioso. Cada paso para denunciar y pedir apoyo es un avance para tu seguridad y bienestar.";
+        default:
+          return "";
+      }
+    }
+
+    emotionButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const mood = btn.dataset.mood || "";
+        emotionButtons.forEach(b => b.classList.remove("is-active"));
+        btn.classList.add("is-active");
+        if (emotionMsg){
+          emotionMsg.textContent = getEmotionText(mood);
+        }
+      });
+    });
+  }
+
+    // 🎠 Paso 7: carrusel de métodos de denuncia
+  const step7 = $("#denuncia-step-7");
+  if (step7){
+    const trackWrap = $(".method-track-wrap", step7);
+    const track = $(".method-track", step7);
+    const slides = track ? $$(".method-slide", track) : [];
+    const prevBtn = $(".method-nav.prev", step7);
+    const nextBtn = $(".method-nav.next", step7);
+    const dots = $$(".method-dot", step7);
+    const counter = $(".method-counter", step7);
+
+    let currentIndex = 0;
+    const total = slides.length;
+
+    function updateCarousel(index){
+      if (!track || !slides.length) return;
+
+      if (index < 0) index = 0;
+      if (index > total - 1) index = total - 1;
+      currentIndex = index;
+
+      const offset = -100 * currentIndex;
+      track.style.transform = `translateX(${offset}%)`;
+
+      // Dots
+      dots.forEach(dot => {
+        const i = Number(dot.dataset.index || "0");
+        dot.classList.toggle("is-active", i === currentIndex);
+      });
+
+      // Contador
+      if (counter){
+        counter.textContent = `${currentIndex + 1} de ${total}`;
+      }
+    }
+
+    if (prevBtn){
+      prevBtn.addEventListener("click", () => {
+        updateCarousel(currentIndex - 1);
+      });
+    }
+
+    if (nextBtn){
+      nextBtn.addEventListener("click", () => {
+        updateCarousel(currentIndex + 1);
+      });
+    }
+
+    dots.forEach(dot => {
+      dot.addEventListener("click", () => {
+        const i = Number(dot.dataset.index || "0");
+        updateCarousel(i);
+      });
+    });
+
+    // Arranque
+    updateCarousel(0);
+  }
+
+    // 🌸 Paso 8: FAQs + consejos
+  const step8 = $("#denuncia-step-8");
+  if (step8){
+
+    // FAqs
+    const faqButtons = $$(".faq-question", step8);
+    faqButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const key = btn.dataset.faq;
+        const answer = $(`.faq-answer[data-faq="${key}"]`, step8);
+        if (!answer) return;
+
+        const isHidden = answer.hidden;
+        answer.hidden = !isHidden;
+      });
+    });
+
+    // Consejos
+    const chips = $$(".advice-chip", step8);
+    const advicePanel = $("#advicePanel");
+
+    function getAdvice(key){
+      switch(key){
+        case "respira":
+          return "Respirar profundo 3 veces puede ayudarte a bajar un poquito la tensión.";
+        case "apoyo":
+          return "Hablar con una persona de confianza ayuda mucho a sentirte acompañada/o.";
+        case "info":
+          return "Anotar fechas, nombres o lo que recuerdes puede ayudarte después.";
+        case "calma":
+          return "Has avanzado mucho al denunciar. Date crédito y tiempo para sentir.";
+        default:
+          return "";
+      }
+    }
+
+    chips.forEach(chip => {
+      chip.addEventListener("click", () => {
+        chips.forEach(c => c.classList.remove("is-active"));
+        chip.classList.add("is-active");
+
+        const key = chip.dataset.advice;
+        advicePanel.textContent = getAdvice(key);
+      });
+    });
   }
 
 }
