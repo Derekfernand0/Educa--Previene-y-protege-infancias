@@ -691,3 +691,180 @@ const HELP_GLOBAL=[
     grid.appendChild(c);
   });
 })();
+
+/* ===== Navegación de pasos en "Cómo denunciar" + tarjetas de confianza ===== */
+const denunciaSection = $("#denuncia");
+
+if (denunciaSection){
+  const stepBlocks = $$(".denuncia-step", denunciaSection);
+  const chips = $$(".denuncia-step-chip", denunciaSection);
+  const progressLabel = $("#denunciaProgressLabel");
+  const progressFill = $("#denunciaProgressFill");
+
+  function setActiveStep(step){
+    const total = stepBlocks.length;
+    const stepStr = String(step);
+    const targetBlock = stepBlocks.find(b => b.dataset.step === stepStr);
+    if (!targetBlock) return;
+
+    // Chips activas
+    chips.forEach(chip => {
+      chip.classList.toggle("is-active", chip.dataset.step === stepStr);
+    });
+
+    // Progreso
+    if (progressLabel){
+      progressLabel.textContent = `Paso ${step} de ${total}`;
+    }
+    if (progressFill){
+      const pct = (step / total) * 100;
+      progressFill.style.width = `${pct}%`;
+    }
+
+    // Scroll suave al bloque
+    targetBlock.scrollIntoView({behavior:"smooth", block:"start"});
+  }
+
+  chips.forEach(chip => {
+    chip.addEventListener("click", () => {
+      const step = Number(chip.dataset.step || "1");
+      setActiveStep(step);
+    });
+  });
+
+  // 🧸 Tarjetas de confianza (Paso 1)
+  const step1 = $("#denuncia-step-1");
+  if (step1){
+    const trustGrid = $(".trust-grid", step1);
+    const trustCards = trustGrid ? $$(".trust-card", trustGrid) : [];
+    const hint = $(".trust-hint", step1);
+    const resetBtn = $(".trust-reset", step1);
+    const confettiLayer = $(".confetti-layer", step1);
+
+    const okCards = trustCards.filter(c => c.dataset.type === "ok");
+    const totalOk = okCards.length;
+    let okTouched = 0;
+    let wrongTouched = false;
+
+    function showMessage(type){
+      if (!hint) return;
+      if (type === "ok"){
+        hint.textContent = "Es una buena opción para pedir ayuda. Busca a personas adultas de confianza que puedan protegerte. 💛";
+      } else if (type === "warn"){
+        hint.textContent = "Mejor no contarle a personas desconocidas o que no te den confianza. Busca a alguien adulto que sepas que quiere cuidarte. 🌱";
+      } else if (type === "win"){
+        hint.textContent = "¡Lo hiciste muy bien! Elegiste buenas opciones para pedir ayuda. 🎉";
+      } else{
+        hint.textContent = "";
+      }
+    }
+
+    function triggerConfetti(){
+      if (!confettiLayer) return;
+      confettiLayer.innerHTML = "";
+      const colors = ["#F06543","#FF7AA8","#F2B300","#4ade80","#38bdf8"];
+      const pieces = 70;
+
+      for (let i = 0; i < pieces; i++){
+        const piece = document.createElement("span");
+        piece.className = "confetti-piece";
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.animationDelay = `${Math.random() * 0.6}s`;
+        piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confettiLayer.appendChild(piece);
+      }
+
+      // Limpiar confeti después
+      setTimeout(() => {
+        if (confettiLayer) confettiLayer.innerHTML = "";
+      }, 1800);
+    }
+
+    function resetTrustGame(){
+      okTouched = 0;
+      wrongTouched = false;
+      trustCards.forEach(card => {
+        card.classList.remove("selected","ok","warn","gone","shake");
+        card.style.display = "";
+        delete card.dataset.hit;
+      });
+      if (resetBtn) resetBtn.hidden = true;
+      showMessage("");
+      if (confettiLayer) confettiLayer.innerHTML = "";
+    }
+
+    if (resetBtn){
+      resetBtn.addEventListener("click", resetTrustGame);
+    }
+
+    trustCards.forEach(card => {
+      card.addEventListener("click", () => {
+        // Si ya "contó" como clic bueno, no repetir
+        if (card.dataset.hit === "1") return;
+
+        const type = card.dataset.type || "warn";
+
+        if (type === "ok"){
+          card.dataset.hit = "1";
+          okTouched++;
+
+          card.classList.add("selected","ok","gone");
+          showMessage("ok");
+
+          // Después de la animación, ocultar del grid
+          setTimeout(() => {
+            card.style.display = "none";
+          }, 360);
+
+          if (okTouched === totalOk){
+            showMessage("win");
+            triggerConfetti();
+          }
+        } else {
+          wrongTouched = true;
+          card.classList.add("selected","warn","shake");
+          showMessage("warn");
+
+          // quitar shake luego
+          setTimeout(() => {
+            card.classList.remove("shake");
+          }, 260);
+
+          if (resetBtn){
+            resetBtn.hidden = false;
+          }
+        }
+      });
+    });
+  }
+    // 👥 Paso 2: roles (niña/niño, adulto, testigo)
+  const step2 = $("#denuncia-step-2");
+  if (step2){
+    const roleButtons = $$(".role-toggle", step2);
+    const rolePanels = $$(".role-panel", step2);
+
+    function setRole(role){
+      // Botones activos
+      roleButtons.forEach(btn => {
+        btn.classList.toggle("is-active", btn.dataset.role === role);
+      });
+
+      // Paneles visibles
+      rolePanels.forEach(panel => {
+        panel.hidden = panel.dataset.role !== role;
+      });
+    }
+
+    roleButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const role = btn.dataset.role || "nino";
+        setRole(role);
+      });
+    });
+
+    // Rol inicial
+    const firstRole = roleButtons[0]?.dataset.role || "nino";
+    setRole(firstRole);
+  }
+
+}

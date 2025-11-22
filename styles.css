@@ -546,54 +546,261 @@ body[data-theme="dark"] .tone-yellow{
 /* Accesibilidad */
 :focus-visible{outline:2px solid var(--ring); outline-offset:2px}
 
-/* ===== Sección Denuncia ===== */
+
+
+/* ===== Sección Cómo denunciar ===== */
 .denuncia-section{
   max-width:1100px;
   margin:0 auto;
 }
 
-.denuncia-title{
-  font-size:clamp(28px,4vw,40px);
-  font-weight:800;
+#denuncia{
+  position:relative; /* para el confeti */
+}
+
+/* Menú de pasos */
+.denuncia-steps-nav{
+  margin:18px 0 24px;
+  padding:14px 14px 18px;
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:var(--card);
+  box-shadow:var(--shadow-sm);
+}
+
+.denuncia-steps-chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
   margin-bottom:10px;
 }
 
-.denuncia-sub{
-  color:var(--muted);
-  margin-bottom:26px;
+.denuncia-step-chip{
+  font-family:"Fredoka", system-ui;
+  font-size:.9rem;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:var(--paper);
+  padding:6px 10px;
+  cursor:pointer;
+  white-space:nowrap;
 }
 
+.denuncia-step-chip.is-active{
+  background:#FFD6E7;
+  border-color:var(--ring);
+}
+
+/* Progreso */
+.denuncia-progress{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.denuncia-progress-label{
+  font-size:.85rem;
+  color:var(--muted);
+}
+
+.denuncia-progress-bar{
+  width:100%;
+  height:6px;
+  border-radius:999px;
+  background:rgba(0,0,0,.05);
+  overflow:hidden;
+}
+
+.denuncia-progress-fill{
+  height:100%;
+  width:12.5%;
+  border-radius:999px;
+  background:linear-gradient(90deg,#F06543,#FF7AA8,#F2B300);
+  transition:width .25s ease-out;
+}
+
+/* Bloques de paso */
 .denuncia-step{
   background:var(--card);
   border:1px solid var(--line);
   border-radius:18px;
-  padding:20px;
-  margin-bottom:20px;
+  padding:18px 16px 18px;
+  margin-bottom:18px;
   box-shadow:var(--shadow-md);
 }
 
-.denuncia-step h3{
-  margin-top:0;
-}
-
-.denuncia-steps-grid{
+/* Grid de confianza */
+.trust-grid{
   display:grid;
-  gap:16px;
-  grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
-  margin-top:14px;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:10px;
+  margin-top:10px;
 }
 
-.denuncia-card{
-  background:var(--paper);
-  border:1px solid var(--line);
+.trust-card{
   border-radius:14px;
-  padding:16px;
+  border:1px solid var(--line);
+  background:var(--paper);
+  padding:10px 8px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  cursor:pointer;
   box-shadow:var(--shadow-sm);
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    border-color .18s ease,
+    background-color .18s ease,
+    opacity .18s ease;
 }
 
-.denuncia-extra{
-  margin-top:26px;
-  padding:20px;
-  border-radius:18px;
+.trust-card:hover{
+  transform:translateY(-1px);
+  box-shadow:var(--shadow-md);
+}
+
+.trust-emoji{
+  font-size:1.6rem;
+}
+
+.trust-label{
+  font-size:.85rem;
+  text-align:center;
+}
+
+/* Estados al hacer clic */
+.trust-card.selected.ok{
+  border-color:#16a34a;
+  background:linear-gradient(180deg,#dcfce7,var(--paper));
+}
+
+.trust-card.selected.warn{
+  border-color:#ef4444;
+  background:linear-gradient(180deg,#fee2e2,var(--paper));
+}
+
+/* Animación de desaparecer tarjeta buena */
+.trust-card.gone{
+  animation:trust-pop-out .35s ease forwards;
+}
+
+@keyframes trust-pop-out{
+  to{
+    transform:translateY(-8px) scale(.7) rotate(-3deg);
+    opacity:0;
+  }
+}
+
+/* Shake suave al fallar */
+.trust-card.shake{
+  animation:trust-shake .25s ease;
+}
+
+@keyframes trust-shake{
+  0%{transform:translateX(0)}
+  25%{transform:translateX(-4px)}
+  50%{transform:translateX(4px)}
+  75%{transform:translateX(-4px)}
+  100%{transform:translateX(0)}
+}
+
+/* Botón repetir pequeñito */
+.trust-reset{
+  margin-top:10px;
+  padding:6px 12px;
+  font-size:.85rem;
+}
+
+/* 🎉 Confeti */
+.confetti-layer{
+  pointer-events:none;
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  z-index:5;
+}
+
+.confetti-piece{
+  position:absolute;
+  top:-12px;
+  width:6px;
+  height:12px;
+  border-radius:2px;
+  opacity:0;
+  animation:confetti-fall 1.3s ease-out forwards;
+}
+
+@keyframes confetti-fall{
+  0%{
+    transform:translate3d(0,0,0) rotateZ(0deg);
+    opacity:1;
+  }
+  100%{
+    transform:translate3d(0,240px,0) rotateZ(260deg);
+    opacity:0;
+  }
+}
+
+/* Modo oscuro ajustes suaves */
+body[data-theme="dark"] .denuncia-steps-nav{
+  background:color-mix(in oklab,var(--card) 90%,#020617 10%);
+}
+
+body[data-theme="dark"] .denuncia-step{
+  background:color-mix(in oklab,var(--card) 95%,#020617 5%);
+}
+
+body[data-theme="dark"] .denuncia-progress-bar{
+  background:rgba(148,163,184,.26);
+}
+
+body[data-theme="dark"] .trust-card{
+  background:color-mix(in oklab,var(--card) 90%,#020617 10%);
+}
+
+
+/* Roles en Paso 2 */
+.denuncia-roles{
+  margin-top:12px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.denuncia-roles-toggles{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.role-toggle{
+  font-family:"Fredoka", system-ui;
+  font-size:.85rem;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:var(--paper);
+  padding:6px 10px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:4px;
+}
+
+.role-toggle.is-active{
+  background:#CFEAFF;
+  border-color:var(--ring);
+}
+
+.denuncia-roles-panel{
+  padding:10px 12px;
+  border-radius:14px;
   border:1px dashed var(--line);
+  background:color-mix(in oklab,var(--card) 96%,#ffffff 4%);
+}
+
+/* Ajuste modo oscuro */
+body[data-theme="dark"] .denuncia-roles-panel{
+  background:color-mix(in oklab,var(--card) 92%,#020617 8%);
 }

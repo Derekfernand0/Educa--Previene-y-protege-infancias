@@ -299,118 +299,213 @@
     </div>
   </section>
 
-  <!-- 💛 NUEVA SECCIÓN: CÓMO DENUNCIAR -->
-  <section id="denuncia" class="section gate-keep hidden" aria-labelledby="denunciaTitle" data-bg="sobre">
-    <h2 id="denunciaTitle" class="h-doodles">Cómo denunciar un delito</h2>
+<!-- CÓMO DENUNCIAR  -->
+<section id="denuncia" class="section gate-keep hidden" aria-labelledby="denunciaTitle" data-bg="sobre">
+  <h2 id="denunciaTitle" class="h-doodles">Cómo denunciar un delito</h2>
+  <p class="small">
+    Aquí encontrarás pasos sencillos para saber qué hacer, quién puede denunciar, qué llevar
+    y cómo darle seguimiento a una denuncia, especialmente cuando hay niñas, niños o adolescentes involucrados.
+  </p>
+
+  <!-- Menú de pasos + progreso -->
+  <div class="denuncia-steps-nav" aria-label="Pasos para denunciar">
+    <div class="denuncia-steps-chips">
+      <button class="denuncia-step-chip is-active" data-step="1">Paso 1 · Seguridad</button>
+      <button class="denuncia-step-chip" data-step="2">Paso 2 · Quién denuncia</button>
+      <button class="denuncia-step-chip" data-step="3">Paso 3 · Qué llevar</button>
+      <button class="denuncia-step-chip" data-step="4">Paso 4 · Cómo denunciar</button>
+      <button class="denuncia-step-chip" data-step="5">Paso 5 · Documentos</button>
+      <button class="denuncia-step-chip" data-step="6">Paso 6 · Después</button>
+      <button class="denuncia-step-chip" data-step="7">Paso 7 · En línea</button>
+      <button class="denuncia-step-chip" data-step="8">Paso 8 · Más orientación</button>
+    </div>
+
+    <div class="denuncia-progress">
+      <span id="denunciaProgressLabel" class="denuncia-progress-label">Paso 1 de 8</span>
+      <div class="denuncia-progress-bar">
+        <div class="denuncia-progress-fill" id="denunciaProgressFill" style="width:12.5%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 🧸 PASO 1: Seguridad y apoyo -->
+  <div class="denuncia-step" data-step="1" id="denuncia-step-1">
+    <h3>1. Primero: busca seguridad y apoyo</h3>
+    <p>Antes de denunciar, es importante que la persona esté lo más segura posible.</p>
+    <ul>
+      <li>Aléjate de la persona agresora si puedes.</li>
+      <li>Busca a una persona adulta de confianza (familia, docente, orientación escolar).</li>
+      <li>Si hay peligro inmediato, llama al número de emergencias.</li>
+    </ul>
+
+    <h4 class="mt">¿A quién puedo contarle? Toca una tarjeta:</h4>
+    <div class="trust-grid" aria-label="Personas a quienes puedo pedir ayuda">
+      <button class="trust-card" data-type="ok">
+        <span class="trust-emoji">👩‍🏫</span>
+        <span class="trust-label">Maestra / Maestro</span>
+      </button>
+      <button class="trust-card" data-type="ok">
+        <span class="trust-emoji">👨‍👩‍👧</span>
+        <span class="trust-label">Mamá, papá o persona cuidadora</span>
+      </button>
+      <button class="trust-card" data-type="ok">
+        <span class="trust-emoji">👩‍⚕️</span>
+        <span class="trust-label">Psicóloga / orientadora escolar</span>
+      </button>
+      <button class="trust-card" data-type="warn">
+        <span class="trust-emoji">❓</span>
+        <span class="trust-label">Persona desconocida en internet</span>
+      </button>
+      <button class="trust-card" data-type="warn">
+        <span class="trust-emoji">🚗</span>
+        <span class="trust-label">Adulto desconocido que ofrece “ayuda”</span>
+      </button>
+    </div>
+
+    <p class="trust-hint small" aria-live="polite"></p>
+
+    <!-- 🔁 Botón para repetir el mini juego (solo se muestra si hay errores) -->
+    <button class="btn trust-reset" type="button" hidden>Volver a intentarlo</button>
+
+    <!-- 🎉 Capa para confeti -->
+    <div class="confetti-layer" aria-hidden="true"></div>
+  </div>
+
+
+  <!-- PASO 2 (básico, luego lo hacemos más interactivo) -->
+  <div class="denuncia-step" data-step="2" id="denuncia-step-2">
+    <h3>2. ¿Quién puede denunciar?</h3>
     <p class="small">
-      Aquí encontrarás pasos sencillos para saber qué hacer, quién puede denunciar, qué llevar
-      y cómo darle seguimiento a una denuncia, especialmente cuando hay niñas, niños o adolescentes involucrados.
+      A veces pensamos que solo puede denunciar “la familia directa”, pero en realidad <b>muchas personas pueden hacerlo</b>.
+      Elige quién eres para ver cómo podrías denunciar:
     </p>
 
-    <div class="denuncia-step">
-      <h3>1. Primero: busca seguridad y apoyo</h3>
-      <p>Antes de denunciar, es importante que la persona esté lo más segura posible.</p>
-      <ul>
-        <li>Aléjate de la persona agresora si puedes.</li>
-        <li>Busca a una persona adulta de confianza (familia, docente, orientación escolar).</li>
-        <li>Si hay peligro inmediato, llama al número de emergencias.</li>
-      </ul>
-    </div>
+    <div class="denuncia-roles">
+      <div class="denuncia-roles-toggles" aria-label="Elige quién eres">
+        <button class="role-toggle is-active" type="button" data-role="nino">🧸 Soy niña / niño / adolescente</button>
+        <button class="role-toggle" type="button" data-role="adulto">🧑‍🦱 Soy persona adulta que acompaña</button>
+        <button class="role-toggle" type="button" data-role="testigo">👀 Soy testigo / vecina / maestro</button>
+      </div>
 
-    <div class="denuncia-step">
-      <h3>2. ¿Quién puede denunciar?</h3>
-      <p><b>Cualquier persona puede denunciar un delito.</b></p>
-      <ul>
-        <li>La propia niña, niño o adolescente.</li>
-        <li>Familiares o personas cuidadoras.</li>
-        <li>Docentes, personal escolar o de salud.</li>
-        <li>Vecinas, vecinos, amistades o testigos.</li>
-      </ul>
-      <p>Cuando la víctima es menor de edad, la denuncia puede hacerse aunque no seas familiar.</p>
-    </div>
+      <div class="denuncia-roles-panel">
+        <!-- Panel: Niña / niño -->
+        <div class="role-panel" data-role="nino">
+          <p>
+            Si eres niña, niño o adolescente y algo te hizo sentir muy incómoda/o, con miedo o en peligro,
+            <b>puedes pedir ayuda y también denunciar</b>.
+          </p>
+          <ul>
+            <li>Primero cuéntale a una persona adulta de confianza.</li>
+            <li>Puedes ir acompañada/o por esa persona al Ministerio Público o fiscalía.</li>
+            <li>No tienen que saber “palabras legales”, basta con contar lo que pasó.</li>
+          </ul>
+          <p class="small">
+            Lo que pasó <b>no es tu culpa</b>. Contarlo es una forma de ponerte a salvo y de evitar que le pase a alguien más.
+          </p>
+        </div>
 
-    <div class="denuncia-step">
-      <h3>3. ¿Qué llevar al denunciar?</h3>
-      <p>No es obligatorio llevar documentos, pero pueden ayudar:</p>
-      <ul>
-        <li>Identificación de quien denuncia (si tiene).</li>
-        <li>Datos de la víctima (nombre, edad, cómo localizarla).</li>
-        <li>Fechas aproximadas de lo que ocurrió.</li>
-        <li>Lugar donde sucedieron los hechos.</li>
-        <li>Capturas de pantalla, mensajes, fotos o cualquier prueba (si existen).</li>
-        <li>Datos de testigos.</li>
-      </ul>
-      <p><b>Si no tienes pruebas, igual puedes denunciar.</b> El Ministerio Público debe investigar.</p>
-    </div>
+        <!-- Panel: Persona adulta -->
+        <div class="role-panel" data-role="adulto" hidden>
+          <p>
+            Si eres persona adulta (mamá, papá, familiar, docente, acompañante) y sospechas o sabes
+            que una niña, niño o adolescente vive violencia o abuso, <b>puedes y debes denunciar</b>.
+          </p>
+          <ul>
+            <li>No necesitas haber visto el hecho directamente para reportarlo.</li>
+            <li>Puedes acudir al Ministerio Público, fiscalía o línea de ayuda de tu estado.</li>
+            <li>Tu denuncia puede activar medidas de protección para la persona menor de edad.</li>
+          </ul>
+          <p class="small">
+            Es mejor denunciar una duda con buena intención que guardar silencio ante un posible riesgo.
+          </p>
+        </div>
 
-    <div class="denuncia-step">
-      <h3>4. ¿Dónde y cómo se denuncia?</h3>
-      <div class="denuncia-steps-grid">
-        <div class="denuncia-card">
-          <h4>📍 Ministerio Público</h4>
-          <p>Acude a la agencia del Ministerio Público más cercana o a una fiscalía especializada en delitos sexuales.</p>
-        </div>
-        <div class="denuncia-card">
-          <h4>📝 Cuenta lo sucedido</h4>
-          <p>Relata con tus palabras lo que pasó. Puedes pedir apoyo psicológico o acompañamiento.</p>
-        </div>
-        <div class="denuncia-card">
-          <h4>📄 Se abre una carpeta</h4>
-          <p>La autoridad registra tu denuncia y abre una carpeta de investigación.</p>
-        </div>
-        <div class="denuncia-card">
-          <h4>🤝 Acompañamiento</h4>
-          <p>Puedes ir con alguien de confianza; si la víctima es menor, debe ser tratada con cuidado y respeto.</p>
+        <!-- Panel: Testigo -->
+        <div class="role-panel" data-role="testigo" hidden>
+          <p>
+            Si eres vecina/o, amistad, maestra/o, profesional de salud u otra persona que observa o escucha algo preocupante,
+            también <b>puedes denunciar</b>.
+          </p>
+          <ul>
+            <li>Puedes reportar lo que sabes, aunque no tengas todos los detalles.</li>
+            <li>Algunos lugares permiten denunciar de forma anónima.</li>
+            <li>Tu información puede ser clave para proteger a la víctima.</li>
+          </ul>
+          <p class="small">
+            Ser testigo y actuar es una forma muy importante de cuidar a la comunidad. 💛
+          </p>
         </div>
       </div>
     </div>
+  </div>
 
-    <div class="denuncia-step">
-      <h3>5. Documentos y elementos que toman en cuenta</h3>
-      <ul>
-        <li>Declaración de la víctima y de quien denuncia.</li>
-        <li>Entrevistas a testigos.</li>
-        <li>Pruebas digitales (mensajes, redes, fotos, videos).</li>
-        <li>Certificados médicos o psicológicos, si los hay.</li>
-        <li>Informes de instituciones (escuela, hospital, DIF, etc.).</li>
-      </ul>
-    </div>
 
-    <div class="denuncia-step">
-      <h3>6. ¿Qué pasa después de denunciar?</h3>
-      <ul>
-        <li>La fiscalía investiga y puede llamar a más personas a declarar.</li>
-        <li>Se pueden dictar medidas de protección para la víctima.</li>
-        <li>Si hay suficientes pruebas, se acusa formalmente al agresor.</li>
-        <li>La víctima o su acompañante pueden pedir información sobre avances del caso.</li>
-      </ul>
-    </div>
+  <div class="denuncia-step" data-step="3" id="denuncia-step-3">
+    <h3>3. ¿Qué llevar al denunciar?</h3>
+    <p>No es obligatorio llevar documentos, pero pueden ayudar:</p>
+    <ul>
+      <li>Identificación de quien denuncia (si tiene).</li>
+      <li>Datos de la víctima (nombre, edad, cómo localizarla).</li>
+      <li>Fechas aproximadas de lo que ocurrió.</li>
+      <li>Lugar donde sucedieron los hechos.</li>
+      <li>Capturas de pantalla, mensajes, fotos o cualquier prueba (si existen).</li>
+      <li>Datos de testigos.</li>
+    </ul>
+    <p><b>Si no tienes pruebas, igual puedes denunciar.</b> El Ministerio Público debe investigar.</p>
+  </div>
 
-    <div class="denuncia-step">
-      <h3>7. ¿Se puede denunciar en línea?</h3>
-      <p>En algunos estados existe la opción de denuncia o pre-denuncia digital.</p>
-      <ul>
-        <li>Revisa si tu fiscalía cuenta con <b>denuncia digital</b> o formulario en línea.</li>
-        <li>También puedes usar líneas telefónicas como el <b>089</b> para denuncias anónimas, si está disponible.</li>
-      </ul>
-    </div>
+  <div class="denuncia-step" data-step="4" id="denuncia-step-4">
+    <h3>4. ¿Dónde y cómo se denuncia?</h3>
+    <p>Generalmente se denuncia en el <b>Ministerio Público</b> o <b>Fiscalía</b> más cercana.</p>
+  </div>
 
-    <div class="denuncia-step">
-      <h3>8. ¿Dónde recibir más orientación?</h3>
-      <ul>
-        <li>Líneas de ayuda que aparecen en la sección <b>Ayuda</b> de esta página.</li>
-        <li>DIF local o procuradurías de protección de niñas, niños y adolescentes.</li>
-        <li>Organizaciones civiles especializadas en acompañamiento legal y psicológico.</li>
-      </ul>
-      <p>Recuerda: <b>no estás sola/o</b>. Pedir ayuda es un acto de valentía.</p>
-    </div>
+  <div class="denuncia-step" data-step="5" id="denuncia-step-5">
+    <h3>5. Documentos y elementos que toman en cuenta</h3>
+    <ul>
+      <li>Declaración de la víctima y de quien denuncia.</li>
+      <li>Entrevistas a testigos.</li>
+      <li>Pruebas digitales (mensajes, redes, fotos, videos).</li>
+      <li>Certificados médicos o psicológicos, si los hay.</li>
+      <li>Informes de instituciones (escuela, hospital, DIF, etc.).</li>
+    </ul>
+  </div>
 
-    <!-- Botones inferiores como otras secciones -->
-    <div class="cta-row">
-      <button class="btn cta" data-open="ayuda">Ver líneas de ayuda</button>
-      <button class="btn alt cta" data-open="inicio">Volver al inicio</button>
-    </div>
-  </section>
+  <div class="denuncia-step" data-step="6" id="denuncia-step-6">
+    <h3>6. ¿Qué pasa después de denunciar?</h3>
+    <ul>
+      <li>La fiscalía investiga y puede llamar a más personas a declarar.</li>
+      <li>Se pueden dictar medidas de protección para la víctima.</li>
+      <li>Si hay suficientes pruebas, se acusa formalmente al agresor.</li>
+      <li>La víctima o su acompañante pueden pedir información sobre avances del caso.</li>
+    </ul>
+  </div>
+
+  <div class="denuncia-step" data-step="7" id="denuncia-step-7">
+    <h3>7. ¿Se puede denunciar en línea?</h3>
+    <p>En algunos estados existe la opción de denuncia o pre-denuncia digital.</p>
+    <ul>
+      <li>Revisa si tu fiscalía cuenta con <b>denuncia digital</b> o formulario en línea.</li>
+      <li>También puedes usar líneas telefónicas como el <b>089</b> para denuncias anónimas, si está disponible.</li>
+    </ul>
+  </div>
+
+  <div class="denuncia-step" data-step="8" id="denuncia-step-8">
+    <h3>8. ¿Dónde recibir más orientación?</h3>
+    <ul>
+      <li>Líneas de ayuda que aparecen en la sección <b>Ayuda</b> de esta página.</li>
+      <li>DIF local o procuradurías de protección de niñas, niños y adolescentes.</li>
+      <li>Organizaciones civiles especializadas en acompañamiento legal y psicológico.</li>
+    </ul>
+    <p>Recuerda: <b>no estás sola/o</b>. Pedir ayuda es un acto de valentía.</p>
+  </div>
+
+  <!-- Botones inferiores como otras secciones -->
+  <div class="cta-row">
+    <button class="btn cta" data-open="ayuda">Ver líneas de ayuda</button>
+    <button class="btn alt cta" data-open="inicio">Volver al inicio</button>
+  </div>
+</section>
+
 
   <!-- ===== REFLEXIONES ===== -->
   <section id="reflexiones" class="section blog gate-keep hidden" aria-labelledby="blogTitle" data-bg="reflexiones">
