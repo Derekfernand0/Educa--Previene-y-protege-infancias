@@ -1125,4 +1125,353 @@ if (denunciaSection){
     });
   }
 
+  
 }
+
+/* ===== Foro nuevo: hilos sencillos en front ===== */
+(() => {
+  const foro = $("#foro");
+  if (!foro) return;
+
+  const strip = $("#sfThreadStrip");
+  const list = $("#sfThreadList");
+  const emptyMsg = $("#sfEmpty");
+  const form = $("#sfForm");
+  const input = $("#sfText");
+  const aliasInput = $("#sfAlias");
+  const anonChk = $("#sfAnon");
+  const cooldownMsg = $("#sfCooldownMsg");
+  const accountBtn = $("#sfAccountStub");
+
+  const modal = $("#threadModal");
+  const modalBackdrop = modal ? $(".thread-backdrop", modal) : null;
+  const modalClose = $("#threadCloseBtn");
+  const threadScroll = $("#threadScroll");
+  const replyForm = $("#threadReplyForm");
+  const replyInput = $("#threadReplyText");
+
+  const ANON_COOLDOWN_MS = 15000; // 15 segundos
+  const LAST_ANON_KEY = "kiva_forum_last_anon";
+
+  let threads = [];
+  let activeThreadId = null;
+  let isLoggedIn = false; // hasta que toquen "crear cuenta"
+
+  function now() {
+    return Date.now();
+  }
+
+  function timeAgo(ts) {
+    const diff = Math.max(0, now() - ts);
+    const s = Math.floor(diff / 1000);
+    if (s < 60) return "hace unos segundos";
+    const m = Math.floor(s / 60);
+    if (m < 60) return `hace ${m} min`;
+    const h = Math.floor(m / 60);
+    return `hace ${h} h`;
+  }
+
+  function canPostAnon() {
+    const last = Number(localStorage.getItem(LAST_ANON_KEY) || "0");
+    const diff = now() - last;
+    if (diff >= ANON_COOLDOWN_MS) return { ok: true, wait: 0 };
+    return { ok: false, wait: Math.ceil((ANON_COOLDOWN_MS - diff) / 1000) };
+  }
+
+  function updateCooldownLabel() {
+    if (!anonChk.checked) {
+      // con cuenta o no anónimo -> dejamos este espacio para mensajitos del foro
+      return;
+    }
+    const { ok, wait } = canPostAnon();
+    if (ok) {
+      cooldownMsg.textContent = "Puedes enviar un mensaje anónimo.";
+    } else {
+      cooldownMsg.textContent = `Espera ${wait}s para enviar otro mensaje anónimo.`;
+    }
+  }
+
+  // Simular “crear cuenta”
+  if (accountBtn) {
+    accountBtn.addEventListener("click", () => {
+      isLoggedIn = !isLoggedIn;
+
+      const textSpan = accountBtn.querySelector("span");
+      if (isLoggedIn) {
+        accountBtn.classList.add("is-logged");
+        if (textSpan) textSpan.textContent = "con cuenta";
+        if (cooldownMsg) {
+          cooldownMsg.textContent = "Ahora puedes dar like a los mensajes 💛";
+        }
+      } else {
+        accountBtn.classList.remove("is-logged");
+        if (textSpan) textSpan.textContent = "crear cuenta";
+        if (cooldownMsg) cooldownMsg.textContent = "";
+      }
+    });
+  }
+
+  /** Escapar HTML sencillo */
+  function escapeHtml(str) {
+    return String(str || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
+  /** Crear nuevo hilo raíz */
+  function createThread(text, alias, isAnon) {
+    const id = "t_" + Math.random().toString(36).slice(2);
+    const thread = {
+      id,
+      text: text.trim(),
+      alias: alias.trim() || (isAnon ? "Anónimo" : "Usuario"),
+      isAnon,
+      likes: 0,
+      likedByCurrentUser: false,
+      createdAt: now(),
+      replies: []
+    };
+    threads.push(thread);
+    return thread;
+  }
+
+  /** Añadir respuesta a un hilo existente */
+  function addReply(threadId, text, isAnon) {
+    const t = threads.find((x) => x.id === threadId);
+    if (!t) return null;
+    t.replies.push({
+      id: "r_" + Math.random().toString(36).slice(2),
+      text: text.trim(),
+      isAnon,
+      createdAt: now()
+    });
+    return t;
+  }
+
+  /** Render principal */
+  function render() {
+    if (!list || !strip) return;
+
+    const sorted = [...threads].sort((a, b) => b.createdAt - a.createdAt);
+
+    // mensaje vacío
+    if (!sorted.length) {
+      emptyMsg.style.display = "block";
+    } else {
+      emptyMsg.style.display = "none";
+    }
+
+// ordenar por likes descendente:
+const topLiked = [...threads]
+  .sort((a,b) => b.likes - a.likes)
+  .slice(0, 6);
+
+strip.innerHTML = "";
+topLiked.forEach(t => {
+  const card = document.createElement("button");
+  card.type = "button";
+  card.className = "sf-strip-card";
+  card.innerHTML = `
+    <div class="sf-strip-text">${escapeHtml(t.text.slice(0, 40))}</div>
+    <div class="sf-strip-heart">❤ ${t.likes}</div>
+  `;
+  card.addEventListener("click",()=>openThread(t.id));
+  strip.appendChild(card);
+});
+
+
+    // lista grande
+    list.innerHTML = "";
+    sorted.forEach((t) => {
+      const rootReplies = t.replies.length;
+      const card = document.createElement("article");
+      card.className = "sf-thread-card";
+      card.dataset.threadId = t.id;
+
+      card.innerHTML = `
+        <div class="sf-thread-meta">
+          <span>${t.alias || (t.isAnon ? "Anónimo" : "Usuario")}</span>
+          <span>${timeAgo(t.createdAt)}</span>
+        </div>
+        <div class="sf-thread-text">${escapeHtml(t.text)}</div>
+        <div class="sf-thread-actions">
+          <span class="sf-like-btn">
+            <button type="button" class="sf-heart-btn" aria-label="Dar like">❤</button>
+            <span>${t.likes}</span>
+          </span>
+          <span class="sf-reply-count">
+            💬 <span>${rootReplies}</span> respuestas
+          </span>
+        </div>
+      `;
+
+      // abrir hilo al hacer clic en la tarjeta (menos el botón de like)
+      card.addEventListener("click", (ev) => {
+        if (ev.target.closest("button")) return;
+        openThread(t.id);
+      });
+
+      // like con cuenta + 1 vez
+      const likeBtn = card.querySelector(".sf-heart-btn");
+      likeBtn.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+
+        // necesita cuenta
+        if (!isLoggedIn) {
+          if (cooldownMsg) {
+            cooldownMsg.textContent = "Necesitas una cuenta para dar like 💛";
+          }
+          return;
+        }
+
+        // ya dio like antes
+        if (t.likedByCurrentUser) {
+          return;
+        }
+
+        t.likedByCurrentUser = true;
+        t.likes++;
+        render();
+
+        // animación de latido en la tarjeta recién pintada
+        const refreshedBtn = list.querySelector(
+          `.sf-thread-card[data-thread-id="${t.id}"] .sf-heart-btn`
+        );
+        if (refreshedBtn) {
+          refreshedBtn.classList.add("is-pulsing");
+          setTimeout(() => refreshedBtn.classList.remove("is-pulsing"), 450);
+        }
+
+        if (activeThreadId === t.id) {
+          renderThread(t);
+        }
+      });
+
+      list.appendChild(card);
+    });
+  }
+
+  /** Abrir modal de hilo */
+  function openThread(id) {
+    const t = threads.find((x) => x.id === id);
+    if (!t || !modal) return;
+    activeThreadId = id;
+    renderThread(t);
+    modal.hidden = false;
+    document.documentElement.style.overflow = "hidden";
+    if (replyInput) {
+      replyInput.value = "";
+      replyInput.focus();
+    }
+  }
+
+  /** Cerrar modal */
+  function closeThread() {
+    if (!modal) return;
+    modal.hidden = true;
+    document.documentElement.style.overflow = "";
+    activeThreadId = null;
+  }
+
+  /** Render del contenido del hilo dentro del modal */
+  function renderThread(t) {
+    if (!threadScroll) return;
+    threadScroll.innerHTML = "";
+
+    const root = document.createElement("div");
+    root.className = "thread-msg";
+    root.innerHTML = `
+      <div class="thread-msg-meta">${t.alias} · ${timeAgo(
+      t.createdAt
+    )}</div>
+      <div class="thread-msg-text">${escapeHtml(t.text)}</div>
+    `;
+    threadScroll.appendChild(root);
+
+    t.replies.forEach((r) => {
+      const el = document.createElement("div");
+      el.className = "thread-msg";
+      el.innerHTML = `
+        <div class="thread-msg-meta">${r.isAnon ? "Anónimo" : "Usuario"} · ${timeAgo(
+        r.createdAt
+      )}</div>
+        <div class="thread-msg-text">${escapeHtml(r.text)}</div>
+      `;
+      threadScroll.appendChild(el);
+    });
+
+    threadScroll.scrollTop = threadScroll.scrollHeight;
+  }
+
+  /* === Eventos formulario principal === */
+  form.addEventListener("submit", (ev) => {
+    ev.preventDefault();
+    const text = input.value.trim();
+    if (!text) return;
+
+    const isAnon = anonChk.checked;
+    const alias = aliasInput.value || "";
+
+    if (isAnon) {
+      const { ok, wait } = canPostAnon();
+      if (!ok) {
+        cooldownMsg.textContent = `Espera ${wait}s para enviar otro mensaje anónimo.`;
+        return;
+      }
+      localStorage.setItem(LAST_ANON_KEY, String(now()));
+    }
+
+    createThread(text, alias, isAnon);
+    input.value = "";
+    render();
+    updateCooldownLabel();
+  });
+
+  // Modal: cerrar
+  if (modalBackdrop) {
+    modalBackdrop.addEventListener("click", closeThread);
+  }
+  if (modalClose) {
+    modalClose.addEventListener("click", closeThread);
+  }
+
+  // Responder dentro del hilo
+  if (replyForm) {
+    replyForm.addEventListener("submit", (ev) => {
+      ev.preventDefault();
+      if (!activeThreadId) return;
+      const text = replyInput.value.trim();
+      if (!text) return;
+      const isAnon = anonChk.checked; // usa el mismo toggle de arriba
+      const t = addReply(activeThreadId, text, isAnon);
+      replyInput.value = "";
+      if (t) {
+        renderThread(t);
+        render();
+      }
+    });
+  }
+
+  // actualizar mensaje de cooldown al cambiar anónimo
+  anonChk.addEventListener("change", updateCooldownLabel);
+  updateCooldownLabel();
+
+  // datos de ejemplo iniciales (puedes borrarlos si quieres comenzar vacío)
+  threads = [];
+  createThread(
+    "Quiero decirte que pedir ayuda es valiente. No estás sola/o.",
+    "Luz",
+    true
+  );
+  createThread(
+    "Leer estas historias me recuerda que también puedo hablar.",
+    "Anónimo",
+    true
+  );
+  threads[0].likes = 3;
+  threads[1].likes = 1;
+
+  render();
+})();
+

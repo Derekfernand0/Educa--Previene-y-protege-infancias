@@ -1495,3 +1495,945 @@ body[data-theme="dark"] .method-slide-inner.online{
 .support-title{
   font-weight:800;
 }
+
+/* =====================================
+   Foro nuevo: tarjetas + hilo modal
+===================================== */
+
+.support-forum{
+  border-radius:20px;
+  border:1px solid var(--line);
+  background:var(--card);
+  box-shadow:var(--shadow-md);
+  padding:14px 16px 12px;
+  max-width:900px;
+  margin-inline:auto;
+}
+
+/* Barra superior: anónimo / cuenta */
+.sf-topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:10px;
+}
+
+.sf-anon-toggle{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:.9rem;
+}
+
+.sf-anon-toggle input{
+  width:16px;
+  height:16px;
+}
+
+/* pastilla "crear cuenta" (solo visual por ahora) */
+.sf-account-pill{
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:var(--paper);
+  padding:4px 10px 4px 12px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:.85rem;
+  cursor:pointer;
+}
+
+.sf-account-dot{
+  width:16px;
+  height:16px;
+  border-radius:999px;
+  border:1px solid var(--ring);
+}
+
+/* Tablero principal */
+.sf-board{
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:color-mix(in oklab,var(--card) 96%,#ffffff 4%);
+  padding:10px 10px 12px;
+  box-shadow:var(--shadow-sm);
+}
+
+/* Tira superior de tarjetas pequeñas */
+.sf-thread-strip{
+  display:flex;
+  gap:8px;
+  margin-bottom:10px;
+  overflow-x:auto;
+  padding-bottom:4px;
+}
+
+.sf-strip-card{
+  min-width:80px;
+  max-width:120px;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:var(--paper);
+  padding:8px 6px;
+  font-size:.75rem;
+  position:relative;
+  cursor:pointer;
+  flex-shrink:0;
+}
+
+.sf-strip-heart{
+  position:absolute;
+  right:6px;
+  bottom:4px;
+  font-size:.9rem;
+}
+
+/* Área grande de comentarios */
+.sf-board-inner{
+  border-radius:14px;
+  border:1px dashed var(--line);
+  background:rgba(255,255,255,.7);
+  padding:8px;
+  min-height:120px;
+}
+
+.sf-empty{
+  font-size:.85rem;
+  color:var(--muted);
+}
+
+.sf-thread-list{
+  display:grid;
+  gap:8px;
+  margin-top:4px;
+}
+
+.sf-thread-card{
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:var(--paper);
+  padding:8px 10px;
+  position:relative;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.sf-thread-meta{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:.8rem;
+  color:var(--muted);
+}
+
+.sf-thread-actions{
+  display:flex;
+  gap:10px;
+  font-size:.8rem;
+}
+
+.sf-like-btn,
+.sf-reply-count{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+}
+
+.sf-like-btn button{
+  border:none;
+  background:transparent;
+  cursor:pointer;
+  font-size:.9rem;
+}
+
+/* Formulario inferior */
+.sf-form{
+  margin-top:10px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.sf-alias{
+  width:100%;
+  border-radius:999px;
+  border:1px solid var(--line);
+  padding:6px 10px;
+  font-size:.85rem;
+}
+
+.sf-input-row{
+  display:flex;
+  gap:8px;
+  margin-top:2px;
+}
+
+.sf-input{
+  flex:1;
+  border-radius:999px;
+  border:1px solid var(--line);
+  padding:8px 12px;
+  font-size:.9rem;
+}
+
+.sf-send-btn{
+  border-radius:999px;
+  border:1px solid var(--line);
+  padding:8px 14px;
+  background:#FFD6E7;
+  font-family:"Fredoka";
+  font-size:.9rem;
+  cursor:pointer;
+}
+
+.sf-footer-row{
+  min-height:1.1em;
+}
+
+.sf-cooldown{
+  font-size:.8rem;
+  color:var(--muted);
+}
+
+/* ===== Modal de hilo ===== */
+
+.thread-modal{
+  position:fixed;
+  inset:0;
+  z-index:30;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* 🔧 IMPORTANTE: si tiene hidden, no se ve */
+.thread-modal[hidden]{
+  display:none !important;
+}
+
+
+.thread-backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(15,23,42,.48);
+  backdrop-filter:blur(4px);
+}
+
+.thread-window{
+  position:relative;
+  z-index:1;
+  width:min(520px, 92vw);
+  max-height:80vh;
+  border-radius:20px;
+  border:1px solid var(--line);
+  background:var(--card);
+  box-shadow:var(--shadow-lg);
+  padding:14px 16px 12px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.thread-title{
+  margin:0 0 4px;
+}
+
+.thread-close{
+  position:absolute;
+  top:6px;
+  right:8px;
+  border:none;
+  background:transparent;
+  font-size:20px;
+  cursor:pointer;
+}
+
+.thread-scroll{
+  flex:1;
+  overflow:auto;
+  padding-right:6px;
+  margin-top:4px;
+  display:grid;
+  gap:8px;
+}
+
+/* Mensajes dentro del hilo (tipo timeline) */
+.thread-msg{
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:var(--paper);
+  padding:6px 8px;
+  font-size:.9rem;
+  position:relative;
+}
+
+.thread-msg-meta{
+  font-size:.75rem;
+  color:var(--muted);
+  margin-bottom:2px;
+}
+
+.thread-msg::before{
+  content:"";
+  position:absolute;
+  left:-6px;
+  top:10px;
+  width:6px;
+  height:6px;
+  border-radius:999px;
+  background:var(--ring);
+}
+
+.thread-reply-form{
+  margin-top:6px;
+  display:flex;
+  gap:6px;
+}
+
+.thread-reply-input{
+  flex:1;
+  border-radius:999px;
+  border:1px solid var(--line);
+  padding:6px 10px;
+  font-size:.85rem;
+}
+
+.thread-reply-btn{
+  border-radius:999px;
+  border:1px solid var(--line);
+  padding:6px 12px;
+  background:#CFEAFF;
+  font-family:"Fredoka";
+  font-size:.85rem;
+  cursor:pointer;
+}
+
+/* Modo oscuro ajustes */
+body[data-theme="dark"] .support-forum{
+  background:color-mix(in oklab,var(--card) 94%,#020617 6%);
+}
+
+body[data-theme="dark"] .sf-board{
+  background:color-mix(in oklab,var(--card) 92%,#020617 8%);
+}
+
+body[data-theme="dark"] .sf-board-inner{
+  background:color-mix(in oklab,var(--card) 94%,#020617 6%);
+}
+
+body[data-theme="dark"] .thread-backdrop{
+  background:rgba(15,23,42,.7);
+}
+
+/* ===== Mejoras visuales foro: color + corazón ===== */
+
+/* Fondo del contenedor principal del foro */
+.support-forum{
+  background:linear-gradient(
+    180deg,
+    color-mix(in oklab,var(--card) 90%, var(--lilac) 10%),
+    color-mix(in oklab,var(--card) 94%, var(--blue) 6%)
+  );
+  border-color:color-mix(in oklab,var(--line) 60%, var(--lilac) 40%);
+}
+
+/* Marco donde están los comentarios */
+.sf-board{
+  background:linear-gradient(
+    180deg,
+    color-mix(in oklab,var(--card) 94%, var(--blue) 6%),
+    color-mix(in oklab,var(--card) 96%, var(--pink) 4%)
+  );
+}
+
+/* Interior del tablero con un toque suave */
+.sf-board-inner{
+  background:linear-gradient(
+    180deg,
+    color-mix(in oklab,#ffffff 90%, var(--blue) 10%),
+    #ffffff
+  );
+}
+
+/* Tarjetitas de la tira superior */
+.sf-strip-card{
+  background:linear-gradient(
+    180deg,
+    color-mix(in oklab,#ffffff 92%, var(--peach) 8%),
+    #ffffff
+  );
+}
+
+/* Tarjetas grandes de comentarios */
+.sf-thread-card{
+  background:linear-gradient(
+    180deg,
+    #ffffff,
+    color-mix(in oklab,#ffffff 90%, var(--pink) 10%)
+  );
+}
+
+/* Botón "crear cuenta" un poco más vistoso */
+.sf-account-pill{
+  background:linear-gradient(
+    90deg,
+    color-mix(in oklab,#ffffff 88%, var(--pink) 12%),
+    color-mix(in oklab,#ffffff 88%, var(--lilac) 12%)
+  );
+}
+
+/* Corazones rojos */
+.sf-like-btn button,
+.sf-strip-heart{
+  color:#e11d48; /* rojo frambuesa */
+}
+
+/* Botón de like más cómodo de tocar */
+.sf-like-btn button{
+  font-size:1rem;
+  line-height:1;
+}
+
+/* Animación de latido */
+@keyframes heartBeat{
+  0%{ transform:scale(1); }
+  30%{ transform:scale(1.3); }
+  60%{ transform:scale(0.95); }
+  100%{ transform:scale(1); }
+}
+
+/* Clase que dispara la animación */
+.sf-heart-btn.is-pulsing{
+  animation:heartBeat 0.45s ease-out;
+  transform-origin:center;
+}
+
+/* Modal un poco más dulce */
+.thread-window{
+  background:linear-gradient(
+    180deg,
+    color-mix(in oklab,var(--card) 94%, var(--blue) 6%),
+    color-mix(in oklab,var(--card) 94%, var(--pink) 6%)
+  );
+}
+
+.sf-account-pill.is-logged{
+  border-color:var(--ring);
+  background:linear-gradient(90deg,#FFD6E7,#CFEAFF);
+}
+
+/* =====================================
+   FORO · diseño colorido y suave
+===================================== */
+
+/* Fondo general de la sección foro */
+.section.forum{
+  position:relative;
+}
+
+.section.forum::before{
+  content:"";
+  position:absolute;
+  inset:-40px 0 auto;
+  height:160px;
+  background:
+    radial-gradient(18rem 12rem at 0% 0%, rgba(255,214,231,.55) 0 70%, transparent 71%),
+    radial-gradient(18rem 12rem at 100% 0%, rgba(207,234,255,.55) 0 70%, transparent 71%);
+  opacity:.8;
+  pointer-events:none;
+  z-index:-1;
+}
+
+/* CONTENEDOR PRINCIPAL */
+.support-forum{
+  position:relative;
+  border-radius:24px;
+  border:1px solid color-mix(in oklab,var(--line) 60%, var(--lilac) 40%);
+  padding:16px 18px 14px;
+  max-width:960px;
+  margin-inline:auto;
+  background:
+    linear-gradient(180deg,
+      color-mix(in oklab,var(--card) 88%, var(--lilac) 12%),
+      color-mix(in oklab,var(--card) 92%, var(--blue) 8%));
+  box-shadow:var(--shadow-lg);
+}
+
+/* Tira decorativa arriba */
+.support-forum::before{
+  content:"";
+  position:absolute;
+  left:18px;
+  right:18px;
+  top:10px;
+  height:6px;
+  border-radius:999px;
+  background:linear-gradient(90deg,#FFD6E7,#E5D6FF,#CFEAFF,#FFF4B8);
+  opacity:.8;
+}
+
+/* Barra superior: anónimo / cuenta */
+.sf-topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-top:10px;
+  margin-bottom:12px;
+}
+
+.sf-anon-toggle{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:.9rem;
+}
+
+.sf-anon-toggle input{
+  width:16px;
+  height:16px;
+}
+
+/* pastilla "crear cuenta" */
+.sf-account-pill{
+  border-radius:999px;
+  border:1px solid var(--line);
+  padding:4px 12px 4px 14px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:.85rem;
+  cursor:pointer;
+  background:linear-gradient(
+    90deg,
+    color-mix(in oklab,#ffffff 85%, var(--pink) 15%),
+    color-mix(in oklab,#ffffff 85%, var(--lilac) 15%)
+  );
+  box-shadow:var(--shadow-sm);
+}
+
+.sf-account-pill.is-logged{
+  border-color:var(--ring);
+  box-shadow:0 0 0 2px color-mix(in oklab,var(--ring) 40%, transparent 60%);
+}
+
+.sf-account-dot{
+  width:14px;
+  height:14px;
+  border-radius:999px;
+  border:1px solid var(--ring);
+  background:#fff;
+}
+
+/* TABLERO PRINCIPAL */
+.sf-board{
+  border-radius:18px;
+  border:1px solid color-mix(in oklab,var(--line) 70%, var(--blue) 30%);
+  padding:10px 10px 12px;
+  background:
+    radial-gradient(circle at 0 0, rgba(255,214,231,.5) 0 40%, transparent 41%),
+    radial-gradient(circle at 100% 0, rgba(207,234,255,.45) 0 40%, transparent 41%),
+    linear-gradient(180deg,
+      color-mix(in oklab,var(--card) 96%, var(--blue) 4%),
+      color-mix(in oklab,var(--card) 96%, var(--pink) 4%));
+  box-shadow:var(--shadow-md);
+}
+
+/* Tira superior de mini tarjetas */
+.sf-thread-strip{
+  display:flex;
+  gap:8px;
+  margin-bottom:10px;
+  overflow-x:auto;
+  padding:4px 2px 6px;
+}
+
+.sf-thread-strip::-webkit-scrollbar{
+  height:4px;
+}
+.sf-thread-strip::-webkit-scrollbar-thumb{
+  border-radius:999px;
+  background:rgba(148,163,184,.6);
+}
+
+.sf-strip-card{
+  min-width:90px;
+  max-width:130px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  padding:8px 8px 10px;
+  font-size:.75rem;
+  position:relative;
+  cursor:pointer;
+  flex-shrink:0;
+  background:linear-gradient(
+    180deg,
+    #ffffff,
+    color-mix(in oklab,#ffffff 80%, var(--peach) 20%)
+  );
+  box-shadow:var(--shadow-sm);
+}
+
+.sf-strip-text{
+  max-height:3.1em;
+  overflow:hidden;
+}
+
+/* corazón */
+.sf-strip-heart{
+  position:absolute;
+  right:8px;
+  bottom:6px;
+  font-size:.85rem;
+  color:#e11d48;
+}
+
+/* CUADRO GRANDE DE MENSAJES */
+.sf-board-inner{
+  border-radius:16px;
+  border:1px dashed var(--line);
+  padding:10px 8px;
+  min-height:130px;
+  background:linear-gradient(
+    180deg,
+    color-mix(in oklab,#ffffff 90%, var(--blue) 10%),
+    #ffffff
+  );
+}
+
+.sf-empty{
+  font-size:.9rem;
+  color:var(--muted);
+}
+
+/* LISTA DE HILOS */
+.sf-thread-list{
+  display:grid;
+  gap:10px;
+  margin-top:6px;
+}
+
+.sf-thread-card{
+  position:relative;
+  border-radius:14px;
+  border:1px solid var(--line);
+  padding:9px 10px 8px 12px;
+  cursor:pointer;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  background:linear-gradient(
+    180deg,
+    #ffffff,
+    color-mix(in oklab,#ffffff 85%, var(--pink) 15%)
+  );
+  box-shadow:var(--shadow-sm);
+}
+
+/* barrita de color a la izquierda */
+.sf-thread-card::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:8px;
+  bottom:8px;
+  width:4px;
+  border-radius:999px;
+  background:linear-gradient(180deg,#FF7AA8,#7C4DFF);
+}
+
+.sf-thread-meta{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:.8rem;
+  color:var(--muted);
+}
+
+.sf-thread-text{
+  font-size:.9rem;
+}
+
+/* acciones */
+.sf-thread-actions{
+  display:flex;
+  gap:12px;
+  font-size:.8rem;
+  align-items:center;
+  margin-top:2px;
+}
+
+.sf-like-btn,
+.sf-reply-count{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+}
+
+.sf-like-btn button{
+  border:none;
+  background:transparent;
+  cursor:pointer;
+  font-size:1rem;
+  line-height:1;
+  color:#e11d48;
+}
+
+/* corazon latiendo */
+@keyframes heartBeat{
+  0%{ transform:scale(1); }
+  30%{ transform:scale(1.25); }
+  60%{ transform:scale(.95); }
+  100%{ transform:scale(1); }
+}
+
+.sf-heart-btn.is-pulsing{
+  animation:heartBeat .45s ease-out;
+  transform-origin:center;
+}
+
+/* FORMULARIO INFERIOR */
+.sf-form{
+  margin-top:12px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.sf-alias{
+  width:100%;
+  border-radius:999px;
+  border:1px solid var(--line);
+  padding:6px 10px;
+  font-size:.85rem;
+  background:rgba(255,255,255,.9);
+}
+
+.sf-input-row{
+  display:flex;
+  gap:8px;
+  margin-top:2px;
+}
+
+.sf-input{
+  flex:1;
+  border-radius:999px;
+  border:1px solid var(--line);
+  padding:8px 12px;
+  font-size:.9rem;
+  background:#ffffff;
+}
+
+.sf-send-btn{
+  border-radius:999px;
+  border:1px solid var(--line);
+  padding:8px 14px;
+  background:#FFD6E7;
+  font-family:"Fredoka";
+  font-size:.9rem;
+  cursor:pointer;
+  box-shadow:var(--shadow-sm);
+}
+
+.sf-send-btn:hover{
+  transform:translateY(-1px);
+}
+
+/* mensaje de cooldown / avisos */
+.sf-footer-row{
+  min-height:1.1em;
+}
+
+.sf-cooldown{
+  font-size:.8rem;
+  color:var(--ink-2);
+}
+
+/* ===== MODAL DE HILO ===== */
+
+.thread-modal{
+  position:fixed;
+  inset:0;
+  z-index:30;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.thread-modal[hidden]{
+  display:none !important;
+}
+
+.thread-backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(15,23,42,.55);
+  backdrop-filter:blur(5px);
+}
+
+.thread-window{
+  position:relative;
+  z-index:1;
+  width:min(520px, 92vw);
+  max-height:80vh;
+  border-radius:22px;
+  border:1px solid var(--line);
+  padding:16px 18px 12px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  background:linear-gradient(
+    180deg,
+    color-mix(in oklab,var(--card) 94%, var(--blue) 6%),
+    color-mix(in oklab,var(--card) 94%, var(--pink) 6%)
+  );
+  box-shadow:var(--shadow-lg);
+}
+
+.thread-title{
+  margin:0 0 4px;
+}
+
+.thread-close{
+  position:absolute;
+  top:8px;
+  right:10px;
+  border:none;
+  background:transparent;
+  font-size:20px;
+  cursor:pointer;
+}
+
+/* scroll de mensajes del hilo */
+.thread-scroll{
+  flex:1;
+  overflow:auto;
+  padding-right:6px;
+  margin-top:6px;
+  display:grid;
+  gap:8px;
+}
+
+/* Mensaje dentro del hilo */
+.thread-msg{
+  border-radius:12px;
+  border:1px solid var(--line);
+  padding:6px 8px;
+  font-size:.9rem;
+  background:#ffffff;
+  position:relative;
+}
+
+.thread-msg-meta{
+  font-size:.75rem;
+  color:var(--muted);
+  margin-bottom:2px;
+}
+
+.thread-msg::before{
+  content:"";
+  position:absolute;
+  left:-6px;
+  top:10px;
+  width:7px;
+  height:7px;
+  border-radius:999px;
+  background:var(--ring);
+}
+
+/* formulario de respuesta */
+.thread-reply-form{
+  margin-top:6px;
+  display:flex;
+  gap:6px;
+}
+
+.thread-reply-input{
+  flex:1;
+  border-radius:999px;
+  border:1px solid var(--line);
+  padding:6px 10px;
+  font-size:.85rem;
+  background:#ffffff;
+}
+
+.thread-reply-btn{
+  border-radius:999px;
+  border:1px solid var(--line);
+  padding:6px 12px;
+  background:#CFEAFF;
+  font-family:"Fredoka";
+  font-size:.85rem;
+  cursor:pointer;
+}
+
+/* MODO OSCURO */
+body[data-theme="dark"] .support-forum{
+  background:color-mix(in oklab,var(--ink-2) 35%, var(--card) 65%);
+}
+
+body[data-theme="dark"] .sf-board{
+  background:linear-gradient(
+    180deg,
+    color-mix(in oklab,var(--ink-2) 20%, var(--card) 80%),
+    color-mix(in oklab,var(--ink-2) 15%, var(--card) 85%)
+  );
+}
+
+body[data-theme="dark"] .sf-board-inner{
+  background:color-mix(in oklab,var(--card) 90%, #020617 10%);
+}
+
+body[data-theme="dark"] .sf-thread-card{
+  background:linear-gradient(
+    180deg,
+    color-mix(in oklab,var(--card) 92%, #020617 8%),
+    color-mix(in oklab,var(--card) 90%, #020617 10%)
+  );
+}
+
+body[data-theme="dark"] .thread-window{
+  background:linear-gradient(
+    180deg,
+    color-mix(in oklab,var(--card) 92%, #020617 8%),
+    color-mix(in oklab,var(--card) 90%, #020617 10%)
+  );
+}
+
+/* ===== Ajuste: altura fija del foro y scroll interno ===== */
+
+.support-forum{
+  max-height: 580px;        /* altura fija del bloque del foro */
+  overflow: hidden;         /* evita que crezca hacia afuera */
+  display: flex;
+  flex-direction: column;
+}
+
+/* El tablero debe ocupar el espacio disponible y scroll interno */
+.sf-board{
+  flex: 1;                   /* usa el espacio vertical sobrante */
+  overflow: hidden;          /* no crecer fuera */
+  display: flex;
+  flex-direction: column;
+}
+
+.sf-board-inner{
+  flex: 1;
+  overflow-y: auto;          /* ahora el scroll es interno */
+  min-height: 0;             /* IMPORTANTÍSIMO para que funcione el flex + scroll */
+}
+
+/* Para que la tira superior no desaparezca */
+.sf-thread-strip{
+  flex-shrink: 0;
+}
+
+/* Scroll bonito */
+.sf-board-inner::-webkit-scrollbar{
+  width: 8px;
+}
+.sf-board-inner::-webkit-scrollbar-thumb{
+  background: rgba(120,120,120,.25);
+  border-radius: 999px;
+}

@@ -244,15 +244,82 @@
 
   <!-- ===== FORO ===== -->
   <section id="foro" class="section forum gate-keep hidden" aria-labelledby="foroTitle" data-bg="foro">
-    <h2 id="foroTitle" class="h-doodles">Espacios de confianza</h2>
-    <div class="forum-controls">
-      <label><input type="checkbox" id="anonToggle" checked> Publicar como anónimo</label>
-      <input type="text" id="alias" class="alias" placeholder="Alias (opcional)">
+    <h2 id="foroTitle" class="h-doodles">Espacio de apoyo</h2>
+
+    <div class="support-forum">
+      <div class="sf-topbar">
+        <label class="sf-anon-toggle">
+          <input type="checkbox" id="sfAnon" checked>
+          <span>anónimo</span>
+        </label>
+
+        <button type="button" class="sf-account-pill" id="sfAccountStub">
+          <span>crear cuenta</span>
+          <span class="sf-account-dot"></span>
+        </button>
+      </div>
+
+      <div class="sf-board">
+        <div class="sf-thread-strip" id="sfThreadStrip" aria-label="Mensajes destacados"></div>
+
+        <div class="sf-board-inner">
+          <div class="sf-empty" id="sfEmpty">
+            Aún no hay mensajes. Puedes ser la primera persona en dejar unas palabras de apoyo 💛
+          </div>
+          <div class="sf-thread-list" id="sfThreadList" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <form class="sf-form" id="sfForm">
+        <input
+          type="text"
+          id="sfAlias"
+          class="sf-alias"
+          placeholder="Alias (opcional)"
+        >
+
+        <div class="sf-input-row">
+          <input
+            type="text"
+            id="sfText"
+            class="sf-input"
+            placeholder="Añade un comentario de apoyo…"
+            autocomplete="off"
+          >
+          <button type="submit" class="sf-send-btn">enviar</button>
+        </div>
+
+        <div class="sf-footer-row">
+          <span class="sf-cooldown small" id="sfCooldownMsg"></span>
+        </div>
+      </form>
     </div>
-    <textarea id="postText" rows="3" placeholder="Comparte con respeto."></textarea>
-    <div class="forum-actions"><button class="btn" id="postBtn">Publicar</button></div>
-    <div class="forum-list" id="forumList" aria-live="polite"></div>
   </section>
+
+  <!-- Modal de hilo -->
+  <div class="thread-modal" id="threadModal" hidden>
+  <div class="thread-backdrop"></div>
+  <div class="thread-window" role="dialog" aria-modal="true" aria-labelledby="threadTitle">
+    <button type="button" class="thread-close" id="threadCloseBtn" aria-label="Cerrar hilo">×</button>
+
+    <h3 id="threadTitle" class="thread-title">Hilo de apoyo</h3>
+
+    <div class="thread-scroll" id="threadScroll"></div>
+
+    <form class="thread-reply-form" id="threadReplyForm">
+      <input
+        type="text"
+        id="threadReplyText"
+        class="thread-reply-input"
+        placeholder="Escribe una respuesta de apoyo…"
+        autocomplete="off"
+      >
+      <button type="submit" class="thread-reply-btn">Responder</button>
+    </form>
+  </div>
+</div>
+
+
 
   <!-- ===== AYUDA ===== -->
   <section id="ayuda" class="section help gate-keep hidden" aria-labelledby="ayudaTitle" data-bg="ayuda">
