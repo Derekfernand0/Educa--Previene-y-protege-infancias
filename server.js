@@ -60,14 +60,13 @@ const verificationCodes = {}; // { email: { code, userId, expiresAt } }
 
 // --- nodemailer ---
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT || 587),
-  secure:false,
-  auth:{
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS
+  service: "gmail",
+  auth: {
+    user: "kiva.proyecto@gmail.com",        // ej: "kiva.proyecto@gmail.com"
+    pass: "qsyu eyes hgkl wsuf"  // el código de 16 caracteres
   }
 });
+
 
 // --- API /api/me ---
 app.get("/api/me", async (req,res) => {
@@ -126,17 +125,21 @@ app.post("/api/signup", upload.single("avatar"), async (req,res) => {
     };
 
     // enviar correo (en desarrollo puedes solo console.log)
-    if (process.env.SMTP_HOST){
-      await transporter.sendMail({
-        from: process.env.SMTP_FROM || process.env.SMTP_USER,
-        to: emailLower,
-        subject: "Código de verificación KIVA",
-        text: `Tu código de verificación es: ${code}`,
-        html: `<p>Tu código de verificación es: <strong>${code}</strong></p>`
-      });
-    }else{
-      console.log("Código de verificación para", emailLower, "=>", code);
-    }
+// enviar correo con el código
+try {
+  await transporter.sendMail({
+    from: "KIVA <TU_CORREO_GMAIL_AQUI>",   // opcional, solo para que se vea bonito
+    to: emailLower,
+    subject: "Código de verificación KIVA",
+    text: `Tu código de verificación es: ${code}`,
+    html: `<p>Tu código de verificación es: <strong>${code}</strong></p>`
+  });
+  console.log("Código de verificación enviado a", emailLower, "=>", code);
+} catch (err) {
+  console.error("Error al enviar el correo:", err);
+  return res.status(500).json({ error:"No se pudo enviar el correo de verificación." });
+}
+
 
     res.json({ needsVerification:true });
 

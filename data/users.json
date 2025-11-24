@@ -11,14 +11,14 @@
     "createdAt": 1763946354922
   },
   {
-    "id": "u_micgm7va",
+    "id": "u_micgw7ti",
     "email": "almn.dereksolis@cbtis66.edu.mx",
-    "firstName": "Diker",
-    "lastName": "francisco salomon",
+    "firstName": "Derek Fernando",
+    "lastName": "Solis Amador",
     "alias": "Derek",
-    "passwordHash": "$2b$10$4kEDuGyt6VlNFaJZDXX8q.Utumio1r/mbQNc2koOFBWT11y.IeZ9a",
+    "passwordHash": "$2b$10$6YJNQaUJ0HXZ0SIL7QIWK.YXgv5/6ntz8dnB4eHmiyauRE6fWbqHK",
     "avatarPath": null,
-    "verified": false,
-    "createdAt": 1763947196758
+    "verified": true,
+    "createdAt": 1763947663254
   }
 ]
