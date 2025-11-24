@@ -2437,3 +2437,246 @@ body[data-theme="dark"] .thread-window{
   background: rgba(120,120,120,.25);
   border-radius: 999px;
 }
+
+/* =====================================
+   MODAL DE AUTENTICACIÓN (cuentas)
+===================================== */
+
+.auth-modal{
+  position:fixed;
+  inset:0;
+  z-index:40;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:"Nunito", system-ui;
+}
+
+.auth-modal[hidden]{
+  display:none !important;
+}
+
+.auth-backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(15,23,42,.55);
+  backdrop-filter:blur(6px);
+}
+
+/* Ventana */
+
+.auth-window{
+  position:relative;
+  z-index:1;
+  width:min(460px, 94vw);
+  max-height:82vh;
+  border-radius:22px;
+  border:1px solid var(--line);
+  background:linear-gradient(
+    180deg,
+    color-mix(in oklab,var(--card) 90%, var(--blue) 10%),
+    color-mix(in oklab,var(--card) 90%, var(--pink) 10%)
+  );
+  box-shadow:var(--shadow-lg);
+  padding:16px 18px 12px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.auth-close{
+  position:absolute;
+  top:8px;
+  right:10px;
+  border:none;
+  background:transparent;
+  font-size:20px;
+  cursor:pointer;
+}
+
+/* Tabs */
+
+.auth-tabs{
+  display:inline-flex;
+  border-radius:999px;
+  padding:2px;
+  background:color-mix(in oklab,#ffffff 70%, var(--lilac) 30%);
+  margin-bottom:8px;
+}
+
+.auth-tab{
+  border:none;
+  background:transparent;
+  padding:6px 14px;
+  border-radius:999px;
+  font-family:"Fredoka";
+  font-size:.9rem;
+  cursor:pointer;
+  color:var(--ink-2);
+}
+
+.auth-tab.is-active{
+  background:#fff;
+  box-shadow:var(--shadow-sm);
+}
+
+/* Formularios */
+
+.auth-form{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  overflow:auto;
+  padding-right:4px;
+}
+
+.auth-form.is-hidden{
+  display:none;
+}
+
+.auth-title{
+  margin:0 0 4px;
+}
+
+.auth-field{
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  font-size:.85rem;
+}
+
+.auth-field span{
+  font-weight:700;
+}
+
+.auth-field input{
+  border-radius:999px;
+  border:1px solid var(--line);
+  padding:7px 11px;
+  font-size:.9rem;
+  background:#fff;
+}
+
+.auth-main-btn{
+  margin-top:6px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  padding:8px 14px;
+  background:linear-gradient(90deg,#FFD6E7,#CFEAFF);
+  font-family:"Fredoka";
+  font-size:.95rem;
+  cursor:pointer;
+  box-shadow:var(--shadow-sm);
+}
+
+.auth-main-btn:hover{
+  transform:translateY(-1px);
+}
+
+/* Grid nombres */
+
+.auth-grid-two{
+  display:grid;
+  gap:8px;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+}
+
+/* Mensajes */
+
+.auth-error{
+  min-height:1.2em;
+  color:#b91c1c;
+}
+
+.auth-footer{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:4px;
+}
+
+.auth-logout-btn{
+  border-radius:999px;
+  border:1px solid var(--line);
+  padding:4px 10px;
+  background:#fff;
+  cursor:pointer;
+  font-size:.8rem;
+}
+
+/* Modo oscuro */
+
+body[data-theme="dark"] .auth-window{
+  background:linear-gradient(
+    180deg,
+    color-mix(in oklab,var(--card) 90%, #020617 10%),
+    color-mix(in oklab,var(--card) 85%, #020617 15%)
+  );
+}
+
+.auth-pass-wrap{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.auth-pass-wrap input{
+  flex:1;
+}
+
+.auth-toggle-pass{
+  border:none;
+  background:transparent;
+  cursor:pointer;
+  font-size:1rem;
+  padding:4px;
+  line-height:1;
+}
+
+.auth-toggle-pass:hover{
+  transform:scale(1.05);
+}
+
+.auth-pass-wrap{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.auth-pass-wrap input{
+  flex:1;
+}
+
+.auth-toggle-pass{
+  cursor:pointer;
+  font-size:1rem;
+  padding:4px;
+  line-height:1;
+  user-select:none;
+}
+
+.auth-toggle-pass:hover{
+  transform:scale(1.05);
+}
+
+.auth-verify-block{
+  margin-top:12px;
+  padding-top:10px;
+  border-top:1px dashed var(--line);
+}
+
+.auth-verify-row{
+  display:flex;
+  gap:8px;
+  margin-top:6px;
+}
+
+.auth-verify-row input{
+  flex:1;
+}
+
+.auth-main-btn--secondary{
+  background:var(--card);
+  color:var(--ink);
+  border:1px solid var(--ring);
+}

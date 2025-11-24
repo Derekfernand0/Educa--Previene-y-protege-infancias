@@ -1,0 +1,24 @@
+[
+  {
+    "id": "u_micg46ay",
+    "email": "usuario1@gmail.com",
+    "firstName": "usuario1",
+    "lastName": "apellido1",
+    "alias": "Camila_uwu",
+    "passwordHash": "$2b$10$y2qLBnqzK4/CMYA2vcFuOuCqIBs1O9AA.0bo9yI6lVluJ5RxEJ5KC",
+    "avatarPath": null,
+    "verified": true,
+    "createdAt": 1763946354922
+  },
+  {
+    "id": "u_micgm7va",
+    "email": "almn.dereksolis@cbtis66.edu.mx",
+    "firstName": "Diker",
+    "lastName": "francisco salomon",
+    "alias": "Derek",
+    "passwordHash": "$2b$10$4kEDuGyt6VlNFaJZDXX8q.Utumio1r/mbQNc2koOFBWT11y.IeZ9a",
+    "avatarPath": null,
+    "verified": false,
+    "createdAt": 1763947196758
+  }
+]

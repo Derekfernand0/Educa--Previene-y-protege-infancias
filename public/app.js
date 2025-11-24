@@ -1128,40 +1128,38 @@ if (denunciaSection){
   
 }
 
-/* ===== Foro nuevo: hilos sencillos en front ===== */
+/* =====================================
+   FORO DE APOYO (front, hilos sencillos)
+===================================== */
 (() => {
   const foro = $("#foro");
   if (!foro) return;
 
-  const strip = $("#sfThreadStrip");
-  const list = $("#sfThreadList");
-  const emptyMsg = $("#sfEmpty");
-  const form = $("#sfForm");
-  const input = $("#sfText");
-  const aliasInput = $("#sfAlias");
-  const anonChk = $("#sfAnon");
-  const cooldownMsg = $("#sfCooldownMsg");
-  const accountBtn = $("#sfAccountStub");
+  const strip        = $("#sfThreadStrip");
+  const list         = $("#sfThreadList");
+  const emptyMsg     = $("#sfEmpty");
+  const form         = $("#sfForm");
+  const input        = $("#sfText");
+  const cooldownMsg  = $("#sfCooldownMsg");
+  const userStateLbl = $("#sfUserState");
 
-  const modal = $("#threadModal");
+  const modal         = $("#threadModal");
   const modalBackdrop = modal ? $(".thread-backdrop", modal) : null;
-  const modalClose = $("#threadCloseBtn");
-  const threadScroll = $("#threadScroll");
-  const replyForm = $("#threadReplyForm");
-  const replyInput = $("#threadReplyText");
+  const modalClose    = $("#threadCloseBtn");
+  const threadScroll  = $("#threadScroll");
+  const replyForm     = $("#threadReplyForm");
+  const replyInput    = $("#threadReplyText");
 
-  const ANON_COOLDOWN_MS = 15000; // 15 segundos
-  const LAST_ANON_KEY = "kiva_forum_last_anon";
+  const LAST_ANON_KEY    = "kiva_forum_last_anon";
+  const ANON_COOLDOWN_MS = 15000; // 15s para anónimos
 
   let threads = [];
   let activeThreadId = null;
-  let isLoggedIn = false; // hasta que toquen "crear cuenta"
+  let currentUser = (window.kivaAuth && window.kivaAuth.user) || null;
 
-  function now() {
-    return Date.now();
-  }
+  function now(){ return Date.now(); }
 
-  function timeAgo(ts) {
+  function timeAgo(ts){
     const diff = Math.max(0, now() - ts);
     const s = Math.floor(diff / 1000);
     if (s < 60) return "hace unos segundos";
@@ -1171,127 +1169,122 @@ if (denunciaSection){
     return `hace ${h} h`;
   }
 
-  function canPostAnon() {
+  function escapeHtml(str){
+    return String(str || "")
+      .replace(/&/g,"&amp;")
+      .replace(/</g,"&lt;")
+      .replace(/>/g,"&gt;");
+  }
+
+  function displayUserState(){
+    if (!userStateLbl) return;
+    if (!currentUser){
+      userStateLbl.innerHTML = `Publicarás como <strong>Anónimo</strong>`;
+    }else{
+      const niceName = currentUser.alias && currentUser.alias.trim()
+        ? currentUser.alias
+        : `${currentUser.firstName} ${currentUser.lastName}`.trim();
+      userStateLbl.innerHTML = `Publicarás como <strong>${niceName}</strong>`;
+    }
+  }
+
+  function canPostAnon(){
     const last = Number(localStorage.getItem(LAST_ANON_KEY) || "0");
     const diff = now() - last;
-    if (diff >= ANON_COOLDOWN_MS) return { ok: true, wait: 0 };
-    return { ok: false, wait: Math.ceil((ANON_COOLDOWN_MS - diff) / 1000) };
+    if (diff >= ANON_COOLDOWN_MS) return { ok:true, wait:0 };
+    return { ok:false, wait:Math.ceil((ANON_COOLDOWN_MS - diff)/1000) };
   }
 
-  function updateCooldownLabel() {
-    if (!anonChk.checked) {
-      // con cuenta o no anónimo -> dejamos este espacio para mensajitos del foro
-      return;
-    }
-    const { ok, wait } = canPostAnon();
-    if (ok) {
-      cooldownMsg.textContent = "Puedes enviar un mensaje anónimo.";
-    } else {
-      cooldownMsg.textContent = `Espera ${wait}s para enviar otro mensaje anónimo.`;
-    }
-  }
-
-  // Simular “crear cuenta”
-  if (accountBtn) {
-    accountBtn.addEventListener("click", () => {
-      isLoggedIn = !isLoggedIn;
-
-      const textSpan = accountBtn.querySelector("span");
-      if (isLoggedIn) {
-        accountBtn.classList.add("is-logged");
-        if (textSpan) textSpan.textContent = "con cuenta";
-        if (cooldownMsg) {
-          cooldownMsg.textContent = "Ahora puedes dar like a los mensajes 💛";
-        }
-      } else {
-        accountBtn.classList.remove("is-logged");
-        if (textSpan) textSpan.textContent = "crear cuenta";
-        if (cooldownMsg) cooldownMsg.textContent = "";
-      }
-    });
-  }
-
-  /** Escapar HTML sencillo */
-  function escapeHtml(str) {
-    return String(str || "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
-  }
-
-  /** Crear nuevo hilo raíz */
-  function createThread(text, alias, isAnon) {
+  function createThread(text){
     const id = "t_" + Math.random().toString(36).slice(2);
-    const thread = {
+    const isAnon = !currentUser;
+    const t = {
       id,
       text: text.trim(),
-      alias: alias.trim() || (isAnon ? "Anónimo" : "Usuario"),
       isAnon,
+      user: currentUser ? {
+        id: currentUser.id,
+        firstName: currentUser.firstName,
+        lastName: currentUser.lastName,
+        alias: currentUser.alias || null
+      } : null,
       likes: 0,
       likedByCurrentUser: false,
       createdAt: now(),
       replies: []
     };
-    threads.push(thread);
-    return thread;
+    threads.push(t);
+    return t;
   }
 
-  /** Añadir respuesta a un hilo existente */
-  function addReply(threadId, text, isAnon) {
-    const t = threads.find((x) => x.id === threadId);
+  function addReply(threadId, text){
+    const t = threads.find(x => x.id === threadId);
     if (!t) return null;
+    const isAnon = !currentUser;
     t.replies.push({
       id: "r_" + Math.random().toString(36).slice(2),
       text: text.trim(),
       isAnon,
+      user: currentUser ? {
+        id: currentUser.id,
+        firstName: currentUser.firstName,
+        lastName: currentUser.lastName,
+        alias: currentUser.alias || null
+      } : null,
       createdAt: now()
     });
     return t;
   }
 
-  /** Render principal */
-  function render() {
-    if (!list || !strip) return;
+  function threadDisplayName(t){
+    if (t.isAnon || !t.user) return "Anónimo";
+    const { alias, firstName, lastName } = t.user;
+    if (alias && alias.trim()) return alias;
+    return `${firstName} ${lastName}`.trim();
+  }
 
-    const sorted = [...threads].sort((a, b) => b.createdAt - a.createdAt);
+  function replyDisplayName(r){
+    if (r.isAnon || !r.user) return "Anónimo";
+    const { alias, firstName, lastName } = r.user;
+    if (alias && alias.trim()) return alias;
+    return `${firstName} ${lastName}`.trim();
+  }
 
-    // mensaje vacío
-    if (!sorted.length) {
-      emptyMsg.style.display = "block";
-    } else {
-      emptyMsg.style.display = "none";
+  function render(){
+    if (!strip || !list) return;
+
+    const sorted = [...threads].sort((a,b) => b.createdAt - a.createdAt);
+
+    if (!sorted.length){
+      if (emptyMsg) emptyMsg.style.display = "block";
+    }else{
+      if (emptyMsg) emptyMsg.style.display = "none";
     }
 
-// ordenar por likes descendente:
-const topLiked = [...threads]
-  .sort((a,b) => b.likes - a.likes)
-  .slice(0, 6);
+    // tira superior: los más likeados
+    const topLiked = [...threads].sort((a,b) => b.likes - a.likes).slice(0,6);
+    strip.innerHTML = "";
+    topLiked.forEach(t => {
+      const card = document.createElement("button");
+      card.type = "button";
+      card.className = "sf-strip-card";
+      card.innerHTML = `
+        <div class="sf-strip-text">${escapeHtml(t.text.slice(0,40))}</div>
+        <div class="sf-strip-heart">❤ ${t.likes}</div>
+      `;
+      card.addEventListener("click", () => openThread(t.id));
+      strip.appendChild(card);
+    });
 
-strip.innerHTML = "";
-topLiked.forEach(t => {
-  const card = document.createElement("button");
-  card.type = "button";
-  card.className = "sf-strip-card";
-  card.innerHTML = `
-    <div class="sf-strip-text">${escapeHtml(t.text.slice(0, 40))}</div>
-    <div class="sf-strip-heart">❤ ${t.likes}</div>
-  `;
-  card.addEventListener("click",()=>openThread(t.id));
-  strip.appendChild(card);
-});
-
-
-    // lista grande
+    // lista principal
     list.innerHTML = "";
-    sorted.forEach((t) => {
-      const rootReplies = t.replies.length;
+    sorted.forEach(t => {
       const card = document.createElement("article");
       card.className = "sf-thread-card";
       card.dataset.threadId = t.id;
-
       card.innerHTML = `
         <div class="sf-thread-meta">
-          <span>${t.alias || (t.isAnon ? "Anónimo" : "Usuario")}</span>
+          <span>${threadDisplayName(t)}</span>
           <span>${timeAgo(t.createdAt)}</span>
         </div>
         <div class="sf-thread-text">${escapeHtml(t.text)}</div>
@@ -1301,49 +1294,43 @@ topLiked.forEach(t => {
             <span>${t.likes}</span>
           </span>
           <span class="sf-reply-count">
-            💬 <span>${rootReplies}</span> respuestas
+            💬 <span>${t.replies.length}</span> respuestas
           </span>
         </div>
       `;
 
-      // abrir hilo al hacer clic en la tarjeta (menos el botón de like)
-      card.addEventListener("click", (ev) => {
+      // abrir modal al click (menos en el botón)
+      card.addEventListener("click", ev => {
         if (ev.target.closest("button")) return;
         openThread(t.id);
       });
 
-      // like con cuenta + 1 vez
       const likeBtn = card.querySelector(".sf-heart-btn");
-      likeBtn.addEventListener("click", (ev) => {
+      likeBtn.addEventListener("click", ev => {
         ev.stopPropagation();
 
-        // necesita cuenta
-        if (!isLoggedIn) {
-          if (cooldownMsg) {
+        if (!currentUser){
+          if (cooldownMsg){
             cooldownMsg.textContent = "Necesitas una cuenta para dar like 💛";
           }
           return;
         }
 
-        // ya dio like antes
-        if (t.likedByCurrentUser) {
-          return;
-        }
+        if (t.likedByCurrentUser) return;
 
         t.likedByCurrentUser = true;
         t.likes++;
         render();
 
-        // animación de latido en la tarjeta recién pintada
         const refreshedBtn = list.querySelector(
           `.sf-thread-card[data-thread-id="${t.id}"] .sf-heart-btn`
         );
-        if (refreshedBtn) {
+        if (refreshedBtn){
           refreshedBtn.classList.add("is-pulsing");
           setTimeout(() => refreshedBtn.classList.remove("is-pulsing"), 450);
         }
 
-        if (activeThreadId === t.id) {
+        if (activeThreadId === t.id){
           renderThread(t);
         }
       });
@@ -1352,50 +1339,44 @@ topLiked.forEach(t => {
     });
   }
 
-  /** Abrir modal de hilo */
-  function openThread(id) {
-    const t = threads.find((x) => x.id === id);
-    if (!t || !modal) return;
+  function openThread(id){
+    if (!modal) return;
+    const t = threads.find(x => x.id === id);
+    if (!t) return;
     activeThreadId = id;
     renderThread(t);
     modal.hidden = false;
     document.documentElement.style.overflow = "hidden";
-    if (replyInput) {
+    if (replyInput){
       replyInput.value = "";
       replyInput.focus();
     }
   }
 
-  /** Cerrar modal */
-  function closeThread() {
+  function closeThread(){
     if (!modal) return;
     modal.hidden = true;
     document.documentElement.style.overflow = "";
     activeThreadId = null;
   }
 
-  /** Render del contenido del hilo dentro del modal */
-  function renderThread(t) {
+  function renderThread(t){
     if (!threadScroll) return;
     threadScroll.innerHTML = "";
 
     const root = document.createElement("div");
     root.className = "thread-msg";
     root.innerHTML = `
-      <div class="thread-msg-meta">${t.alias} · ${timeAgo(
-      t.createdAt
-    )}</div>
+      <div class="thread-msg-meta">${threadDisplayName(t)} · ${timeAgo(t.createdAt)}</div>
       <div class="thread-msg-text">${escapeHtml(t.text)}</div>
     `;
     threadScroll.appendChild(root);
 
-    t.replies.forEach((r) => {
+    t.replies.forEach(r => {
       const el = document.createElement("div");
       el.className = "thread-msg";
       el.innerHTML = `
-        <div class="thread-msg-meta">${r.isAnon ? "Anónimo" : "Usuario"} · ${timeAgo(
-        r.createdAt
-      )}</div>
+        <div class="thread-msg-meta">${replyDisplayName(r)} · ${timeAgo(r.createdAt)}</div>
         <div class="thread-msg-text">${escapeHtml(r.text)}</div>
       `;
       threadScroll.appendChild(el);
@@ -1404,74 +1385,340 @@ topLiked.forEach(t => {
     threadScroll.scrollTop = threadScroll.scrollHeight;
   }
 
-  /* === Eventos formulario principal === */
-  form.addEventListener("submit", (ev) => {
+  // formulario principal
+  form.addEventListener("submit", ev => {
     ev.preventDefault();
     const text = input.value.trim();
     if (!text) return;
 
-    const isAnon = anonChk.checked;
-    const alias = aliasInput.value || "";
-
-    if (isAnon) {
+    // si no hay cuenta, aplicar cooldown
+    if (!currentUser){
       const { ok, wait } = canPostAnon();
-      if (!ok) {
-        cooldownMsg.textContent = `Espera ${wait}s para enviar otro mensaje anónimo.`;
+      if (!ok){
+        if (cooldownMsg){
+          cooldownMsg.textContent = `Espera ${wait}s para enviar otro mensaje anónimo.`;
+        }
         return;
       }
       localStorage.setItem(LAST_ANON_KEY, String(now()));
     }
 
-    createThread(text, alias, isAnon);
+    createThread(text);
     input.value = "";
     render();
-    updateCooldownLabel();
   });
 
-  // Modal: cerrar
-  if (modalBackdrop) {
+  // modal hilo: cerrar
+  if (modalBackdrop){
     modalBackdrop.addEventListener("click", closeThread);
   }
-  if (modalClose) {
+  if (modalClose){
     modalClose.addEventListener("click", closeThread);
   }
 
-  // Responder dentro del hilo
-  if (replyForm) {
-    replyForm.addEventListener("submit", (ev) => {
+  // responder dentro del hilo
+  if (replyForm){
+    replyForm.addEventListener("submit", ev => {
       ev.preventDefault();
       if (!activeThreadId) return;
       const text = replyInput.value.trim();
       if (!text) return;
-      const isAnon = anonChk.checked; // usa el mismo toggle de arriba
-      const t = addReply(activeThreadId, text, isAnon);
+      const t = addReply(activeThreadId, text);
       replyInput.value = "";
-      if (t) {
+      if (t){
         renderThread(t);
         render();
       }
     });
   }
 
-  // actualizar mensaje de cooldown al cambiar anónimo
-  anonChk.addEventListener("change", updateCooldownLabel);
-  updateCooldownLabel();
+  // escuchar cambios de usuario desde auth
+  document.addEventListener("kiva:user-changed", ev => {
+    currentUser = ev.detail.user || null;
+    displayUserState();
+  });
 
-  // datos de ejemplo iniciales (puedes borrarlos si quieres comenzar vacío)
+  // estado inicial
+  displayUserState();
+
+  // datos de ejemplo (puedes quitarlos luego)
   threads = [];
-  createThread(
-    "Quiero decirte que pedir ayuda es valiente. No estás sola/o.",
-    "Luz",
-    true
-  );
-  createThread(
-    "Leer estas historias me recuerda que también puedo hablar.",
-    "Anónimo",
-    true
-  );
-  threads[0].likes = 3;
-  threads[1].likes = 1;
+  const t1 = createThread("Quiero decirte que pedir ayuda es valiente. No estás sola/o.");
+  const t2 = createThread("Leer estas historias me recuerda que también puedo hablar.");
+  t1.likes = 3;
+  t2.likes = 1;
 
   render();
 })();
 
+/* =====================================
+   AUTENTICACIÓN: signup / login / logout
+===================================== */
+(() => {
+  const authModal     = $("#authModal");
+  if (!authModal) return;
+
+  const authBackdrop  = $(".auth-backdrop", authModal);
+  const authCloseBtn  = $("#authCloseBtn");
+  const tabLogin      = $("#authTabLogin");
+  const tabSignup     = $("#authTabSignup");
+  const formLogin     = $("#authLoginForm");
+  const formSignup    = $("#authSignupForm");
+  const loginUser     = $("#loginUser");
+  const loginPassword = $("#loginPassword");
+  const signupFirst   = $("#signupFirstName");
+  const signupLast    = $("#signupLastName");
+  const signupEmail   = $("#signupEmail");
+  const signupPass      = $("#signupPassword");
+  const signupAlias     = $("#signupAlias");
+  const signupAvatarFile= $("#signupAvatarFile");
+  const loginErr        = $("#authLoginError");
+  const signupErr       = $("#authSignupError");
+  const authStatusMsg   = $("#authStatusMsg");
+
+  // elementos para verificación por código
+  const authVerifyBlock = $("#authVerifyBlock");
+  const signupCode      = $("#signupCode");
+  const btnVerifyCode   = $("#btnVerifyCode");
+  const authVerifyError = $("#authVerifyError");
+
+  const logoutBtn     = $("#authLogoutBtn");
+
+  const openAuthBtn   = $("#sfOpenAuth");
+  const userStateLbl  = $("#sfUserState");
+
+  let currentUser = null;
+
+  // Mostrar / ocultar contraseña (ojito sencillo, sin navegar)
+  document.querySelectorAll(".auth-toggle-pass").forEach(toggle => {
+    // Evita que el mousedown dispare otros manejadores raros
+    toggle.addEventListener("mousedown", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    toggle.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();   // <- importantísimo
+
+      const id = toggle.dataset.target;
+      const input = document.getElementById(id);
+      if (!input) return;
+
+      const isPassword = input.type === "password";
+      input.type = isPassword ? "text" : "password";
+      toggle.textContent = isPassword ? "🙈" : "👁";
+      return false; // por si algún handler viejo mira el retorno
+    });
+  });
+
+
+
+  async function apiGet(url){
+    try{
+      const res  = await fetch(url,{ credentials:"include" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Error de servidor");
+      return data;
+    }catch(err){
+      throw err;
+    }
+  }
+
+  async function apiPost(url, body){
+    try{
+      const res  = await fetch(url,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        credentials:"include",
+        body:JSON.stringify(body || {})
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Error de servidor");
+      return data;
+    }catch(err){
+      throw err;
+    }
+  }
+
+  function toggleMode(mode){
+    const isLogin = mode === "login";
+    if (tabLogin)  tabLogin.classList.toggle("is-active", isLogin);
+    if (tabSignup) tabSignup.classList.toggle("is-active", !isLogin);
+    if (formLogin) formLogin.classList.toggle("is-hidden", !isLogin);
+    if (formSignup) formSignup.classList.toggle("is-hidden", isLogin);
+  }
+
+  function openModal(mode="login"){
+    toggleMode(mode);
+    authModal.hidden = false;
+    document.documentElement.style.overflow = "hidden";
+    if (loginErr)  loginErr.textContent  = "";
+    if (signupErr) signupErr.textContent = "";
+
+    if (mode === "login" && loginUser){
+      loginUser.focus();
+    }else if (signupFirst){
+      signupFirst.focus();
+    }
+  }
+
+  function closeModal(){
+    authModal.hidden = true;
+    document.documentElement.style.overflow = "";
+  }
+
+  function displayUserState(){
+    if (!userStateLbl) return;
+    if (!currentUser){
+      userStateLbl.innerHTML = `Publicarás como <strong>Anónimo</strong>`;
+    }else{
+      const niceName = currentUser.alias && currentUser.alias.trim()
+        ? currentUser.alias
+        : `${currentUser.firstName} ${currentUser.lastName}`.trim();
+      userStateLbl.innerHTML = `Publicarás como <strong>${niceName}</strong>`;
+    }
+  }
+
+  function setUser(user){
+    currentUser = user || null;
+    displayUserState();
+
+    if (logoutBtn){
+      logoutBtn.hidden = !currentUser;
+    }
+
+    window.kivaAuth = window.kivaAuth || {};
+    window.kivaAuth.user = currentUser;
+
+    const ev = new CustomEvent("kiva:user-changed",{ detail:{ user: currentUser }});
+    document.dispatchEvent(ev);
+  }
+
+  openAuthBtn?.addEventListener("click", () => {
+    openModal(currentUser ? "login" : "signup");
+  });
+
+  authBackdrop?.addEventListener("click", closeModal);
+  authCloseBtn?.addEventListener("click", closeModal);
+
+  tabLogin?.addEventListener("click", () => toggleMode("login"));
+  tabSignup?.addEventListener("click", () => toggleMode("signup"));
+
+  formLogin?.addEventListener("submit", async e => {
+    e.preventDefault();
+    if (loginErr) loginErr.textContent = "";
+    try{
+      const data = await apiPost("/api/login",{
+        login: loginUser.value,
+        password: loginPassword.value
+      });
+      setUser(data.user);
+      if (authStatusMsg) authStatusMsg.textContent = "Inicio de sesión correcto 💛";
+      closeModal();
+    }catch(err){
+      if (loginErr) loginErr.textContent = err.message || "No se pudo iniciar sesión";
+    }
+  });
+
+  formSignup?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (signupErr) signupErr.textContent = "";
+    if (authVerifyError) authVerifyError.textContent = "";
+
+    try{
+      const fd = new FormData();
+      fd.append("email",      signupEmail.value);
+      fd.append("firstName",  signupFirst.value);
+      fd.append("lastName",   signupLast.value);
+      fd.append("password",   signupPass.value);
+      fd.append("alias",      signupAlias.value);
+
+      if (signupAvatarFile && signupAvatarFile.files[0]){
+        fd.append("avatar", signupAvatarFile.files[0]);
+      }
+
+      const res  = await fetch("/api/signup",{
+        method:"POST",
+        credentials:"include",
+        body: fd
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok){
+        throw new Error(data.error || "No se pudo crear la cuenta");
+      }
+
+      if (data.needsVerification){
+        if (authStatusMsg){
+          authStatusMsg.textContent = "Te enviamos un código a tu correo. Revísalo 💛";
+        }
+        if (authVerifyBlock){
+          authVerifyBlock.classList.remove("is-hidden");
+        }
+        // NO llamamos a setUser todavía: esperamos a que verifique el código
+      }else if (data.user){
+        setUser(data.user);
+        if (authStatusMsg) authStatusMsg.textContent = "Cuenta creada y sesión iniciada 💛";
+        closeModal();
+      }
+    }catch(err){
+      if (signupErr) signupErr.textContent = err.message || "No se pudo crear la cuenta";
+    }
+  });
+
+    // Verificar código enviado al correo
+  btnVerifyCode?.addEventListener("click", async () => {
+    if (authVerifyError) authVerifyError.textContent = "";
+    try{
+      const code = (signupCode?.value || "").trim();
+      if (!code){
+        throw new Error("Escribe el código que te llegó al correo.");
+      }
+
+      const res  = await fetch("/api/verify-email",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        credentials:"include",
+        body: JSON.stringify({
+          email: signupEmail.value,
+          code
+        })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok){
+        throw new Error(data.error || "Código incorrecto");
+      }
+
+      if (data.user){
+        setUser(data.user);
+        if (authStatusMsg) authStatusMsg.textContent = "Correo verificado y sesión iniciada 💛";
+        closeModal();
+      }
+    }catch(err){
+      if (authVerifyError) authVerifyError.textContent = err.message || "No se pudo verificar el código";
+    }
+  });
+
+
+
+  logoutBtn?.addEventListener("click", async () => {
+    try{
+      await apiPost("/api/logout",{});
+    }catch{}
+    setUser(null);
+    if (authStatusMsg) authStatusMsg.textContent = "Sesión cerrada.";
+  });
+
+  (async () => {
+    try{
+      const data = await apiGet("/api/me");
+      setUser(data.user);
+      if (data.user && authStatusMsg){
+        authStatusMsg.textContent = "Sesión activa.";
+      }
+    }catch{
+      setUser(null);
+    }
+  })();
+
+})();
