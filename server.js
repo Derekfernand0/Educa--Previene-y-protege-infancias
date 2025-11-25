@@ -8,7 +8,6 @@ const bcrypt = require("bcryptjs");
 const multer = require("multer");
 const session = require("express-session");
 const nodemailer = require("nodemailer");
-const bcrypt = require("bcryptjs");
 const rateLimit = require("express-rate-limit");
 
 const app = express();
