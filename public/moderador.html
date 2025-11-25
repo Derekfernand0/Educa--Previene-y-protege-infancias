@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <title>Panel de moderación — KIVA</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body{
+      background:#f6f3ff;
+    }
+    .mod-shell{
+      max-width:1200px;
+      margin:24px auto;
+      padding:16px 20px 40px;
+      background:rgba(255,255,255,.95);
+      border-radius:20px;
+      box-shadow:var(--shadow-lg);
+      border:1px solid var(--line);
+    }
+    .mod-header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:18px;
+    }
+    .mod-title{
+      font-family:"Fredoka",system-ui;
+      font-size:1.6rem;
+    }
+    .mod-badge{
+      padding:4px 10px;
+      border-radius:999px;
+      font-size:.8rem;
+      border:1px solid var(--line);
+      background:#ffe8f1;
+    }
+    .mod-grid{
+      display:grid;
+      gap:16px;
+      grid-template-columns:2fr 1.6fr;
+    }
+    @media (max-width:900px){
+      .mod-grid{grid-template-columns:1fr;}
+    }
+    .mod-card{
+      background:var(--card);
+      border-radius:18px;
+      border:1px solid var(--line);
+      padding:12px 14px;
+      box-shadow:var(--shadow-sm);
+    }
+    .mod-card h2{
+      margin:0 0 6px;
+      font-size:1.1rem;
+    }
+    .mod-card small{
+      display:block;
+      margin-bottom:8px;
+    }
+    .mod-row{
+      margin-top:8px;
+    }
+    .mod-table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:.85rem;
+    }
+    .mod-table th,
+    .mod-table td{
+      border-bottom:1px solid rgba(0,0,0,.06);
+      padding:4px 6px;
+      text-align:left;
+      vertical-align:top;
+    }
+    .mod-table th{
+      font-weight:800;
+      color:var(--muted);
+    }
+    .mod-table td.actions{
+      white-space:nowrap;
+    }
+    .mod-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+      padding:2px 8px;
+      border-radius:999px;
+      font-size:.75rem;
+      border:1px solid var(--line);
+      background:#f5f2ff;
+    }
+    .mod-btn{
+      font-size:.8rem;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff;
+      cursor:pointer;
+      margin:1px 0;
+    }
+    .mod-btn.danger{
+      background:#ffe5e5;
+      border-color:#ffb3b3;
+    }
+    .mod-btn.soft{
+      background:#e9f3ff;
+      border-color:#c7defd;
+    }
+    .mod-tag{
+      font-size:.75rem;
+      padding:2px 6px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:#fff7de;
+    }
+    .mod-top-line{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:6px;
+      margin-bottom:6px;
+    }
+    .mod-top-line span{
+      font-size:.9rem;
+    }
+    .mod-text-cut{
+      max-width:260px;
+      max-height:2.9em;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      line-clamp:2;
+      -webkit-box-orient:vertical;
+    }
+    .mod-status{
+      font-size:.8rem;
+      color:var(--muted);
+    }
+
+    /* mini-modal para ver un hilo desde el panel */
+    .mod-thread-modal{
+      position:fixed;
+      inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(0,0,0,.35);
+      z-index:50;
+    }
+    .mod-thread-win{
+      width:min(700px, 94vw);
+      max-height:90vh;
+      background:rgba(255,255,255,.98);
+      backdrop-filter:blur(12px);
+      border-radius:20px;
+      border:1px solid var(--line);
+      box-shadow:var(--shadow-lg);
+      padding:14px 14px 16px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .mod-thread-scroll{
+      flex:1;
+      overflow:auto;
+      padding-right:4px;
+    }
+    .mod-thread-close{
+      border:none;
+      background:transparent;
+      font-size:1.4rem;
+      cursor:pointer;
+      align-self:flex-end;
+    }
+  </style>
+</head>
+<body>
+  <div class="mod-shell">
+    <header class="mod-header">
+      <div>
+        <div class="mod-title">Panel de moderación · KIVA</div>
+        <small class="small">Usa este espacio con cuidado. Lo que hagas aquí afecta a la comunidad completa.</small>
+      </div>
+      <div class="mod-badge" id="modUserInfo">Cargando…</div>
+    </header>
+
+    <div class="mod-grid">
+      <!-- Lado izquierdo: foro -->
+      <section class="mod-card" id="modForumCard">
+        <h2>Foro y mensajes</h2>
+        <small>Revisa hilos, borra mensajes específicos o limpia el muro en emergencias.</small>
+
+        <div class="mod-top-line">
+          <span>Estado del foro: <strong id="forumStateLabel">…</strong></span>
+          <button class="mod-btn soft" id="toggleForumBtn">Cambiar estado</button>
+        </div>
+        <small id="forumMsgLabel" class="small"></small>
+
+        <div class="mod-row">
+          <button class="mod-btn danger" id="wipeForumBtn">Borrar TODOS los hilos</button>
+        </div>
+
+        <div class="mod-row">
+          <h3 class="h-doodles" style="margin:10px 0 6px;">Hilos recientes</h3>
+          <table class="mod-table" id="threadsTable">
+            <thead>
+              <tr>
+                <th>Quién</th>
+                <th>Mensaje</th>
+                <th>Datos</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- se llena por JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Lado derecho: usuarios -->
+      <section class="mod-card">
+        <h2>Usuarios</h2>
+        <small>Aplica suspensiones temporales o permanentes cuando sea necesario.</small>
+
+        <div class="mod-row">
+          <table class="mod-table" id="usersTable">
+            <thead>
+              <tr>
+                <th>Alias / nombre</th>
+                <th>Correo</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- se llena por JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- modal ver hilo -->
+  <div class="mod-thread-modal" id="modThreadModal" style="display:none;">
+    <div class="mod-thread-win">
+      <button class="mod-thread-close" id="modThreadCloseBtn" aria-label="Cerrar">×</button>
+      <h3 class="h-doodles" style="margin:0 0 4px;">Hilo completo</h3>
+      <div class="mod-thread-scroll" id="modThreadScroll"></div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const $  = (sel,root=document) => root.querySelector(sel);
+      const $all = (sel,root=document) => Array.from(root.querySelectorAll(sel));
+
+      const userInfoLbl    = $("#modUserInfo");
+      const forumStateLbl  = $("#forumStateLabel");
+      const forumMsgLbl    = $("#forumMsgLabel");
+      const toggleForumBtn = $("#toggleForumBtn");
+      const wipeForumBtn   = $("#wipeForumBtn");
+      const threadsTable   = $("#threadsTable tbody");
+      const usersTable     = $("#usersTable tbody");
+
+      const threadModal    = $("#modThreadModal");
+      const threadScroll   = $("#modThreadScroll");
+      const threadCloseBtn = $("#modThreadCloseBtn");
+
+      let forumConfig = { closed:false, message:"" };
+      let threads     = [];
+      let users       = [];
+
+      async function apiGet(url){
+        const res  = await fetch(url,{ credentials:"include" });
+        const data = await res.json().catch(()=> ({}));
+        if (!res.ok) throw new Error(data.error || "Error de servidor");
+        return data;
+      }
+
+      async function apiSend(url, method, body){
+        const res  = await fetch(url,{
+          method,
+          headers:{"Content-Type":"application/json"},
+          credentials:"include",
+          body: JSON.stringify(body || {})
+        });
+        const data = await res.json().catch(()=> ({}));
+        if (!res.ok) throw new Error(data.error || "Error de servidor");
+        return data;
+      }
+
+      function timeAgo(ts){
+        if (!ts) return "";
+        const diff = Date.now() - ts;
+        const s = Math.floor(diff/1000);
+        if (s < 60) return "hace unos segundos";
+        const m = Math.floor(s/60);
+        if (m < 60) return `hace ${m} min`;
+        const h = Math.floor(m/60);
+        if (h < 24) return `hace ${h} h`;
+        const d = Math.floor(h/24);
+        return `hace ${d} d`;
+      }
+
+      function fmtAlias(u){
+        if (!u) return "Desconocido";
+        if (u.alias && u.alias.trim()) return u.alias.trim();
+        const combo = ((u.firstName || "") + " " + (u.lastName || "")).trim();
+        return combo || "Usuario";
+      }
+
+      function fmtUserStatus(u){
+        if (u.bannedForever) return "Baneado permanente";
+        if (u.bannedUntil && u.bannedUntil > Date.now()){
+          const mins = Math.ceil((u.bannedUntil - Date.now())/60000);
+          return `Suspendido (${mins} min restantes)`;
+        }
+        return "Activo";
+      }
+
+      function renderForumState(){
+        if (!forumConfig) return;
+        forumStateLbl.textContent = forumConfig.closed ? "CERRADO" : "ABIERTO";
+        forumMsgLbl.textContent   = forumConfig.message || "";
+        toggleForumBtn.textContent = forumConfig.closed ? "Abrir foro" : "Cerrar foro";
+      }
+
+      function renderThreads(){
+        threadsTable.innerHTML = "";
+        threads.forEach(t => {
+          const tr = document.createElement("tr");
+
+          const user = users.find(u => u.id === t.userId);
+          const who = user ? fmtAlias(user) : (t.alias || "Alguien");
+
+          const tdWho = document.createElement("td");
+          tdWho.textContent = who;
+
+          const tdMsg = document.createElement("td");
+          tdMsg.innerHTML = `<div class="mod-text-cut">${t.text || ""}</div>`;
+
+          const tdData = document.createElement("td");
+          tdData.innerHTML = `
+            <div class="mod-status">
+              ${timeAgo(t.createdAt || Date.now())}<br>
+              ❤ ${t.likes || 0} · 💬 ${(t.replies || []).length}
+            </div>
+          `;
+
+          const tdAct = document.createElement("td");
+          tdAct.className = "actions";
+
+          const btnView = document.createElement("button");
+          btnView.className = "mod-btn soft";
+          btnView.textContent = "Ver hilo";
+          btnView.addEventListener("click", () => openThreadModal(t));
+
+          const btnDel = document.createElement("button");
+          btnDel.className = "mod-btn danger";
+          btnDel.textContent = "Borrar hilo";
+          btnDel.addEventListener("click", () => deleteThread(t));
+
+          tdAct.appendChild(btnView);
+          tdAct.appendChild(btnDel);
+
+          tr.appendChild(tdWho);
+          tr.appendChild(tdMsg);
+          tr.appendChild(tdData);
+          tr.appendChild(tdAct);
+
+          threadsTable.appendChild(tr);
+        });
+      }
+
+      function renderUsers(){
+        usersTable.innerHTML = "";
+        users.forEach(u => {
+          const tr = document.createElement("tr");
+
+          const tdAlias = document.createElement("td");
+          tdAlias.innerHTML = `
+            <div><strong>${fmtAlias(u)}</strong></div>
+            <div class="small">${u.isAdmin ? "Admin" : "Usuario"}</div>
+          `;
+
+          const tdMail = document.createElement("td");
+          tdMail.textContent = u.email || "";
+
+          const tdState = document.createElement("td");
+          tdState.innerHTML = `<span class="mod-tag">${fmtUserStatus(u)}</span>`;
+
+          const tdAct = document.createElement("td");
+          tdAct.className = "actions";
+
+          // input para ban temporal
+          const inputMins = document.createElement("input");
+          inputMins.type = "number";
+          inputMins.min = "1";
+          inputMins.placeholder = "min";
+          inputMins.style.width = "50px";
+          inputMins.style.fontSize = ".75rem";
+          inputMins.style.marginRight = "4px";
+
+          const btnTemp = document.createElement("button");
+          btnTemp.className = "mod-btn soft";
+          btnTemp.textContent = "Ban temp.";
+          btnTemp.addEventListener("click", async () => {
+            const mins = Number(inputMins.value || "0");
+            if (!mins || mins <= 0){
+              alert("Pon los minutos de suspensión.");
+              return;
+            }
+            if (!confirm(`¿Suspender a ${fmtAlias(u)} durante ${mins} minutos?`)) return;
+            try{
+              await apiSend(`/api/admin/users/${encodeURIComponent(u.id)}/ban-temp`,"POST",{ minutes: mins });
+              await loadUsersAndThreads();
+            }catch(err){
+              alert(err.message);
+            }
+          });
+
+          const btnPerm = document.createElement("button");
+          btnPerm.className = "mod-btn danger";
+          btnPerm.textContent = "Ban permanente";
+          btnPerm.addEventListener("click", async () => {
+            if (!confirm(`¿BANEAR PERMANENTEMENTE a ${fmtAlias(u)}?`)) return;
+            try{
+              await apiSend(`/api/admin/users/${encodeURIComponent(u.id)}/ban-perm`,"POST",{});
+              await loadUsersAndThreads();
+            }catch(err){
+              alert(err.message);
+            }
+          });
+
+          const btnUnban = document.createElement("button");
+          btnUnban.className = "mod-btn";
+          btnUnban.textContent = "Quitar ban";
+          btnUnban.addEventListener("click", async () => {
+            if (!confirm(`¿Quitar todas las suspensiones de ${fmtAlias(u)}?`)) return;
+            try{
+              await apiSend(`/api/admin/users/${encodeURIComponent(u.id)}/unban`,"POST",{});
+              await loadUsersAndThreads();
+            }catch(err){
+              alert(err.message);
+            }
+          });
+
+          tdAct.appendChild(inputMins);
+          tdAct.appendChild(btnTemp);
+          tdAct.appendChild(btnPerm);
+          tdAct.appendChild(btnUnban);
+
+          tr.appendChild(tdAlias);
+          tr.appendChild(tdMail);
+          tr.appendChild(tdState);
+          tr.appendChild(tdAct);
+
+          usersTable.appendChild(tr);
+        });
+      }
+
+      function openThreadModal(thread){
+        threadScroll.innerHTML = "";
+
+        const title = document.createElement("div");
+        title.innerHTML = `
+          <div><strong>${thread.alias || "Alguien"}</strong> — ${timeAgo(thread.createdAt || Date.now())}</div>
+          <div class="small">${thread.text || ""}</div>
+        `;
+        threadScroll.appendChild(title);
+
+        (thread.replies || []).forEach(r => {
+          const row = document.createElement("div");
+          row.className = "thread-msg";
+          row.style.marginTop = "8px";
+          row.innerHTML = `
+            <div class="thread-msg-meta">
+              <strong>${r.alias || (r.isAnon ? "Anónimo" : "Usuario")}</strong> · ${timeAgo(r.createdAt || Date.now())}
+            </div>
+            <div class="thread-msg-text">${r.text || ""}</div>
+          `;
+          const btnDel = document.createElement("button");
+          btnDel.className = "mod-btn danger";
+          btnDel.textContent = "Borrar este comentario";
+          btnDel.style.marginTop = "4px";
+          btnDel.addEventListener("click", async () => {
+            if (!confirm("¿Borrar este comentario?")) return;
+            try{
+              await apiSend(`/api/admin/threads/${encodeURIComponent(thread.id)}/replies/${encodeURIComponent(r.id)}`,"DELETE",{});
+              await loadUsersAndThreads();
+              const updated = threads.find(t => t.id === thread.id);
+              if (updated) openThreadModal(updated);
+            }catch(err){
+              alert(err.message);
+            }
+          });
+          row.appendChild(btnDel);
+          threadScroll.appendChild(row);
+        });
+
+        threadModal.style.display = "flex";
+      }
+
+      function closeThreadModal(){
+        threadModal.style.display = "none";
+      }
+
+      async function deleteThread(t){
+        if (!confirm("¿Borrar todo el hilo? Esta acción no se puede deshacer.")) return;
+        try{
+          await apiSend(`/api/admin/threads/${encodeURIComponent(t.id)}`,"DELETE",{});
+          await loadUsersAndThreads();
+        }catch(err){
+          alert(err.message);
+        }
+      }
+
+      async function loadUsersAndThreads(){
+        const [uData, tData, cfg] = await Promise.all([
+          apiGet("/api/admin/users"),
+          apiGet("/api/admin/threads"),
+          apiGet("/api/admin/forum-config")
+        ]);
+        users       = uData.users || [];
+        threads     = tData.threads || [];
+        forumConfig = cfg || { closed:false, message:"" };
+        renderUsers();
+        renderThreads();
+        renderForumState();
+      }
+
+      // Forzar que solo admin pueda ver esta página
+      async function checkAdmin(){
+        try{
+          const res  = await fetch("/api/me",{ credentials:"include" });
+          const data = await res.json().catch(()=> ({}));
+          if (!res.ok || !data.user){
+            document.body.innerHTML = "<p style='padding:20px;'>Debes iniciar sesión como admin para usar este panel.</p>";
+            return false;
+          }
+          if (!data.user.isAdmin){
+            document.body.innerHTML = "<p style='padding:20px;'>No tienes permisos de moderación.</p>";
+            return false;
+          }
+          userInfoLbl.textContent = `Admin: ${data.user.alias || data.user.email}`;
+          return true;
+        }catch{
+          document.body.innerHTML = "<p style='padding:20px;'>Error al verificar sesión.</p>";
+          return false;
+        }
+      }
+
+      // Eventos
+      toggleForumBtn.addEventListener("click", async () => {
+        const nuevoEstado = !forumConfig.closed;
+        let msg = forumConfig.message || "El foro está en mantenimiento temporal 💛";
+        if (nuevoEstado === true){
+          const custom = prompt("Mensaje que verán las personas al intentar publicar (enter para dejar el actual):", msg);
+          if (custom !== null && custom.trim()){
+            msg = custom.trim();
+          }
+        }
+        try{
+          forumConfig = await apiSend("/api/admin/forum-config","POST",{
+            closed: nuevoEstado,
+            message: msg
+          });
+          renderForumState();
+        }catch(err){
+          alert(err.message);
+        }
+      });
+
+      wipeForumBtn.addEventListener("click", async () => {
+        if (!confirm("¿Borrar TODOS los hilos y comentarios?")) return;
+        if (!confirm("De verdad, ¿segura/o? Esta acción no se puede deshacer.")) return;
+        try{
+          await apiSend("/api/admin/threads","DELETE",{ confirm:true });
+          await loadUsersAndThreads();
+        }catch(err){
+          alert(err.message);
+        }
+      });
+
+      threadCloseBtn.addEventListener("click", closeThreadModal);
+      threadModal.addEventListener("click", (ev) => {
+        if (ev.target === threadModal){
+          closeThreadModal();
+        }
+      });
+
+      // Inicio
+      (async () => {
+        const ok = await checkAdmin();
+        if (!ok) return;
+        try{
+          await loadUsersAndThreads();
+        }catch(err){
+          alert(err.message);
+        }
+      })();
+
+    })();
+  </script>
+</body>
+</html>

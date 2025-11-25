@@ -19,6 +19,19 @@
     "passwordHash": "$2b$10$6YJNQaUJ0HXZ0SIL7QIWK.YXgv5/6ntz8dnB4eHmiyauRE6fWbqHK",
     "avatarPath": null,
     "verified": true,
-    "createdAt": 1763947663254
+    "createdAt": 1763947663254,
+    "isAdmin": true
+  },
+  {
+    "id": "u_midtxfs2",
+    "email": "derek.fernando.solis.amador.130808@gmail.com",
+    "firstName": "Derek Fernando",
+    "lastName": "Solis Amador",
+    "alias": "fluttershy",
+    "passwordHash": "$2b$10$TYWzrg.e2AxfdqMbqVfxc.YkDURRTOYJjdEZ4IZS/W4Qh9gYd86P.",
+    "avatarPath": "/uploads/avatars/40c5e60409e58cafb45ede51be1aef80",
+    "verified": true,
+    "createdAt": 1764030021410,
+    "isAdmin": true
   }
 ]

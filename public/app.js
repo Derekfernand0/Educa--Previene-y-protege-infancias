@@ -1128,9 +1128,7 @@ if (denunciaSection){
   
 }
 
-/* =====================================
-   FORO DE APOYO (front, hilos sencillos)
-===================================== */
+/* ===== Foro: conectado al servidor ===== */
 (() => {
   const foro = $("#foro");
   if (!foro) return;
@@ -1141,21 +1139,19 @@ if (denunciaSection){
   const form         = $("#sfForm");
   const input        = $("#sfText");
   const cooldownMsg  = $("#sfCooldownMsg");
-  const userStateLbl = $("#sfUserState");
 
-  const modal         = $("#threadModal");
-  const modalBackdrop = modal ? $(".thread-backdrop", modal) : null;
-  const modalClose    = $("#threadCloseBtn");
-  const threadScroll  = $("#threadScroll");
-  const replyForm     = $("#threadReplyForm");
-  const replyInput    = $("#threadReplyText");
+  const modal        = $("#threadModal");
+  const modalBackdrop= modal ? $(".thread-backdrop", modal) : null;
+  const modalClose   = $("#threadCloseBtn");
+  const threadScroll = $("#threadScroll");
+  const replyForm    = $("#threadReplyForm");
+  const replyInput   = $("#threadReplyText");
 
+  const ANON_COOLDOWN_MS = 15000; // 15 s entre mensajes anónimos
   const LAST_ANON_KEY    = "kiva_forum_last_anon";
-  const ANON_COOLDOWN_MS = 15000; // 15s para anónimos
 
-  let threads = [];
+  let threads        = [];
   let activeThreadId = null;
-  let currentUser = (window.kivaAuth && window.kivaAuth.user) || null;
 
   function now(){ return Date.now(); }
 
@@ -1176,16 +1172,8 @@ if (denunciaSection){
       .replace(/>/g,"&gt;");
   }
 
-  function displayUserState(){
-    if (!userStateLbl) return;
-    if (!currentUser){
-      userStateLbl.innerHTML = `Publicarás como <strong>Anónimo</strong>`;
-    }else{
-      const niceName = currentUser.alias && currentUser.alias.trim()
-        ? currentUser.alias
-        : `${currentUser.firstName} ${currentUser.lastName}`.trim();
-      userStateLbl.innerHTML = `Publicarás como <strong>${niceName}</strong>`;
-    }
+  function currentUser(){
+    return (window.kivaAuth && window.kivaAuth.user) || null;
   }
 
   function canPostAnon(){
@@ -1195,65 +1183,42 @@ if (denunciaSection){
     return { ok:false, wait:Math.ceil((ANON_COOLDOWN_MS - diff)/1000) };
   }
 
-  function createThread(text){
-    const id = "t_" + Math.random().toString(36).slice(2);
-    const isAnon = !currentUser;
-    const t = {
-      id,
-      text: text.trim(),
-      isAnon,
-      user: currentUser ? {
-        id: currentUser.id,
-        firstName: currentUser.firstName,
-        lastName: currentUser.lastName,
-        alias: currentUser.alias || null
-      } : null,
-      likes: 0,
-      likedByCurrentUser: false,
-      createdAt: now(),
-      replies: []
-    };
-    threads.push(t);
-    return t;
+  function updateCooldownLabel(){
+    const user = currentUser();
+    if (user){
+      if (cooldownMsg){
+        cooldownMsg.textContent = "Publicas con tu cuenta. Gracias por cuidar este espacio 💛";
+      }
+      return;
+    }
+    const { ok, wait } = canPostAnon();
+    if (!cooldownMsg) return;
+    cooldownMsg.textContent = ok
+      ? "Puedes enviar un mensaje anónimo."
+      : `Espera ${wait}s para enviar otro mensaje anónimo.`;
   }
 
-  function addReply(threadId, text){
-    const t = threads.find(x => x.id === threadId);
-    if (!t) return null;
-    const isAnon = !currentUser;
-    t.replies.push({
-      id: "r_" + Math.random().toString(36).slice(2),
-      text: text.trim(),
-      isAnon,
-      user: currentUser ? {
-        id: currentUser.id,
-        firstName: currentUser.firstName,
-        lastName: currentUser.lastName,
-        alias: currentUser.alias || null
-      } : null,
-      createdAt: now()
-    });
-    return t;
+  /* === Cargar hilos del servidor === */
+  async function loadThreads(){
+    try{
+      const res  = await fetch("/api/threads", { credentials:"include" });
+      const data = await res.json();
+      threads = Array.isArray(data.threads) ? data.threads : [];
+      render();
+      updateCooldownLabel();
+    }catch(err){
+      console.error(err);
+      if (emptyMsg){
+        emptyMsg.textContent = "No se pudieron cargar los mensajes.";
+      }
+    }
   }
 
-  function threadDisplayName(t){
-    if (t.isAnon || !t.user) return "Anónimo";
-    const { alias, firstName, lastName } = t.user;
-    if (alias && alias.trim()) return alias;
-    return `${firstName} ${lastName}`.trim();
-  }
-
-  function replyDisplayName(r){
-    if (r.isAnon || !r.user) return "Anónimo";
-    const { alias, firstName, lastName } = r.user;
-    if (alias && alias.trim()) return alias;
-    return `${firstName} ${lastName}`.trim();
-  }
-
+  /* === Render principal === */
   function render(){
-    if (!strip || !list) return;
+    if (!list || !strip) return;
 
-    const sorted = [...threads].sort((a,b) => b.createdAt - a.createdAt);
+    const sorted = [...threads].sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
 
     if (!sorted.length){
       if (emptyMsg) emptyMsg.style.display = "block";
@@ -1261,77 +1226,105 @@ if (denunciaSection){
       if (emptyMsg) emptyMsg.style.display = "none";
     }
 
-    // tira superior: los más likeados
-    const topLiked = [...threads].sort((a,b) => b.likes - a.likes).slice(0,6);
+    // top por likes (tira de los datos actuales)
+    const topLiked = [...threads]
+      .filter(t => (t.likes || 0) > 0)
+      .sort((a,b) => (b.likes || 0) - (a.likes || 0))
+      .slice(0, 6);
+
     strip.innerHTML = "";
     topLiked.forEach(t => {
       const card = document.createElement("button");
       card.type = "button";
       card.className = "sf-strip-card";
       card.innerHTML = `
-        <div class="sf-strip-text">${escapeHtml(t.text.slice(0,40))}</div>
-        <div class="sf-strip-heart">❤ ${t.likes}</div>
+        <div class="sf-strip-text">${escapeHtml((t.text || "").slice(0, 40))}</div>
+        <div class="sf-strip-heart">❤ ${t.likes || 0}</div>
       `;
       card.addEventListener("click", () => openThread(t.id));
       strip.appendChild(card);
     });
 
-    // lista principal
     list.innerHTML = "";
     sorted.forEach(t => {
+      const repliesCount = (t.replies || []).length;
       const card = document.createElement("article");
       card.className = "sf-thread-card";
       card.dataset.threadId = t.id;
+
+      const alias = t.alias || (t.isAnon ? "Anónimo" : "Usuario");
+      const timeLabel = timeAgo(t.createdAt || now());
+      const avatarHtml = t.avatarPath
+        ? `<img src="${escapeHtml(t.avatarPath)}" alt="${escapeHtml(alias)}">`
+        : `<span class="sf-avatar-placeholder">${t.isAnon ? "🌱" : "🙂"}</span>`;
+
       card.innerHTML = `
-        <div class="sf-thread-meta">
-          <span>${threadDisplayName(t)}</span>
-          <span>${timeAgo(t.createdAt)}</span>
+        <div class="sf-thread-head">
+          <div class="sf-thread-avatar">
+            ${avatarHtml}
+          </div>
+          <div class="sf-thread-meta">
+            <span class="sf-thread-alias">${escapeHtml(alias)}</span>
+            <span class="sf-thread-time">${timeLabel}</span>
+          </div>
         </div>
-        <div class="sf-thread-text">${escapeHtml(t.text)}</div>
+
+        <div class="sf-thread-text">${escapeHtml(t.text || "")}</div>
+
         <div class="sf-thread-actions">
           <span class="sf-like-btn">
             <button type="button" class="sf-heart-btn" aria-label="Dar like">❤</button>
-            <span>${t.likes}</span>
+            <span>${t.likes || 0}</span>
           </span>
           <span class="sf-reply-count">
-            💬 <span>${t.replies.length}</span> respuestas
+            💬 <span>${repliesCount}</span> respuestas
           </span>
         </div>
       `;
 
-      // abrir modal al click (menos en el botón)
-      card.addEventListener("click", ev => {
+
+      card.addEventListener("click", (ev) => {
         if (ev.target.closest("button")) return;
         openThread(t.id);
       });
 
       const likeBtn = card.querySelector(".sf-heart-btn");
-      likeBtn.addEventListener("click", ev => {
+      likeBtn.addEventListener("click", async (ev) => {
         ev.stopPropagation();
-
-        if (!currentUser){
+        const user = currentUser();
+        if (!user){
           if (cooldownMsg){
             cooldownMsg.textContent = "Necesitas una cuenta para dar like 💛";
           }
           return;
         }
-
-        if (t.likedByCurrentUser) return;
-
-        t.likedByCurrentUser = true;
-        t.likes++;
-        render();
-
-        const refreshedBtn = list.querySelector(
-          `.sf-thread-card[data-thread-id="${t.id}"] .sf-heart-btn`
-        );
-        if (refreshedBtn){
-          refreshedBtn.classList.add("is-pulsing");
-          setTimeout(() => refreshedBtn.classList.remove("is-pulsing"), 450);
-        }
-
-        if (activeThreadId === t.id){
-          renderThread(t);
+        try{
+          const res  = await fetch(`/api/threads/${encodeURIComponent(t.id)}/like`,{
+            method:"POST",
+            headers:{"Content-Type":"application/json"},
+            credentials:"include",
+            body: JSON.stringify({})
+          });
+          const data = await res.json();
+          if (!res.ok){
+            console.error(data.error);
+            return;
+          }
+          updateThreadInLocalList(data.thread);
+          render();
+          if (activeThreadId === t.id){
+            const updated = threads.find(x => x.id === t.id);
+            if (updated) renderThread(updated);
+          }
+          const refreshedBtn = list.querySelector(
+            `.sf-thread-card[data-thread-id="${t.id}"] .sf-heart-btn`
+          );
+          if (refreshedBtn){
+            refreshedBtn.classList.add("is-pulsing");
+            setTimeout(() => refreshedBtn.classList.remove("is-pulsing"), 450);
+          }
+        }catch(err){
+          console.error(err);
         }
       });
 
@@ -1339,10 +1332,16 @@ if (denunciaSection){
     });
   }
 
+  function updateThreadInLocalList(updated){
+    if (!updated) return;
+    const idx = threads.findIndex(t => t.id === updated.id);
+    if (idx >= 0) threads[idx] = updated;
+  }
+
+  /* === Modal hilo === */
   function openThread(id){
-    if (!modal) return;
     const t = threads.find(x => x.id === id);
-    if (!t) return;
+    if (!t || !modal) return;
     activeThreadId = id;
     renderThread(t);
     modal.hidden = false;
@@ -1364,20 +1363,48 @@ if (denunciaSection){
     if (!threadScroll) return;
     threadScroll.innerHTML = "";
 
+    // mensaje raíz (el hilo principal)
+    const rootAlias = t.alias || (t.isAnon ? "Anónimo" : "Usuario");
+    const rootAvatarHtml = t.avatarPath
+      ? `<img src="${escapeHtml(t.avatarPath)}" alt="${escapeHtml(rootAlias)}">`
+      : `<span class="thread-avatar-placeholder">${t.isAnon ? "🌱" : "🙂"}</span>`;
+
     const root = document.createElement("div");
     root.className = "thread-msg";
     root.innerHTML = `
-      <div class="thread-msg-meta">${threadDisplayName(t)} · ${timeAgo(t.createdAt)}</div>
-      <div class="thread-msg-text">${escapeHtml(t.text)}</div>
+      <div class="thread-msg-head">
+        <div class="thread-msg-avatar">
+          ${rootAvatarHtml}
+        </div>
+        <div class="thread-msg-meta">
+          <span class="thread-msg-alias">${escapeHtml(rootAlias)}</span>
+          <span class="thread-msg-time">${timeAgo(t.createdAt || now())}</span>
+        </div>
+      </div>
+      <div class="thread-msg-text">${escapeHtml(t.text || "")}</div>
     `;
     threadScroll.appendChild(root);
 
-    t.replies.forEach(r => {
+    // respuestas
+    (t.replies || []).forEach(r => {
+      const replyAlias = r.alias || (r.isAnon ? "Anónimo" : "Usuario");
+      const replyAvatarHtml = r.avatarPath
+        ? `<img src="${escapeHtml(r.avatarPath)}" alt="${escapeHtml(replyAlias)}">`
+        : `<span class="thread-avatar-placeholder">${r.isAnon ? "🌱" : "🙂"}</span>`;
+
       const el = document.createElement("div");
       el.className = "thread-msg";
       el.innerHTML = `
-        <div class="thread-msg-meta">${replyDisplayName(r)} · ${timeAgo(r.createdAt)}</div>
-        <div class="thread-msg-text">${escapeHtml(r.text)}</div>
+        <div class="thread-msg-head">
+          <div class="thread-msg-avatar">
+            ${replyAvatarHtml}
+          </div>
+          <div class="thread-msg-meta">
+            <span class="thread-msg-alias">${escapeHtml(replyAlias)}</span>
+            <span class="thread-msg-time">${timeAgo(r.createdAt || now())}</span>
+          </div>
+        </div>
+        <div class="thread-msg-text">${escapeHtml(r.text || "")}</div>
       `;
       threadScroll.appendChild(el);
     });
@@ -1385,14 +1412,17 @@ if (denunciaSection){
     threadScroll.scrollTop = threadScroll.scrollHeight;
   }
 
-  // formulario principal
-  form.addEventListener("submit", ev => {
+
+  /* === Eventos === */
+
+  form?.addEventListener("submit", async (ev) => {
     ev.preventDefault();
-    const text = input.value.trim();
+    const text = (input?.value || "").trim();
     if (!text) return;
 
-    // si no hay cuenta, aplicar cooldown
-    if (!currentUser){
+    const user = currentUser();
+    // anónimo si no hay usuario
+    if (!user){
       const { ok, wait } = canPostAnon();
       if (!ok){
         if (cooldownMsg){
@@ -1403,12 +1433,30 @@ if (denunciaSection){
       localStorage.setItem(LAST_ANON_KEY, String(now()));
     }
 
-    createThread(text);
-    input.value = "";
-    render();
+    try{
+      const res  = await fetch("/api/threads",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        credentials:"include",
+        body: JSON.stringify({ text })
+      });
+      const data = await res.json();
+      if (!res.ok){
+        console.error(data.error);
+        if (cooldownMsg && data.error){
+          cooldownMsg.textContent = data.error;
+        }
+        return;
+      }
+      if (input) input.value = "";
+      threads.unshift(data.thread);
+      render();
+      updateCooldownLabel();
+    }catch(err){
+      console.error(err);
+    }
   });
 
-  // modal hilo: cerrar
   if (modalBackdrop){
     modalBackdrop.addEventListener("click", closeThread);
   }
@@ -1416,40 +1464,46 @@ if (denunciaSection){
     modalClose.addEventListener("click", closeThread);
   }
 
-  // responder dentro del hilo
-  if (replyForm){
-    replyForm.addEventListener("submit", ev => {
-      ev.preventDefault();
-      if (!activeThreadId) return;
-      const text = replyInput.value.trim();
-      if (!text) return;
-      const t = addReply(activeThreadId, text);
-      replyInput.value = "";
+  replyForm?.addEventListener("submit", async (ev) => {
+    ev.preventDefault();
+    if (!activeThreadId) return;
+    const text = (replyInput?.value || "").trim();
+    if (!text) return;
+
+    try{
+      const res  = await fetch(`/api/threads/${encodeURIComponent(activeThreadId)}/replies`,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        credentials:"include",
+        body: JSON.stringify({ text })
+      });
+      const data = await res.json();
+      if (!res.ok){
+        console.error(data.error);
+        return;
+      }
+      updateThreadInLocalList(data.thread);
+      const t = threads.find(x => x.id === activeThreadId);
+      if (replyInput) replyInput.value = "";
       if (t){
         renderThread(t);
         render();
       }
-    });
-  }
-
-  // escuchar cambios de usuario desde auth
-  document.addEventListener("kiva:user-changed", ev => {
-    currentUser = ev.detail.user || null;
-    displayUserState();
+    }catch(err){
+      console.error(err);
+    }
   });
 
-  // estado inicial
-  displayUserState();
+  // Escuchar cambios de usuario (cuando se loguea / desloguea)
+  document.addEventListener("kiva:user-changed", () => {
+    updateCooldownLabel();
+  });
 
-  // datos de ejemplo (puedes quitarlos luego)
-  threads = [];
-  const t1 = createThread("Quiero decirte que pedir ayuda es valiente. No estás sola/o.");
-  const t2 = createThread("Leer estas historias me recuerda que también puedo hablar.");
-  t1.likes = 3;
-  t2.likes = 1;
+  updateCooldownLabel();
+  loadThreads();
 
-  render();
 })();
+
 
 /* =====================================
    AUTENTICACIÓN: signup / login / logout
