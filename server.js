@@ -198,194 +198,219 @@ app.get("/api/me", async (req,res) => {
 
 
 // --- SIGNUP con foto + código de verificación ---
-app.post("/api/signup", signupLimiter, upload.single("avatar"), async (req,res) => {
-  try{
+app.post("/api/signup", upload.single("avatar"), async (req, res) => {
+  try {
     const { email, firstName, lastName, password, alias } = req.body;
 
-    // Validación básica
-    if (!email || !firstName || !lastName || !password){
-      return res.status(400).json({ error:"Faltan campos obligatorios." });
+    if (!email || !firstName || !lastName || !password) {
+      return res.status(400).json({ error: "Faltan campos obligatorios." });
     }
 
     const users = await loadUsers();
 
-    // Correo en minúsculas para evitar duplicados
-    const emailLower = String(email).trim().toLowerCase();
-
-    // Correo único
-    if (users.some(u => (u.email || "").toLowerCase() === emailLower)){
-      return res.status(400).json({ error:"Ese correo ya está registrado." });
+    // correo único
+    const emailLower = email.toLowerCase();
+    if (users.some(u => u.email.toLowerCase() === emailLower)) {
+      return res.status(400).json({ error: "Ese correo ya está registrado." });
     }
 
-    // Hash seguro (bcrypt)
-    const passwordHash = await bcrypt.hash(password, 12);
+    // hashear contraseña con bcrypt
+    const hash = await bcrypt.hash(password, 10);
 
-    // Guardar avatar si se subió uno
+    // avatar opcional
     const avatarPath = req.file
       ? "/uploads/avatars/" + path.basename(req.file.path)
       : null;
 
-    // Crear ID seguro
-    const id = "u_" +
-      Date.now().toString(36) +
-      Math.random().toString(36).slice(2);
+    const id = "u_" + Date.now().toString(36);
 
-    // Generar código de verificación (6 dígitos)
-    const verifyCode = Math.floor(100000 + Math.random()*900000).toString();
-    const verifyExpire = Date.now() + 1000 * 60 * 15; // 15 minutos
+    // generar código de verificación (6 dígitos)
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const verificationExpires = Date.now() + 15 * 60 * 1000; // 15 minutos
 
-    // Crear usuario
     const newUser = {
       id,
       email: emailLower,
-      firstName:  firstName.trim(),
-      lastName:   (lastName || "").trim(),
-      alias:      alias && alias.trim() ? alias.trim() : null,
-      avatarPath: avatarPath,
-      passwordHash,
-      verified: false,
-      verifyCode,
-      verifyExpire,
-      isAdmin: false,
-      bannedForever: false,
-      bannedUntil: null,
-      createdAt: Date.now()
+      firstName: firstName.trim(),
+      lastName: (lastName || "").trim(),
+      alias: (alias || "").trim() || null,
+      passwordHash: hash,
+      avatarPath,
+      verified: false,               // ⬅⬅ IMPORTANTE: empieza sin verificar
+      verificationCode,
+      verificationExpires,
+      createdAt: Date.now(),
+      role: "user",
+      isModerator: false
     };
 
     users.push(newUser);
     await saveUsers(users);
 
-    // Enviar correo (si ya configuraste nodemailer)
-    try{
-      await transporter.sendMail({
-        from: MAIL_FROM,
-        to: emailLower,
-        subject: "Código de verificación — KIVA",
-        html: `
-          <h2>Hola ${newUser.firstName} 💛</h2>
-          <p>Tu código para verificar tu cuenta es:</p>
-          <h1>${verifyCode}</h1>
-          <p>Este código expirará en 15 minutos.</p>
-        `
-      });
-    }catch(err){
-      console.error("Error enviando correo:", err);
-    }
-
-    res.status(201).json({
-      ok:true,
-      user: publicUser(newUser),
-      message:"Cuenta creada. Revisa tu correo para verificarla."
-    });
-
-  }catch(err){
-    console.error(err);
-    res.status(500).json({ error:"No se pudo crear la cuenta." });
-  }
-});
-
-
-// --- VERIFICAR EMAIL ---
-app.post("/api/verify-email", async (req,res) => {
-  try{
-    const { email, code } = req.body;
-    if (!email || !code){
-      return res.status(400).json({ error:"Faltan datos para verificar." });
-    }
-    const emailLower = email.toLowerCase();
-    const record = verificationCodes[emailLower];
-    if (!record){
-      return res.status(400).json({ error:"No hay código pendiente para ese correo." });
-    }
-    if (record.expiresAt < Date.now()){
-      delete verificationCodes[emailLower];
-      return res.status(400).json({ error:"El código ha expirado, vuelve a registrarte." });
-    }
-    if (record.code !== code.trim()){
-      return res.status(400).json({ error:"El código no es correcto." });
-    }
-
-    const users = await loadUsers();
-    const u = users.find(x => x.id === record.userId);
-    if (!u){
-      return res.status(400).json({ error:"Usuario no encontrado." });
-    }
-
-    u.verified = true;
-    await saveUsers(users);
-    delete verificationCodes[emailLower];
-
-    // iniciar sesión
-    req.session.userId = u.id;
-
-    res.json({ user: publicUser(u) });
-
-  }catch(err){
-    console.error(err);
-    res.status(500).json({ error:"Error al verificar el correo." });
-  }
-});
-
-// LOGIN con bcrypt + rate limit
-app.post("/api/login", loginLimiter, async (req, res) => {
-  try{
-    const { login, password } = req.body;
-    if (!login || !password){
-      return res.status(400).json({ error:"Faltan datos." });
-    }
-
-    const loginLower = String(login).trim().toLowerCase();
-    const users = await loadUsers();
-
-    // buscar por email, alias o nombre completo
-    const user = users.find(u => {
-      const email  = (u.email || "").toLowerCase();
-      const alias  = (u.alias || "").toLowerCase();
-      const full   = ((u.firstName || "") + " " + (u.lastName || "")).trim().toLowerCase();
-      return email === loginLower || alias === loginLower || full === loginLower;
-    });
-
-    if (!user){
-      return res.status(400).json({ error:"Usuario o contraseña incorrectos." });
-    }
-
-    // usuario baneado
-    if (isUserBanned && isUserBanned(user)){
-      return res.status(403).json({
-        error:"Tu cuenta está suspendida y no puede iniciar sesión."
-      });
-    }
-
-    // comprobar contraseña: soporte para cuentas viejas con password plano
-    let ok = false;
-
-    if (user.passwordHash){
-      // caso nuevo (encriptado)
-      ok = await bcrypt.compare(password, user.passwordHash);
-    } else if (user.password){
-      // caso antiguo (texto plano): solo por compatibilidad
-      if (user.password === password){
-        ok = true;
-        // migrar a hash
-        user.passwordHash = await bcrypt.hash(password, 12);
-        delete user.password;
-        await saveUsers(users);
+    // enviar correo con el código
+    if (!MAIL_HOST || !MAIL_USER || !MAIL_PASS) {
+      console.warn("[WARN] MAIL_... no configurado, código de verificación:", verificationCode);
+    } else {
+      try {
+        await transporter.sendMail({
+          from: MAIL_FROM,
+          to: newUser.email,
+          subject: "Verifica tu cuenta en KIVA",
+          text: `Tu código de verificación es: ${verificationCode}`,
+          html: `
+            <p>Hola ${newUser.firstName || "😊"},</p>
+            <p>Tu código para verificar tu cuenta en <strong>KIVA</strong> es:</p>
+            <p style="font-size:20px;font-weight:bold;letter-spacing:4px;">${verificationCode}</p>
+            <p style="font-size:12px;color:#555;">Caduca en 15 minutos.</p>
+          `
+        });
+      } catch (mailErr) {
+        console.error("Error enviando correo de verificación:", mailErr);
       }
     }
 
-    if (!ok){
-      return res.status(400).json({ error:"Usuario o contraseña incorrectos." });
-    }
-
-    // login correcto
-    req.session.userId = user.id;
-    res.json({ user: publicUser(user) });
-
-  }catch(err){
+    // no iniciamos sesión todavía, hasta que verifique
+    res.status(201).json({
+      ok: true,
+      message: "Cuenta creada. Revisa tu correo para verificarla.",
+      user: {
+        id: newUser.id,
+        email: newUser.email,
+        firstName: newUser.firstName,
+        lastName: newUser.lastName,
+        alias: newUser.alias,
+        avatarPath: newUser.avatarPath,
+        verified: newUser.verified
+      }
+    });
+  } catch (err) {
     console.error(err);
-    res.status(500).json({ error:"No se pudo iniciar sesión." });
+    res.status(500).json({ error: "No se pudo crear la cuenta." });
   }
 });
+
+
+
+// --- Verificar correo con código ---
+app.post("/api/verify-email", async (req, res) => {
+  try {
+    const { email, code } = req.body;
+
+    if (!email || !code) {
+      return res.status(400).json({ error: "Faltan correo o código." });
+    }
+
+    const emailLower = email.toLowerCase();
+    const users = await loadUsers();
+    const user = users.find(u => u.email.toLowerCase() === emailLower);
+
+    if (!user) {
+      return res.status(404).json({ error: "Usuario no encontrado." });
+    }
+
+    if (user.verified) {
+      return res.status(400).json({ error: "Esta cuenta ya está verificada." });
+    }
+
+    if (!user.verificationCode || !user.verificationExpires) {
+      return res.status(400).json({ error: "No hay un código de verificación activo." });
+    }
+
+    if (Date.now() > user.verificationExpires) {
+      return res.status(400).json({ error: "El código ha caducado, vuelve a registrarte." });
+    }
+
+    if (String(code).trim() !== String(user.verificationCode).trim()) {
+      return res.status(400).json({ error: "El código de verificación no coincide." });
+    }
+
+    // ✅ aquí la verificación HACE efecto:
+    user.verified = true;
+    user.verificationCode = null;
+    user.verificationExpires = null;
+
+    await saveUsers(users);
+
+    // si quieres, aquí ya puedes iniciar sesión automática:
+    req.session.userId = user.id;
+
+    res.json({
+      ok: true,
+      message: "Correo verificado correctamente 💛",
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        alias: user.alias,
+        avatarPath: user.avatarPath,
+        verified: user.verified
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "No se pudo verificar el correo." });
+  }
+});
+
+
+// --- LOGIN con bcrypt + verificación obligatoria ---
+app.post("/api/login", async (req, res) => {
+  try {
+    const { login, password } = req.body; // login = alias o nombre o correo
+
+    if (!login || !password) {
+      return res.status(400).json({ error: "Faltan datos de acceso." });
+    }
+
+    const users = await loadUsers();
+    const loginLower = login.toLowerCase();
+
+    // puedes permitir login por email o alias
+    const user = users.find(u =>
+      (u.email && u.email.toLowerCase() === loginLower) ||
+      (u.alias && u.alias.toLowerCase() === loginLower)
+    );
+
+    if (!user) {
+      return res.status(400).json({ error: "Usuario o contraseña incorrectos." });
+    }
+
+    if (!user.passwordHash) {
+      return res.status(500).json({ error: "Cuenta antigua sin contraseña válida." });
+    }
+
+    const ok = await bcrypt.compare(password, user.passwordHash);
+    if (!ok) {
+      return res.status(400).json({ error: "Usuario o contraseña incorrectos." });
+    }
+
+    if (!user.verified) {
+      return res.status(403).json({ error: "Tu correo aún no está verificado. Revisa tu bandeja o regístrate de nuevo." });
+    }
+
+    // todo bien: iniciar sesión
+    req.session.userId = user.id;
+
+    res.json({
+      ok: true,
+      message: "Inicio de sesión correcto 💛",
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        alias: user.alias,
+        avatarPath: user.avatarPath,
+        verified: user.verified
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "No se pudo iniciar sesión." });
+  }
+});
+
 
 
 // --- LOGOUT ---
