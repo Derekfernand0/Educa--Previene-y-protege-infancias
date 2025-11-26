@@ -1,75 +1,152 @@
 [
   {
-    "id": "t_midtp5azeg6nf50soyj",
+    "id": "t_midzd14nn7xcjjctzkd",
     "text": "hola a todos",
-    "userId": "u_micgw7ti",
-    "alias": "Derek",
-    "avatarPath": null,
-    "isAnon": false,
-    "likes": 2,
-    "likedBy": [
-      "u_micgw7ti",
-      "u_midtxfs2"
-    ],
-    "createdAt": 1764029634587,
-    "replies": [
-      {
-        "id": "r_midtpfwxhc27plr5ar5",
-        "text": "como estan",
-        "userId": "u_micgw7ti",
-        "alias": "Derek",
-        "avatarPath": null,
-        "isAnon": false,
-        "createdAt": 1764029648337
-      },
-      {
-        "id": "r_midtppftcxor5we5ptp",
-        "text": "yo todo bien",
-        "userId": "u_micgw7ti",
-        "alias": "Derek",
-        "avatarPath": null,
-        "isAnon": false,
-        "createdAt": 1764029660681
-      },
-      {
-        "id": "r_midtrmufhv9gw3xjmki",
-        "text": "que haces",
-        "userId": null,
-        "alias": "Anónimo",
-        "avatarPath": null,
-        "isAnon": true,
-        "createdAt": 1764029750631
-      },
-      {
-        "id": "r_midudiijevzypptq6cc",
-        "text": "holi",
-        "userId": "u_midtxfs2",
-        "alias": "fluttershy",
-        "avatarPath": "/uploads/avatars/40c5e60409e58cafb45ede51be1aef80",
-        "isAnon": false,
-        "createdAt": 1764030771451
-      }
-    ]
-  },
-  {
-    "id": "t_midtrtpmuzxhwh640v",
-    "text": "hola a ti",
     "userId": null,
     "alias": "Anónimo",
     "avatarPath": null,
     "isAnon": true,
-    "likes": 0,
-    "likedBy": [],
-    "createdAt": 1764029759530,
+    "likes": 3,
+    "likedBy": [
+      "u_midzhbug8y3532lxgeo",
+      "u_miexv3l1",
+      "u_mig6sqqv"
+    ],
+    "createdAt": 1764039146999,
     "replies": [
       {
-        "id": "r_midtxzas5lhbfimdnci",
-        "text": "holap",
-        "userId": "u_midtxfs2",
+        "id": "r_mie0axi96jtybs6dnej",
+        "text": "holaaaap",
+        "userId": "u_midzhbug8y3532lxgeo",
         "alias": "fluttershy",
-        "avatarPath": "/uploads/avatars/40c5e60409e58cafb45ede51be1aef80",
+        "avatarPath": "/uploads/avatars/1764039346640-267750319.png",
         "isAnon": false,
-        "createdAt": 1764030046708
+        "createdAt": 1764040728609
+      },
+      {
+        "id": "r_miexvda1zkpnqydncg",
+        "text": "Hola",
+        "userId": "u_miexv3l1",
+        "alias": "Tazz",
+        "avatarPath": "/uploads/avatars/1764097079250-18475373.png",
+        "isAnon": false,
+        "createdAt": 1764097109497
+      }
+    ]
+  },
+  {
+    "id": "t_mie0gf3uj8htv7g2bf",
+    "text": "Hola a todosssss, ya estamos working",
+    "userId": "u_midzhbug8y3532lxgeo",
+    "alias": "fluttershy",
+    "avatarPath": "/uploads/avatars/1764039346640-267750319.png",
+    "isAnon": false,
+    "likes": 3,
+    "likedBy": [
+      "u_midzhbug8y3532lxgeo",
+      "u_miexv3l1",
+      "u_mig6sqqv"
+    ],
+    "createdAt": 1764040984698,
+    "replies": [
+      {
+        "id": "r_miemjahatk8ks75vaul",
+        "text": "Probando probando",
+        "userId": "u_midzhbug8y3532lxgeo",
+        "alias": "fluttershy",
+        "avatarPath": "/uploads/avatars/1764039346640-267750319.png",
+        "isAnon": false,
+        "createdAt": 1764078070222
+      },
+      {
+        "id": "r_miexv8p3qfzg6vytx7m",
+        "text": "Siiiiiiii",
+        "userId": "u_miexv3l1",
+        "alias": "Tazz",
+        "avatarPath": "/uploads/avatars/1764097079250-18475373.png",
+        "isAnon": false,
+        "createdAt": 1764097103559
+      },
+      {
+        "id": "r_mifix0govz68wn9amjo",
+        "text": "siii:3",
+        "userId": "u_midzhbug8y3532lxgeo",
+        "alias": "fluttershy",
+        "avatarPath": "/uploads/avatars/1764039346640-267750319.png",
+        "isAnon": false,
+        "createdAt": 1764132458136
+      },
+      {
+        "id": "r_mig6ichbd51c7zafn2v",
+        "text": "Excelente página gracias",
+        "userId": "u_mig6hxmj",
+        "alias": "Emily",
+        "avatarPath": null,
+        "isAnon": false,
+        "createdAt": 1764172084655
+      }
+    ]
+  },
+  {
+    "id": "t_mig6qxbmsrg1mde3yc",
+    "text": "hi",
+    "userId": null,
+    "alias": "Anónimo",
+    "avatarPath": null,
+    "isAnon": true,
+    "likes": 1,
+    "likedBy": [
+      "u_mig6sqqv"
+    ],
+    "createdAt": 1764172484914,
+    "replies": []
+  },
+  {
+    "id": "t_mig6stpqol966nqha68",
+    "text": "hola",
+    "userId": "u_mig6sqqv",
+    "alias": "axel reyes",
+    "avatarPath": "/uploads/avatars/1764172533971-908812892.jpg",
+    "isAnon": false,
+    "likes": 2,
+    "likedBy": [
+      "u_mig6sqqv",
+      "u_mig6vwhb"
+    ],
+    "createdAt": 1764172573550,
+    "replies": []
+  },
+  {
+    "id": "t_mig6w1m9r5dvrd30wm",
+    "text": "q bonito",
+    "userId": "u_mig6vwhb",
+    "alias": "emisita",
+    "avatarPath": "/uploads/avatars/1764172693334-696462702.jpg",
+    "isAnon": false,
+    "likes": 2,
+    "likedBy": [
+      "u_mig6sqqv",
+      "u_midzhbug8y3532lxgeo"
+    ],
+    "createdAt": 1764172723761,
+    "replies": [
+      {
+        "id": "r_mig6x81ii4cahg3q347",
+        "text": "buuuu",
+        "userId": "u_mig6sqqv",
+        "alias": "axel reyes",
+        "avatarPath": "/uploads/avatars/1764172533971-908812892.jpg",
+        "isAnon": false,
+        "createdAt": 1764172778742
+      },
+      {
+        "id": "r_mig6xsk3iql4r6ht64",
+        "text": "Jajaja holap",
+        "userId": "u_midzhbug8y3532lxgeo",
+        "alias": "fluttershy",
+        "avatarPath": "/uploads/avatars/1764039346640-267750319.png",
+        "isAnon": false,
+        "createdAt": 1764172805331
       }
     ]
   }
