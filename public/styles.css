@@ -2824,3 +2824,110 @@ body[data-theme="dark"] .auth-window{
   color:var(--ink);
   border:1px solid var(--ring);
 }
+
+/* ===== Ajustes de legibilidad SOLO en modo oscuro ===== */
+
+/* 1. Portada: subtítulo "Cuidarte es importante..." */
+body[data-theme="dark"] .hero .sub{
+  color:#e5e7eb; /* gris clarito, se ve bien sobre el fondo oscuro */
+}
+
+/* 2. Semáforo: tarjetas del lado izquierdo ("Abrazo cariñoso", etc.) */
+body[data-theme="dark"] .traffic-card .text{
+  color:#e5e7eb;
+}
+
+/* 3. Sección "Cómo denunciar un delito": todo el texto más claro */
+body[data-theme="dark"] #denuncia{
+  color:#e5e7eb;
+}
+
+/* Textos secundarios dentro de "Cómo denunciar" (párrafos más suaves) */
+body[data-theme="dark"] #denuncia .small,
+body[data-theme="dark"] #denuncia .muted{
+  color:#cbd5f5; /* un gris azulado más clarito */
+}
+
+/* ===== Botones de la sección "Cómo denunciar" — legibles en modo oscuro ===== */
+
+body[data-theme="dark"] #denuncia button,
+body[data-theme="dark"] #denuncia .step-btn,
+body[data-theme="dark"] #denuncia .person-btn,
+body[data-theme="dark"] #denuncia .item-btn,
+body[data-theme="dark"] #denuncia .emotion-btn {
+  color: #e7e9f0 !important; /* texto clarito */
+}
+
+/* Para botones con fondo muy claro, asegurar que sigan legibles */
+body[data-theme="dark"] #denuncia button span,
+body[data-theme="dark"] #denuncia .step-btn span,
+body[data-theme="dark"] #denuncia .person-btn span,
+body[data-theme="dark"] #denuncia .item-btn span,
+body[data-theme="dark"] #denuncia .emotion-btn span {
+  color: #e7e9f0 !important;
+}
+
+/* Los bullet-points (⚫) que también son botones */
+body[data-theme="dark"] #denuncia .bullet,
+body[data-theme="dark"] #denuncia .bullet span {
+  color: #e7e9f0 !important;
+}
+
+/* ===== Botón activo (seleccionado) en modo oscuro ===== */
+
+body[data-theme="dark"] #denuncia .active,
+body[data-theme="dark"] #denuncia button.active,
+body[data-theme="dark"] #denuncia .step-btn.active,
+body[data-theme="dark"] #denuncia .person-btn.active,
+body[data-theme="dark"] #denuncia .item-btn.active,
+body[data-theme="dark"] #denuncia .emotion-btn.active {
+  background-color: #334155 !important; /* gris azuladito elegante */
+  color: #f1f5f9 !important;            /* texto clarito */
+  border-color: #475569 !important;     /* borde suave oscuro */
+}
+
+/* Si dentro hay spans, que también se vean claritos */
+body[data-theme="dark"] #denuncia .active span,
+body[data-theme="dark"] #denuncia button.active span {
+  color: #f1f5f9 !important;
+}
+
+/* ===== MODO OSCURO: botones activos en sección "Cómo denunciar" ===== */
+
+/* Tabs de pasos (Paso 1, Paso 2, etc.) */
+body[data-theme="dark"] #denuncia .denuncia-step-chip.is-active{
+  background:#1f2937 !important;   /* gris azulado oscuro */
+  border-color:#4b5563 !important;
+  color:#f9fafb !important;        /* texto clarito */
+}
+
+/* Botones de roles (Soy niña/niño, Soy persona adulta, etc.) */
+body[data-theme="dark"] #denuncia .role-toggle.is-active{
+  background:#1f2937 !important;
+  border-color:#4b5563 !important;
+  color:#f9fafb !important;
+}
+
+/* Checklist de qué llevar (los ⚫ que se vuelven verdes) */
+body[data-theme="dark"] #denuncia .check-pill.is-checked{
+  background:#111827 !important;
+  border-color:#22c55e !important;
+  color:#e5e7eb !important;
+}
+body[data-theme="dark"] #denuncia .check-pill.is-checked .check-mark{
+  color:#bbf7d0 !important;
+}
+
+/* Chips de pruebas (Declaraciones, Pruebas digitales, etc.) */
+body[data-theme="dark"] #denuncia .evidence-chip.is-active{
+  background:#1f2937 !important;
+  border-color:#4b5563 !important;
+  color:#f9fafb !important;
+}
+
+/* Botones de emociones (Tengo miedo, Estoy enojada/o, etc.) */
+body[data-theme="dark"] #denuncia .emotion-btn.is-active{
+  background:#1f2937 !important;
+  border-color:#4b5563 !important;
+  color:#f9fafb !important;
+}
