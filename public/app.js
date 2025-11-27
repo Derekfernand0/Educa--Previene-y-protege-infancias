@@ -1541,7 +1541,20 @@ if (denunciaSection){
   const openAuthBtn   = $("#sfOpenAuth");
   const userStateLbl  = $("#sfUserState");
 
+  const toastBox      = document.getElementById("kivaToast");
+
   let currentUser = null;
+
+  function showToast(message){
+    if (!toastBox) return;
+    toastBox.textContent = message;
+    toastBox.classList.add("is-visible");
+    clearTimeout(toastBox._hideTimer);
+    toastBox._hideTimer = setTimeout(() => {
+      toastBox.classList.remove("is-visible");
+    }, 3200);
+  }
+
 
   // Mostrar / ocultar contraseña (ojito sencillo, sin navegar)
   document.querySelectorAll(".auth-toggle-pass").forEach(toggle => {
@@ -1642,6 +1655,23 @@ if (denunciaSection){
       logoutBtn.hidden = !currentUser;
     }
 
+    // Cambiar texto del botón del foro según haya sesión o no
+    if (openAuthBtn){
+      if (currentUser){
+        openAuthBtn.classList.add("is-logged");
+        openAuthBtn.innerHTML = `
+          <span>Cerrar sesión</span>
+          <span class="sf-account-dot"></span>
+        `;
+      }else{
+        openAuthBtn.classList.remove("is-logged");
+        openAuthBtn.innerHTML = `
+          <span>Iniciar sesión / Crear cuenta</span>
+          <span class="sf-account-dot"></span>
+        `;
+      }
+    }
+
     window.kivaAuth = window.kivaAuth || {};
     window.kivaAuth.user = currentUser;
 
@@ -1649,8 +1679,20 @@ if (denunciaSection){
     document.dispatchEvent(ev);
   }
 
-  openAuthBtn?.addEventListener("click", () => {
-    openModal(currentUser ? "login" : "signup");
+
+  openAuthBtn?.addEventListener("click", async () => {
+    // Si ya hay sesión, este botón ahora sirve para cerrar sesión
+    if (currentUser){
+      try{
+        await apiPost("/api/logout",{});
+      }catch{}
+      setUser(null);
+      if (authStatusMsg) authStatusMsg.textContent = "Sesión cerrada.";
+      showToast("Cerraste sesión.");
+    }else{
+      // Si no hay sesión, abre el modal en modo login
+      openModal("login");
+    }
   });
 
   authBackdrop?.addEventListener("click", closeModal);
@@ -1669,6 +1711,7 @@ if (denunciaSection){
       });
       setUser(data.user);
       if (authStatusMsg) authStatusMsg.textContent = "Inicio de sesión correcto 💛";
+      showToast("Inicio de sesión correcto 💛");
       closeModal();
     }catch(err){
       if (loginErr) loginErr.textContent = err.message || "No se pudo iniciar sesión";
@@ -1702,17 +1745,20 @@ if (denunciaSection){
         throw new Error(data.error || "No se pudo crear la cuenta");
       }
 
-      if (data.needsVerification){
+      if (data.needsVerification || data.ok){
         if (authStatusMsg){
-          authStatusMsg.textContent = "Te enviamos un código a tu correo. Revísalo 💛";
+          authStatusMsg.textContent =
+            data.message || "Te enviamos un código a tu correo. Revísalo 💛";
         }
         if (authVerifyBlock){
           authVerifyBlock.classList.remove("is-hidden");
         }
+        showToast("Te enviamos un código a tu correo 💌");
         // NO llamamos a setUser todavía: esperamos a que verifique el código
       }else if (data.user){
         setUser(data.user);
         if (authStatusMsg) authStatusMsg.textContent = "Cuenta creada y sesión iniciada 💛";
+        showToast("Cuenta creada y sesión iniciada 💛");
         closeModal();
       }
     }catch(err){
@@ -1746,6 +1792,7 @@ if (denunciaSection){
       if (data.user){
         setUser(data.user);
         if (authStatusMsg) authStatusMsg.textContent = "Correo verificado y sesión iniciada 💛";
+        showToast("Correo verificado y sesión iniciada 💛");
         closeModal();
       }
     }catch(err){
@@ -1761,6 +1808,7 @@ if (denunciaSection){
     }catch{}
     setUser(null);
     if (authStatusMsg) authStatusMsg.textContent = "Sesión cerrada.";
+    showToast("Cerraste sesión.");
   });
 
   (async () => {

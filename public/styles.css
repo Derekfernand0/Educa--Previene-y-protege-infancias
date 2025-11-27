@@ -2628,6 +2628,41 @@ body[data-theme="dark"] .thread-window{
   gap:8px;
 }
 
+/* ==========================
+   Notificación flotante (toast)
+========================== */
+
+.kiva-toast{
+  position:fixed;
+  top:12px;
+  left:50%;
+  transform:translate(-50%, -20px);
+  padding:8px 16px;
+  border-radius:999px;
+  font-size:.85rem;
+  font-family:"Nunito", system-ui;
+  background:#22c55e;        /* verde suave */
+  color:#052e16;
+  box-shadow:var(--shadow-md);
+  opacity:0;
+  pointer-events:none;
+  z-index:50;
+  transition:
+    opacity .22s ease-out,
+    transform .22s ease-out;
+}
+
+.kiva-toast.is-visible{
+  opacity:1;
+  transform:translate(-50%, 0);
+}
+
+body[data-theme="dark"] .kiva-toast{
+  background:#16a34a;
+  color:#ecfdf5;
+}
+
+
 .auth-close{
   position:absolute;
   top:8px;
