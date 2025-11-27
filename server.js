@@ -93,7 +93,21 @@ async function loadThreads(){
   try{
     const txt = await fs.readFile(THREADS_FILE, "utf8");
     const arr = JSON.parse(txt);
-    return Array.isArray(arr) ? arr : [];
+    const list = Array.isArray(arr) ? arr : [];
+
+    // Normalizar estructura (por si hay hilos viejos sin campos nuevos)
+    for (const t of list){
+      if (typeof t.reports !== "number") t.reports = 0;
+      if (!Array.isArray(t.reportedBy)) t.reportedBy = [];
+      if (!Array.isArray(t.replies)) t.replies = [];
+
+      for (const r of t.replies){
+        if (typeof r.reports !== "number") r.reports = 0;
+        if (!Array.isArray(r.reportedBy)) r.reportedBy = [];
+      }
+    }
+
+    return list;
   }catch{
     return [];
   }
@@ -177,6 +191,9 @@ function publicUser(u){
 
 // --- verificación por código en memoria ---
 const verificationCodes = {}; // { email: { code, userId, expiresAt } }
+
+// --- recuperación de contraseña en memoria ---
+const passwordResetCodes = {}; // { email: { code, userId, expiresAt } }
 
 // --- nodemailer ---
 const transporter = nodemailer.createTransport({
@@ -419,6 +436,115 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
+// --- Recuperación de contraseña: solicitar código ---
+app.post("/api/password/forgot", async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ error: "Falta el correo." });
+    }
+
+    const emailLower = String(email).toLowerCase().trim();
+    const users = await loadUsers();
+    const user = users.find(u => u.email && u.email.toLowerCase() === emailLower);
+
+    // Para no revelar si el correo existe o no, siempre respondemos 200
+    if (!user) {
+      return res.json({
+        ok: true,
+        message: "Si el correo está registrado, te enviaremos un código para recuperar tu contraseña."
+      });
+    }
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = Date.now() + 15 * 60 * 1000; // 15 minutos
+
+    passwordResetCodes[emailLower] = {
+      code,
+      expiresAt,
+      userId: user.id
+    };
+
+    if (!MAIL_USER || !MAIL_PASS) {
+      console.warn("[WARN] Correo no configurado; código de recuperación:", code);
+    } else {
+      try {
+        await transporter.sendMail({
+          from: MAIL_FROM,
+          to: emailLower,
+          subject: "Recupera tu contraseña en KIVA",
+          text: `Tu código para recuperar tu contraseña es: ${code}`,
+          html: `
+            <p>Hola ${user.firstName || "😊"},</p>
+            <p>Tu código para recuperar tu contraseña en <strong>KIVA</strong> es:</p>
+            <p style="font-size:20px;font-weight:bold;letter-spacing:4px;">${code}</p>
+            <p style="font-size:12px;color:#555;">Caduca en 15 minutos.</p>
+          `
+        });
+      } catch (mailErr) {
+        console.error("Error enviando correo de recuperación:", mailErr);
+        return res.status(500).json({ error: "No se pudo enviar el correo de recuperación." });
+      }
+    }
+
+    res.json({
+      ok: true,
+      message: "Si el correo está registrado, te enviamos un código para recuperar tu contraseña."
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error interno al iniciar la recuperación." });
+  }
+});
+
+// --- Recuperación de contraseña: aplicar nuevo password ---
+app.post("/api/password/reset", async (req, res) => {
+  try {
+    const { email, code, newPassword } = req.body;
+    if (!email || !code || !newPassword) {
+      return res.status(400).json({ error: "Faltan datos para cambiar la contraseña." });
+    }
+
+    const emailLower = String(email).toLowerCase().trim();
+    const entry = passwordResetCodes[emailLower];
+
+    if (!entry) {
+      return res.status(400).json({ error: "No hay un proceso de recuperación activo para este correo." });
+    }
+
+    if (Date.now() > entry.expiresAt) {
+      delete passwordResetCodes[emailLower];
+      return res.status(400).json({ error: "El código ha caducado. Vuelve a solicitar la recuperación." });
+    }
+
+    if (String(code).trim() !== String(entry.code).trim()) {
+      return res.status(400).json({ error: "El código de recuperación no coincide." });
+    }
+
+    const users = await loadUsers();
+    const user = users.find(u => u.id === entry.userId);
+    if (!user) {
+      delete passwordResetCodes[emailLower];
+      return res.status(400).json({ error: "No se encontró la cuenta asociada." });
+    }
+
+    user.passwordHash = await bcrypt.hash(newPassword, 10);
+    await saveUsers(users);
+    delete passwordResetCodes[emailLower];
+
+    // opcional: iniciar sesión automáticamente
+    req.session.userId = user.id;
+
+    res.json({
+      ok: true,
+      message: "Tu contraseña ha sido actualizada.",
+      user: publicUser(user)
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "No se pudo actualizar la contraseña." });
+  }
+});
 
 
 // --- LOGOUT ---
@@ -491,10 +617,12 @@ app.post("/api/threads", async (req, res) => {
       alias,
       avatarPath,
       isAnon,
-      likes:     0,
-      likedBy:   [],       // ids de usuarios que dieron like
-      createdAt: Date.now(),
-      replies:   []
+      likes:      0,
+      likedBy:    [],       // ids de usuarios que dieron like
+      reports:    0,
+      reportedBy: [],
+      createdAt:  Date.now(),
+      replies:    []
     };
 
     threads.push(thread);
@@ -559,7 +687,9 @@ app.post("/api/threads/:id/replies", async (req, res) => {
       alias,
       avatarPath,
       isAnon,
-      createdAt: Date.now()
+      reports:    0,
+      reportedBy: [],
+      createdAt:  Date.now()
     };
 
     thread.replies = thread.replies || [];
@@ -621,6 +751,98 @@ app.post("/api/threads/:id/like", async (req, res) => {
   }catch(err){
     console.error(err);
     res.status(500).json({ error:"No se pudo registrar el like." });
+  }
+});
+
+// Reportar un hilo completo
+app.post("/api/threads/:id/report", async (req, res) => {
+  try{
+    const userId = req.session.userId;
+    if (!userId){
+      return res.status(401).json({ error:"Necesitas una cuenta para reportar." });
+    }
+
+    const users = await loadUsers();
+    const user  = users.find(u => u.id === userId);
+    if (!user){
+      return res.status(401).json({ error:"No se encontró la cuenta." });
+    }
+
+    if (isUserBanned(user)){
+      return res.status(403).json({ error:"Tu cuenta está suspendida y no puede reportar." });
+    }
+
+    const forumCfg = await loadForumConfig();
+    if (forumCfg.closed){
+      return res.status(503).json({ error: forumCfg.message });
+    }
+
+    const threads = await loadThreads();
+    const thread  = threads.find(t => t.id === req.params.id);
+    if (!thread){
+      return res.status(404).json({ error:"Hilo no encontrado." });
+    }
+
+    thread.reportedBy = Array.isArray(thread.reportedBy) ? thread.reportedBy : [];
+    if (!thread.reportedBy.includes(userId)){
+      thread.reportedBy.push(userId);
+      thread.reports = thread.reportedBy.length;
+      await saveThreads(threads);
+    }
+
+    res.json({ ok:true, reports: thread.reports });
+  }catch(err){
+    console.error(err);
+    res.status(500).json({ error:"No se pudo registrar el reporte." });
+  }
+});
+
+// Reportar una respuesta específica
+app.post("/api/threads/:threadId/replies/:replyId/report", async (req, res) => {
+  try{
+    const userId = req.session.userId;
+    if (!userId){
+      return res.status(401).json({ error:"Necesitas una cuenta para reportar." });
+    }
+
+    const users = await loadUsers();
+    const user  = users.find(u => u.id === userId);
+    if (!user){
+      return res.status(401).json({ error:"No se encontró la cuenta." });
+    }
+
+    if (isUserBanned(user)){
+      return res.status(403).json({ error:"Tu cuenta está suspendida y no puede reportar." });
+    }
+
+    const forumCfg = await loadForumConfig();
+    if (forumCfg.closed){
+      return res.status(503).json({ error: forumCfg.message });
+    }
+
+    const threads = await loadThreads();
+    const thread  = threads.find(t => t.id === req.params.threadId);
+    if (!thread){
+      return res.status(404).json({ error:"Hilo no encontrado." });
+    }
+
+    thread.replies = Array.isArray(thread.replies) ? thread.replies : [];
+    const reply = thread.replies.find(r => r.id === req.params.replyId);
+    if (!reply){
+      return res.status(404).json({ error:"Comentario no encontrado." });
+    }
+
+    reply.reportedBy = Array.isArray(reply.reportedBy) ? reply.reportedBy : [];
+    if (!reply.reportedBy.includes(userId)){
+      reply.reportedBy.push(userId);
+      reply.reports = reply.reportedBy.length;
+      await saveThreads(threads);
+    }
+
+    res.json({ ok:true, reports: reply.reports });
+  }catch(err){
+    console.error(err);
+    res.status(500).json({ error:"No se pudo registrar el reporte." });
   }
 });
 
@@ -720,6 +942,58 @@ app.get("/api/admin/threads", requireAdmin, async (req,res) => {
     res.status(500).json({ error:"No se pudieron cargar los hilos." });
   }
 });
+
+// Resumen de reportes para moderación
+app.get("/api/admin/reports", requireAdmin, async (req,res) => {
+  try{
+    const threads = await loadThreads();
+    const items = [];
+
+    for (const t of threads){
+      if (t.reports && t.reports > 0){
+        items.push({
+          type: "thread",
+          threadId: t.id,
+          replyId: null,
+          text: t.text,
+          alias: t.alias,
+          reports: t.reports || 0,
+          createdAt: t.createdAt || 0
+        });
+      }
+
+      const replies = Array.isArray(t.replies) ? t.replies : [];
+      for (const r of replies){
+        if (r.reports && r.reports > 0){
+          items.push({
+            type: "reply",
+            threadId: t.id,
+            replyId: r.id,
+            text: r.text,
+            alias: r.alias,
+            reports: r.reports || 0,
+            createdAt: r.createdAt || 0
+          });
+        }
+      }
+    }
+
+    items.sort((a,b) => {
+      if ((b.reports || 0) !== (a.reports || 0)){
+        return (b.reports || 0) - (a.reports || 0);
+      }
+      return (b.createdAt || 0) - (a.createdAt || 0);
+    });
+
+    const totalReports = items.reduce((acc, it) => acc + (it.reports || 0), 0);
+
+    res.json({ totalReports, items });
+  }catch(err){
+    console.error(err);
+    res.status(500).json({ error:"No se pudieron obtener los reportes." });
+  }
+});
+
 
 // Borrar hilo completo
 app.delete("/api/admin/threads/:id", requireAdmin, async (req,res) => {
