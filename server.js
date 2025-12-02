@@ -89,6 +89,22 @@ async function loadUsers(){
 const THREADS_FILE       = path.join(__dirname, "data", "threads.json");
 const FORUM_CONFIG_FILE  = path.join(__dirname, "data", "forumConfig.json");
 
+const SCORES_FILE = path.join(__dirname, "data", "scores.json");
+
+async function loadScores() {
+  try {
+    const txt = await fs.readFile(SCORES_FILE, "utf8");
+    const arr = JSON.parse(txt);
+    return Array.isArray(arr) ? arr : [];
+  } catch {
+    return [];
+  }
+}
+
+async function saveScores(scores) {
+  await fs.writeFile(SCORES_FILE, JSON.stringify(scores, null, 2), "utf8");
+}
+
 async function loadThreads(){
   try{
     const txt = await fs.readFile(THREADS_FILE, "utf8");
@@ -163,6 +179,14 @@ async function requireAdmin(req, res, next){
     res.status(500).json({ error:"Error de servidor." });
   }
 }
+function requireLoginPage(req, res, next){
+  if (!req.session.userId){
+    // Si no ha iniciado sesión, lo mandamos a la página principal
+    return res.redirect("/");
+  }
+  next();
+}
+
 
 function isUserBanned(u){
   if (!u) return false;
@@ -377,6 +401,9 @@ app.post("/api/verify-email", async (req, res) => {
   }
 });
 
+app.get("/minijuegos", requireLoginPage, (req, res) => {
+  res.sendFile(path.join(__dirname, "protected", "minijuegos.html"));
+});
 
 
 // --- LOGIN con bcrypt + verificación obligatoria ---
@@ -1093,9 +1120,126 @@ app.use((err, req, res, next) => {
   next();
 });
 
+// ===== Puntuaciones juego "snake" =====
+app.post("/api/games/snake/score", async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    if (!userId) {
+      return res.status(401).json({ error: "Necesitas iniciar sesión para guardar tu puntuación." });
+    }
+
+    const { score } = req.body;
+    const value = Number(score);
+
+    if (!Number.isFinite(value) || value < 0) {
+      return res.status(400).json({ error: "Puntuación inválida." });
+    }
+
+    const users = await loadUsers();
+    const user = users.find(u => u.id === userId);
+    if (!user) {
+      return res.status(401).json({ error: "Usuario no encontrado." });
+    }
+
+    if (isUserBanned(user)) {
+      return res.status(403).json({ error: "Tu cuenta está suspendida y no puede guardar puntuaciones." });
+    }
+
+    const scores = await loadScores();
+    const now = Date.now();
+
+    let entry = scores.find(s => s.userId === userId && s.game === "snake");
+
+    if (!entry) {
+      entry = {
+        id: "s_" + now.toString(36) + Math.random().toString(36).slice(2),
+        userId,
+        game: "snake",
+        bestScore: value,
+        lastScore: value,
+        updatedAt: now
+      };
+      scores.push(entry);
+    } else {
+      entry.lastScore = value;
+      if (value > (entry.bestScore || 0)) {
+        entry.bestScore = value;
+      }
+      entry.updatedAt = now;
+    }
+
+    await saveScores(scores);
+
+    const displayName =
+      (user.alias && user.alias.trim()) ||
+      (`${user.firstName || ""} ${user.lastName || ""}`.trim()) ||
+      "Usuario";
+
+    res.json({
+      ok: true,
+      score: {
+        userId,
+        displayName,
+        avatarPath: user.avatarPath || null,
+        bestScore: entry.bestScore,
+        lastScore: entry.lastScore
+      }
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "No se pudo guardar la puntuación." });
+  }
+});
+
+// Tabla de puntos / leaderboard del juego "snake"
+app.get("/api/games/snake/leaderboard", async (req, res) => {
+  try {
+    const scores = await loadScores();
+    const users = await loadUsers();
+
+    const gameScores = scores.filter(
+      s => s.game === "snake" && typeof s.bestScore === "number"
+    );
+
+    const list = gameScores
+      .map(s => {
+        const user = users.find(u => u.id === s.userId);
+        if (!user) return null;
+
+        const displayName =
+          (user.alias && user.alias.trim()) ||
+          (`${user.firstName || ""} ${user.lastName || ""}`.trim()) ||
+          "Usuario";
+
+        return {
+          userId: s.userId,
+          displayName,
+          avatarPath: user.avatarPath || null,
+          bestScore: s.bestScore,
+          updatedAt: s.updatedAt || 0
+        };
+      })
+      .filter(Boolean);
+
+    // Ordenar de mayor puntuación a menor
+    list.sort((a, b) => {
+      if (b.bestScore !== a.bestScore) {
+        return b.bestScore - a.bestScore;
+      }
+      return (b.updatedAt || 0) - (a.updatedAt || 0);
+    });
+
+    res.json({ leaderboard: list.slice(0, 50) });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "No se pudo cargar la tabla de puntos." });
+  }
+});
+
 
 // --- iniciar servidor ---
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Servidor escuchando en puerto", PORT);
 });
+
