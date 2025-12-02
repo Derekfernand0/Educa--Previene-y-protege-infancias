@@ -320,31 +320,54 @@ function reiniciarJuego() {
 }
 
 // ====== PUNTUACIONES / LEADERBOARD ======
+
 async function guardarPuntuacion(score) {
   try {
     const res = await fetch("/api/games/snake/score", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",          // 👈 MUY IMPORTANTE: manda la sesión
       body: JSON.stringify({ score })
     });
 
-    const data = await res.json();
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      console.error("Error guardando puntuación:", data);
+      // Si por alguna razón no hay sesión (caducó, etc.)
+      alert(data.error || "No se pudo guardar tu puntuación.");
+      return;
+    }
+
     console.log("Puntuación guardada:", data);
     cargarLeaderboard();
   } catch (err) {
     console.error("Error guardando puntuación", err);
+    alert("Hubo un problema de conexión al guardar tu puntuación.");
   }
 }
 
 async function cargarLeaderboard() {
   try {
-    const res = await fetch("/api/games/snake/leaderboard");
-    const data = await res.json();
+    const res = await fetch("/api/games/snake/leaderboard", {
+      credentials: "include" // no es obligatorio, pero ayuda a que todo sea consistente
+    });
+
+    const data = await res.json().catch(() => ({}));
 
     const tbody = document.getElementById("leaderboard-body");
     tbody.innerHTML = "";
 
-    if (!data.leaderboard) return;
+    if (!res.ok) {
+      console.error("Error leaderboard:", data);
+      tbody.innerHTML = `<tr><td colspan="3">No se pudo cargar la tabla de puntos.</td></tr>`;
+      return;
+    }
+
+    if (!data.leaderboard || !data.leaderboard.length) {
+      tbody.innerHTML = `<tr><td colspan="3">Todavía no hay puntuaciones 🥺</td></tr>`;
+      return;
+    }
 
     data.leaderboard.forEach((item, idx) => {
       const tr = document.createElement("tr");
@@ -352,14 +375,18 @@ async function cargarLeaderboard() {
         <td>${idx + 1}</td>
         <td>
           ${item.avatarPath ? `<img src="${item.avatarPath}" width="24" height="24">` : ""}
-          ${item.displayName}
+          ${item.displayName || "Usuario"}
         </td>
-        <td>${item.bestScore}</td>
+        <td>${item.bestScore ?? 0}</td>
       `;
       tbody.appendChild(tr);
     });
   } catch (err) {
     console.error("Error cargando leaderboard", err);
+    const tbody = document.getElementById("leaderboard-body");
+    if (tbody) {
+      tbody.innerHTML = `<tr><td colspan="3">No se pudo cargar la tabla de puntos.</td></tr>`;
+    }
   }
 }
 
@@ -367,6 +394,7 @@ async function cargarLeaderboard() {
 iniciarJuego();
 cargarLeaderboard();
 </script>
+
 
 </body>
 </html>
