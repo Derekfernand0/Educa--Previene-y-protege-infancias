@@ -519,11 +519,33 @@
     <h2 id="ayudaTitle" class="h-doodles">Ayuda cuando la necesites</h2>
     <p class="small">Si estás en peligro inmediato, llama al número de emergencia de tu país.</p>
 
-    <!-- Orden: Veracruz, México, Global -->
+    <!-- Orden: Tierra Blanca, Veracruz, México -->
+
+    <!-- Tierra Blanca (tarjetas) -->
+    <div class="reveal" data-reveal="tierrablanca">
+      <h3>Tierra Blanca (Veracruz)</h3>
+      <div class="grid three" id="helpGridTierraBlanca" aria-live="polite"></div>
+    </div>
+
+    <!-- Veracruz -->
     <div class="reveal" data-reveal="veracruz">
       <h3>Veracruz</h3>
       <div class="grid three" id="helpGridVeracruz" aria-live="polite"></div>
+    </div>
 
+    <!-- México -->
+    <div class="reveal" data-reveal="mx">
+      <h3>México</h3>
+      <div class="grid three" id="helpGridMX" aria-live="polite"></div>
+
+      <div class="help-whats-wrap">
+        <a class="whats-btn" target="_blank" rel="noopener" href="https://wa.me/525555335533?text=Hola%2C%20necesito%20apoyo%20psicoemocional.">WhatsApp · Consejo Ciudadano</a>
+        <a class="whats-btn" target="_blank" rel="noopener" href="https://wa.me/525579009669?text=Contacto">WhatsApp · Contacto Joven</a>
+      </div>
+
+      <small class="help-note">WhatsApp operado por instituciones verificadas.</small>
+
+      <!-- Consejeras SEP (movido aquí porque es general para México) -->
       <div class="help-contacts">
         <h4>Consejeras SEP (hostigamiento y acoso sexual)</h4>
         <p>
@@ -539,25 +561,10 @@
         <small class="help-note">Directorio de personal consejeras para la atención de casos de hostigamiento sexual y acoso sexual de la SEP.</small>
       </div>
     </div>
-
-    <div class="reveal" data-reveal="mx">
-      <h3>México</h3>
-      <div class="grid three" id="helpGridMX" aria-live="polite"></div>
-
-      <div class="help-whats-wrap">
-        <a class="whats-btn" target="_blank" rel="noopener" href="https://wa.me/525555335533?text=Hola%2C%20necesito%20apoyo%20psicoemocional.">WhatsApp · Consejo Ciudadano</a>
-        <a class="whats-btn" target="_blank" rel="noopener" href="https://wa.me/525579009669?text=Contacto">WhatsApp · Contacto Joven</a>
-      </div>
-
-      <small class="help-note">WhatsApp operado por instituciones verificadas.</small>
-    </div>
-
-    <div class="reveal" data-reveal="global">
-      <h3>Global</h3>
-      <div class="grid three" id="helpGridGlobal" aria-live="polite"></div>
-      <small class="help-note">Los enlaces abren directorios oficiales por país.</small>
-    </div>
   </section>
+
+
+
 
 <!-- CÓMO DENUNCIAR  -->
 <section id="denuncia" class="section gate-keep hidden" aria-labelledby="denunciaTitle" data-bg="sobre">
@@ -620,6 +627,7 @@
         <span class="trust-emoji">🚗</span>
         <span class="trust-label">Adulto desconocido que ofrece “ayuda”</span>
       </button>
+      <p class="trust-message" style="font-weight: 700; margin-top: 10px;"></p>
     </div>
 
     <p class="trust-hint small" aria-live="polite"></p>

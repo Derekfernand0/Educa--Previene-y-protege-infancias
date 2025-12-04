@@ -40,40 +40,89 @@ if (themeToggle){
 
 
 /* Navegación + fondo por sección */
-const backdrop=$("#navBackdrop"), sidenav=$("#sidenav");
-$("#navOpen")?.addEventListener("click",()=>{sidenav.classList.add("open"); backdrop.hidden=false; document.documentElement.style.overflow="hidden";});
-$("#navClose")?.addEventListener("click",closeNav); backdrop?.addEventListener("click",closeNav);
-function closeNav(){ sidenav.classList.remove("open"); backdrop.hidden=true; document.documentElement.style.overflow=""; }
-function showSection(id){
-  if(!id) return;
-  const t=document.getElementById(id);
-  if(!t) return;
-  $$(".gate-keep").forEach(s=>s.classList.add("hidden"));
-  t.classList.remove("hidden");
-  document.body.dataset.bg=t.dataset.bg||id;
-  closeNav();
-  t.setAttribute("tabindex","-1");
-  t.focus({preventScroll:false});
+/* Navegación + fondo por sección */
+const backdrop = $("#navBackdrop"),
+      sidenav  = $("#sidenav");
+
+$("#navOpen")?.addEventListener("click", () => {
+  sidenav.classList.add("open");
+  backdrop.hidden = false;
+  document.documentElement.style.overflow = "hidden";
+});
+$("#navClose")?.addEventListener("click", closeNav);
+backdrop?.addEventListener("click", closeNav);
+
+function closeNav(){
+  sidenav.classList.remove("open");
+  backdrop.hidden = true;
+  document.documentElement.style.overflow = "";
 }
-document.addEventListener("click",(e)=>{
-  // sirve tanto para los enlaces del menú como para cualquier cosa con data-target
+
+/* 💫 Forzar scroll hasta arriba (todas las formas posibles) */
+function forceScrollTop(){
+  const go = () => {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  };
+  go();
+  // lo repetimos un frame después por si el layout cambia
+  requestAnimationFrame(go);
+}
+
+/* Cambiar de sección */
+function showSection(id){
+  if (!id) return;
+  const t = document.getElementById(id);
+  if (!t) return;
+
+  // ocultar todas las secciones
+  $$(".gate-keep").forEach(s => s.classList.add("hidden"));
+  t.classList.remove("hidden");
+
+  // actualizar fondo
+  document.body.dataset.bg = t.dataset.bg || id;
+
+  // cerrar menú lateral
+  closeNav();
+
+  // subir al inicio de la página SIEMPRE que cambiamos de sección
+  forceScrollTop();
+
+  // accesibilidad: foco sin volver a mover el scroll
+  t.setAttribute("tabindex","-1");
+  t.focus({ preventScroll: true });
+}
+
+/* Navegación por links del menú y elementos con data-target */
+document.addEventListener("click", (e) => {
   const a = e.target.closest(".snav-link, [data-target]");
-  if(!a) return;
+  if (!a) return;
 
   const hash = (a.dataset.target || (a.getAttribute("href") || "").replace(/^.*#/, "")).trim();
-  if(!hash) return;
+  if (!hash) return;
 
   e.preventDefault();
   showSection(hash);
 });
 
-$$(".btn.cta").forEach(b=> b.addEventListener("click", ()=> showSection(b.dataset.open?.trim())));
+/* Botones principales del héroe (Aprende / Explora / Ayuda / etc.) */
+$$(".btn.cta").forEach(b => {
+  b.addEventListener("click", () => {
+    const target = b.dataset.open?.trim();
+    if (!target) return;
+    showSection(target);
+  });
+});
+
 (function initStart(){
-  const start=$("#inicio")||$(".gate-keep");
-  if(!start) return;
-  $$(".gate-keep").forEach(s=>s.classList.add("hidden"));
+  const start = $("#inicio") || $(".gate-keep");
+  if (!start) return;
+  $$(".gate-keep").forEach(s => s.classList.add("hidden"));
   start.classList.remove("hidden");
-  document.body.dataset.bg="inicio";
+  document.body.dataset.bg = "inicio";
+  // al cargar, también aseguramos estar arriba
+  forceScrollTop();
 })();
 
 /* Carrusel portada (botones + arrastre/ swipe) */
@@ -844,41 +893,72 @@ back.appendChild(backIcon);
 })();
 
 /* ===== Ayuda y Reflexiones (poblar) ===== */
-const HELP_MX=[
+const HELP_MX = [
   {name:"Línea de la Vida (MX)",type:"Teléfono",value:"800 911 2000",desc:"Orientación 24/7."},
   {name:"LOCATEL CDMX (MX)",type:"Teléfono",value:"55 5658 1111",desc:"Canalización (CDMX)."},
   {name:"Consejo Ciudadano (CDMX)",type:"Web",value:"https://consejociudadanomx.org/servicios/apoyo-psicologico-626ffa1400068",desc:"Apoyo 24/7; también WhatsApp."}
 ];
 
-const HELP_VERACRUZ=[
+const HELP_VERACRUZ = [
   {name:"Denuncia anónima 089 (Veracruz)",type:"Teléfono",value:"089",desc:"Para reportar delitos o violencia de forma anónima."},
   {name:"DIF Veracruz – Denuncias de maltrato",type:"Web",value:"https://www.difver.gob.mx/denuncias-maltrato/",desc:"Reporta maltrato a niñas, niños y adolescentes."},
   {name:"Alerta de Violencia de Género Veracruz (AVGM)",type:"Web",value:"https://www.veracruz.gob.mx/avgm/",desc:"Información y recursos estatales para mujeres y niñas."}
 ];
 
-const HELP_GLOBAL=[
-  {name:"Child Helpline International",type:"Web",value:"https://www.childhelplineinternational.org/find-a-helpline/",desc:"Directorio global de líneas."},
-  {name:"Befrienders Worldwide",type:"Web",value:"https://www.befrienders.org/",desc:"Apoyo emocional y crisis."},
-  {name:"Find a Helpline",type:"Web",value:"https://findahelpline.com/countries/mx",desc:"Buscador por país y tema."},
-  {name:"IWF Report (Global)",type:"Web",value:"https://report.iwf.org.uk/es",desc:"Reporta material de abuso infantil en línea."}
+const HELP_TIERRA_BLANCA = [
+  {
+    name:"Lic. Karla Arcos Báez",
+    type:"WhatsApp",
+    value:"+52 1 229 160 2485",
+    desc:"Atención psicológica por WhatsApp para Tierra Blanca."
+  },
+  {
+    name:"Lic. Cynthia Ivette Velázquez Bustos",
+    type:"WhatsApp",
+    value:"+52 1 274 106 1663",
+    desc:"Atención jurídica por WhatsApp para Tierra Blanca."
+  }
 ];
 
 (() => {
   function render(list, mount){
     if(!mount) return;
-    mount.innerHTML="";
-    list.forEach(c=>{
-      const el=document.createElement("div");
-      el.className="help-card";
-      const href=c.type==="Web"?c.value:`tel:${c.value.replace(/\s+/g,"")}`;
-      el.innerHTML=`<h4>${c.name}</h4><p class="muted">${c.desc}</p><a class="call" target="_blank" rel="noopener" href="${href}"><strong>${c.value}</strong></a>`;
+    mount.innerHTML = "";
+
+    list.forEach(c => {
+      const el = document.createElement("div");
+      el.className = "help-card";
+
+      let href = "";
+      const cleanNumber = c.value.replace(/\D+/g, "");
+
+      if (c.type === "Web") {
+        href = c.value;
+      } else if (c.type === "WhatsApp") {
+        // Abre chat de WhatsApp con ese número
+        href = `https://wa.me/${cleanNumber}`;
+      } else {
+        // Teléfono normal
+        href = `tel:${c.value.replace(/\s+/g,"")}`;
+      }
+
+      el.innerHTML = `
+        <h4>${c.name}</h4>
+        <p class="muted">${c.desc}</p>
+        <a class="call" target="_blank" rel="noopener" href="${href}">
+          <strong>${c.value}</strong>
+        </a>
+      `;
       mount.appendChild(el);
     });
   }
-  render(HELP_MX,$("#helpGridMX"));
-  render(HELP_VERACRUZ,$("#helpGridVeracruz"));
-  render(HELP_GLOBAL,$("#helpGridGlobal"));
+
+  // Orden de render: Tierra Blanca, Veracruz, México
+  render(HELP_TIERRA_BLANCA, $("#helpGridTierraBlanca"));
+  render(HELP_VERACRUZ, $("#helpGridVeracruz"));
+  render(HELP_MX, $("#helpGridMX"));
 })();
+
 
 (() => {
   const items=[
@@ -911,12 +991,10 @@ if (denunciaSection){
     const targetBlock = stepBlocks.find(b => b.dataset.step === stepStr);
     if (!targetBlock) return;
 
-    // Chips activas
     chips.forEach(chip => {
       chip.classList.toggle("is-active", chip.dataset.step === stepStr);
     });
 
-    // Progreso
     if (progressLabel){
       progressLabel.textContent = `Paso ${step} de ${total}`;
     }
@@ -925,7 +1003,6 @@ if (denunciaSection){
       progressFill.style.width = `${pct}%`;
     }
 
-    // Scroll suave al bloque
     targetBlock.scrollIntoView({behavior:"smooth", block:"start"});
   }
 
@@ -941,25 +1018,29 @@ if (denunciaSection){
   if (step1){
     const trustGrid = $(".trust-grid", step1);
     const trustCards = trustGrid ? $$(".trust-card", trustGrid) : [];
-    const hint = $(".trust-hint", step1);
+    const hint = $(".trust-hint", step1);          // 👈 importante: class="trust-hint"
     const resetBtn = $(".trust-reset", step1);
     const confettiLayer = $(".confetti-layer", step1);
 
-    const okCards = trustCards.filter(c => c.dataset.type === "ok");
+    const okCards = trustCards.filter(c => (c.dataset.type || "").trim() === "ok");
     const totalOk = okCards.length;
     let okTouched = 0;
-    let wrongTouched = false;
 
     function showMessage(type){
       if (!hint) return;
+
       if (type === "ok"){
         hint.textContent = "Es una buena opción para pedir ayuda. Busca a personas adultas de confianza que puedan protegerte. 💛";
+        hint.style.color = "#15803d"; // verde
       } else if (type === "warn"){
         hint.textContent = "Mejor no contarle a personas desconocidas o que no te den confianza. Busca a alguien adulto que sepas que quiere cuidarte. 🌱";
+        hint.style.color = "#b91c1c"; // rojo
       } else if (type === "win"){
         hint.textContent = "¡Lo hiciste muy bien! Elegiste buenas opciones para pedir ayuda. 🎉";
+        hint.style.color = "#0f766e"; // turquesa
       } else{
         hint.textContent = "";
+        hint.style.color = "";
       }
     }
 
@@ -978,7 +1059,6 @@ if (denunciaSection){
         confettiLayer.appendChild(piece);
       }
 
-      // Limpiar confeti después
       setTimeout(() => {
         if (confettiLayer) confettiLayer.innerHTML = "";
       }, 1800);
@@ -986,7 +1066,6 @@ if (denunciaSection){
 
     function resetTrustGame(){
       okTouched = 0;
-      wrongTouched = false;
       trustCards.forEach(card => {
         card.classList.remove("selected","ok","warn","gone","shake");
         card.style.display = "";
@@ -1003,10 +1082,9 @@ if (denunciaSection){
 
     trustCards.forEach(card => {
       card.addEventListener("click", () => {
-        // Si ya "contó" como clic bueno, no repetir
         if (card.dataset.hit === "1") return;
 
-        const type = card.dataset.type || "warn";
+        const type = (card.dataset.type || "warn").trim();
 
         if (type === "ok"){
           card.dataset.hit = "1";
@@ -1015,7 +1093,6 @@ if (denunciaSection){
           card.classList.add("selected","ok","gone");
           showMessage("ok");
 
-          // Después de la animación, ocultar del grid
           setTimeout(() => {
             card.style.display = "none";
           }, 360);
@@ -1025,11 +1102,9 @@ if (denunciaSection){
             triggerConfetti();
           }
         } else {
-          wrongTouched = true;
           card.classList.add("selected","warn","shake");
           showMessage("warn");
 
-          // quitar shake luego
           setTimeout(() => {
             card.classList.remove("shake");
           }, 260);
@@ -1041,6 +1116,8 @@ if (denunciaSection){
       });
     });
   }
+
+
     // 👥 Paso 2: roles (niña/niño, adulto, testigo)
   const step2 = $("#denuncia-step-2");
   if (step2){
