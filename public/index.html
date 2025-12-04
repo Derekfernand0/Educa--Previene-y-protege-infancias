@@ -7,6 +7,10 @@
   <meta name="description" content="KIVA: sitio interactivo para niñas, niños y adolescentes sobre prevención del abuso infantil.">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+   <!-- CSS para celular (máx 600px de ancho) -->
+  <link rel="stylesheet"
+        href="styles.mobile.css"
+        media="only screen and (max-width: 600px)" />
 
 <!-- Privacy-friendly analytics by Plausible -->
 <script async src="https://plausible.io/js/pa-4di1ek7RF3dH57-72ZVn0.js"></script>
@@ -78,32 +82,89 @@
   </nav>
   <div id="navBackdrop" class="nav-backdrop" hidden></div>
 
-  <!-- ===== INICIO ===== -->
-  <main id="inicio" class="section gate-keep" tabindex="-1" aria-labelledby="homeTitle" data-bg="inicio">
-    <div class="hero two-col clean">
-      <div class="hero-left">
-        <h1 id="homeTitle" class="title">
-          <span class="kiva-multi">
-            <b class="kiva">KIVA</b> <b class="voz">Voz</b> <b class="y">y</b> <b class="apoyo">apoyo</b>
-          </span>
-          <span class="sub">Cuidarte es importante. Aquí encontrarás apoyo y herramientas para hacerlo.</span>
-        </h1>
+
+<!-- ===== INICIO ===== -->
+<main id="inicio" class="section gate-keep" tabindex="-1" aria-labelledby="homeTitle" data-bg="inicio">
+
+  <div class="hero two-col clean inicio-layout">
+
+    <!-- =====================
+        IZQUIERDA
+    ====================== -->
+    <div class="hero-left inicio-left">
+
+      <!-- Botones Aprende / Explora -->
+      <div class="inicio-main-copy">
+        <div class="inicio-block">
+          <h2 class="inicio-block-title">Cuidarte es importante</h2>
+        <p class="inicio-block-text">
+          ¡Aprende jugando! conoce tu cuerpo, tus derechos y los secretos para protegerte.
+        </p>
         <div class="cta-row">
           <button class="btn cta" data-open="aprende">Aprende</button>
           <button class="btn alt cta" data-open="explora">Explora</button>
         </div>
+        </div>
       </div>
 
-      <!-- Carrusel de imágenes  -->
-      <aside class="hero-media">
-        <div class="home-carousel" id="homeCarousel" aria-label="Imágenes destacadas">
-          <div class="hc-track">
-            <img src="https://www.mujer.com.pa/sites/default/files/field/image/ninos-aprenden-ingles-por-videoconferencia.jpg" alt="Imagen 1">
-          </div>
+      <!-- Bloque: Líneas de apoyo -->
+      <div class="inicio-block">
+        <h2 class="inicio-block-title">Espacio seguro.</h2>
+        <p class="inicio-block-text">
+          ¡No estas solo! te guiamos paso a paso para encontrar protección.
+        </p>
+
+        <div class="support-buttons">
+          <button type="button" class="home-pill" data-target="ayuda">
+            Líneas de apoyo
+          </button>
+          <button type="button" class="home-pill alt" data-target="denuncia">
+            Cómo denunciar
+          </button>
         </div>
-      </aside>
+      </div>
+
+      <!-- Bloque: Foro seguro -->
+      <div class="inicio-block inicio-block--foro">
+        <h2 class="inicio-block-title">Tu voz</h2>
+        <p class="inicio-block-text">
+          Este es un espacio confidencial y respetuoso para compartir emociones, experiencias y dudas.
+        </p>
+
+        <button
+          type="button"
+          class="btn inicio-forum-btn"
+          data-target="foro">
+          💬 Foro seguro
+        </button>
+      </div>
     </div>
-  </main>
+
+    <!-- =====================
+        DERECHA
+    ====================== -->
+    <aside class="hero-media inicio-right">
+      <div class="inicio-image-shell">
+        <img
+          src="https://www.mujer.com.pa/sites/default/files/field/image/ninos-aprenden-ingles-por-videoconferencia.jpg"
+          alt="Niñas y niños usando una computadora">
+      </div>
+
+      <div class="inicio-caption">
+        <h1 id="homeTitle" class="inicio-caption-title">
+          KIVA Voz y apoyo
+        </h1>
+        <p class="inicio-caption-text">
+          Aprende, exprésate y fortalece tu entorno seguro.
+        </p>
+      </div>
+    </aside>
+
+  </div>
+
+</main>
+
+
 
   <!-- ===== APRENDE ===== -->
   <section id="aprende" class="section gate-keep hidden" aria-labelledby="aprendeTitle" data-bg="aprende">

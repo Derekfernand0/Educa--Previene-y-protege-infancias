@@ -208,6 +208,102 @@ body[data-theme="dark"] .mode-toggle{
 .hero .sub{display:block; font-weight:800; font-size:clamp(16px,2.4vw,22px); color:#1a2230}
 .cta-row{display:flex; gap:10px; flex-wrap:wrap}
 
+/* ===== Bloque de líneas de apoyo bajo el héroe ===== */
+
+.home-support-strip{
+  margin-top: 22px;
+}
+
+.home-support-inner{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 18px;
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  box-shadow: var(--shadow-md);
+}
+
+.home-support-text{
+  max-width: 460px;
+}
+
+.home-support-label{
+  display: block;
+  font-weight: 800;
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.home-support-actions{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.home-pill{
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  padding: 10px 18px;
+  background: #FFD9C8;
+  font-family: "Fredoka", system-ui;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition:
+    transform .12s ease,
+    box-shadow .12s ease,
+    background-color .15s ease;
+}
+
+.home-pill.alt{
+  background: #FFD6E7;
+}
+
+.home-pill:hover{
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* CTA foro bajo el recuadro */
+
+.home-forum-cta{
+  margin-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.home-forum-text{
+  font-size: 0.9rem;
+  color: var(--muted);
+  max-width: 520px;
+}
+
+.forum-cta-btn{
+  background: #CFEAFF;
+}
+
+/* Modo oscuro: que se vea bonito también */
+
+body[data-theme="dark"] .home-support-inner{
+  background: color-mix(in oklab, var(--card) 92%, #020617 8%);
+}
+
+body[data-theme="dark"] .home-pill{
+  background: color-mix(in oklab, var(--card) 85%, #1d4ed8 15%);
+  color: #e5e7eb;
+}
+
+body[data-theme="dark"] .home-pill.alt{
+  background: color-mix(in oklab, var(--card) 85%, #db2777 15%);
+}
+
 /* Carrusel portada */
 .home-carousel{position:relative; border-radius:18px; border:1px solid var(--line); background:var(--card); box-shadow:var(--shadow-md); overflow:hidden}
 .hc-track{display:flex; scroll-snap-type:x mandatory; overflow:hidden; touch-action:pan-y; will-change:transform}
@@ -2965,4 +3061,351 @@ body[data-theme="dark"] #denuncia .emotion-btn.is-active{
   background:#1f2937 !important;
   border-color:#4b5563 !important;
   color:#f9fafb !important;
+}
+
+/* ===== CTA del foro: centrado y llamativo ===== */
+/* ===== Bloque Líneas de apoyo + Foro (dos columnas) ===== */
+
+.support-hero{
+  margin-top: 26px;
+}
+
+.support-layout{
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* Tarjeta izquierda: texto + botones */
+.support-left{
+  background: var(--card);
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  padding: 18px 20px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.support-title{
+  margin: 0;
+  font-family: "Fredoka", system-ui;
+  font-size: 1.2rem;
+}
+
+.support-text{
+  margin: 0;
+  font-size: .95rem;
+  color: var(--muted);
+}
+
+.support-buttons{
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 260px;
+}
+
+/* pill que ya usas, solo la dejamos igual */
+.home-pill{
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  padding: 9px 16px;
+  background: #FFD9C8;
+  font-family: "Fredoka";
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+}
+
+.home-pill.alt{
+  background: #FFD6E7;
+}
+
+.support-forum-btn{
+  border-radius: 16px;
+  background: #CFEAFF;
+  font-size: .95rem;
+  text-align: center;
+}
+
+/* Tarjeta derecha: imagen + caption */
+.support-right{
+  background: var(--card);
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  padding: 12px 12px 14px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.support-image-shell{
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.support-image-shell img{
+  display: block;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.support-caption h3{
+  margin: 0 0 4px;
+  font-family: "Fredoka", system-ui;
+  font-size: 1rem;
+}
+
+.support-caption p{
+  margin: 0;
+  font-size: .9rem;
+  color: var(--muted);
+}
+
+/* Animación suave al aparecer */
+.support-left,
+.support-right{
+  animation: supportFade .45s ease-out;
+}
+
+@keyframes supportFade{
+  0%{ opacity:0; transform:translateY(8px); }
+  100%{ opacity:1; transform:translateY(0); }
+}
+
+/* Responsive: en móvil una columna */
+@media (max-width: 880px){
+  .support-layout{
+    grid-template-columns: 1fr;
+  }
+
+  .support-buttons{
+    max-width: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+/* ===== INICIO: layout combinado botones + imagen ===== */
+
+.inicio-layout{
+  /* ya es grid 2 columnas por .hero.two-col, solo ajustamos alturas */
+  align-items: stretch;
+}
+
+/* Columna izquierda */
+.inicio-left{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+/* Bloque superior (KIVA + Aprende / Explora) */
+.inicio-main-copy{
+  margin-bottom:4px;
+}
+
+.inicio-title-block{
+  margin-bottom:8px;
+}
+
+/* Bloques internos (Líneas de apoyo / Foro) */
+.inicio-block{
+  background: var(--card);
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-md);
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.inicio-block-title{
+  margin:0;
+  font-family:"Fredoka", system-ui;
+  font-size:1.05rem;
+}
+
+.inicio-block-text{
+  margin:2;
+  font-size:.9rem;
+  color:var(--muted);
+}
+
+.support-buttons{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+/* reutilizamos home-pill pero nos aseguramos que no se deforme */
+.home-pill{
+  border-radius:16px;
+  border:1px solid var(--line);
+  padding:8px 14px;
+  background:#FFD9C8;
+  font-family:"Fredoka", system-ui;
+  font-weight:700;
+  font-size:.9rem;
+  cursor:pointer;
+  box-shadow:var(--shadow-sm);
+}
+
+.home-pill.alt{
+  background:#FFD6E7;
+}
+
+/* Botón del foro llamativo + animación */
+.inicio-forum-btn{
+  align-self:flex-start;
+  border-radius:18px;
+  background:#CFEAFF;
+  font-size:.95rem;
+  padding-inline:20px;
+  animation: foroPulse 2.4s ease-in-out infinite;
+}
+
+.inicio-forum-btn:hover{
+  transform:translateY(-1px) scale(1.02);
+}
+
+/* Columna derecha: imagen + texto */
+.inicio-right{
+  background:var(--card);
+  border-radius:22px;
+  border:1px solid var(--line);
+  padding:14px 14px 16px;
+  box-shadow:var(--shadow-lg);
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.inicio-image-shell{
+  border-radius:18px;
+  overflow:hidden;
+  flex-grow: 1;           /* permite que la imagen crezca y llene el espacio */
+  display: flex;          /* deja que la imagen se estire correctamente */
+  min-height: 280px;      /* ajusta la altura base, puedes subirlo a 320 o 360 */
+}
+
+.inicio-image-shell img{
+  width:100%;
+  height:100%;           /* ocupa el 100% del contenedor */
+  object-fit:cover;      /* no se deforma */
+  display:block;
+}
+
+.inicio-caption-title{
+  margin:0 0 4px;
+  font-family:"Fredoka", system-ui;
+  font-size:1.4rem;
+}
+
+.inicio-caption-text{
+  margin:0;
+  font-size:.95rem;
+}
+
+/* animación suave botón foro */
+@keyframes foroPulse{
+  0%,100%{
+    box-shadow:0 0 0 0 rgba(148,163,184,0.0);
+  }
+  50%{
+    box-shadow:0 0 0 10px rgba(148,163,184,0.25);
+  }
+}
+
+/* Responsive: en pantallas pequeñas que todo respire bonito */
+@media (max-width: 880px){
+  .inicio-layout{
+    gap:16px;
+  }
+
+  .inicio-right{
+    order:-1; /* imagen arriba en móvil */
+  }
+
+  .support-buttons{
+    width:100%;
+  }
+}
+
+/* ===== INICIO: layout combinado botones + imagen ===== */
+
+/* que este héroe sea 2 columnas iguales */
+.hero.two-col.inicio-layout{
+  grid-template-columns:1fr 1fr;
+  gap:28px;
+  align-items:stretch;
+}
+
+.inicio-left{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.inicio-main-copy{
+  margin-bottom:4px;
+}
+
+/* Bloques internos */
+.inicio-block{
+  background: var(--card);
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-md);
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+/* Bloque específico del foro: centrado */
+.inicio-block--foro{
+  align-items:stretch;
+  text-align:stretch;
+}
+
+.inicio-forum-btn{
+  border-radius:18px;
+  background:#CFEAFF;
+  font-size:.95rem;
+  padding-inline:20px;
+  align-self:stretch;          /* centrado dentro del bloque */
+  animation: foroPulse 2.4s ease-in-out infinite;
+}
+
+/* Columna derecha: tarjeta */
+.inicio-right{
+  background:var(--card);
+  border-radius:22px;
+  border:1px solid var(--line);
+  padding:14px 14px 16px;
+  box-shadow:var(--shadow-lg);
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.inicio-caption{
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* o center si lo quieres centrado verticalmente */
+}
+.inicio-caption-text{
+  max-width: 100%;
+  line-height: 1.55;
+  font-size: 1.05rem;
 }
