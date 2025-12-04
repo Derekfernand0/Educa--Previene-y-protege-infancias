@@ -84,19 +84,50 @@ $$(".btn.cta").forEach(b=> b.addEventListener("click", ()=> showSection(b.datase
   if (!wrap) return;
 
   const range = $("#emoRange", wrap),
-        label = $(".emo-label", wrap),
+        label = $(".emo-label", wrap),      // aquí pondremos el MENSAJE
         knob  = $("#dialKnob", wrap),
         emoji = $("#dialEmoji", wrap);
 
   // agrandamos un poquito la bolita
   if (knob) knob.setAttribute("r", "14");
 
+  // Estados con mensaje y color (verde → amarillo → rojo)
   const states = [
-    { max: 20,  name: "Feliz",       emoji: "😊" },
-    { max: 45,  name: "Tranquila/o", emoji: "🙂" },
-    { max: 70,  name: "Inquieta/o",  emoji: "😕" },
-    { max: 85,  name: "Triste",      emoji: "😔" },
-    { max: 100, name: "Enojada/o",   emoji: "😠" }
+    {
+      max: 20,
+      name: "Feliz",
+      emoji: "😊",
+      message: "Qué bueno que estás feliz. Sigue adelante inspirando alegría a las demás personas.",
+      color: "#16a34a" // verde
+    },
+    {
+      max: 45,
+      name: "Tranquila/o",
+      emoji: "🙂",
+      message: "Sentirte tranquila/o te ayuda a disfrutar tu día y tomar decisiones con calma.",
+      color: "#22c55e" // verde clarito
+    },
+    {
+      max: 70,
+      name: "Inquieta/o",
+      emoji: "😕",
+      message: "Está bien sentirte inquieta/o. Hablar con alguien de confianza puede ayudarte a ordenar lo que sientes.",
+      color: "#eab308" // amarillo
+    },
+    {
+      max: 85,
+      name: "Triste",
+      emoji: "😔",
+      message: "Sentir tristeza es válido. Buscar apoyo puede hacer que ese peso se sienta más ligero.",
+      color: "#f97316" // naranja
+    },
+    {
+      max: 100,
+      name: "Enojada/o",
+      emoji: "😠",
+      message: "No está mal sentirse enojada/o, pero es importante cuidar cómo expresas ese enojo para que no se salga de control.",
+      color: "#dc2626" // rojo
+    }
   ];
 
   // arco de 180° (de 180° a 0°) que coincide con el SVG
@@ -114,12 +145,22 @@ $$(".btn.cta").forEach(b=> b.addEventListener("click", ()=> showSection(b.datase
   function update(v) {
     v = Math.max(0, Math.min(100, v));
     range.value = v;
+
     const p = posAt(v);
     knob.setAttribute("cx", p.x.toFixed(1));
     knob.setAttribute("cy", p.y.toFixed(1));
+
     const s = states.find(x => v <= x.max) || states.at(-1);
-    label.textContent = `Emoción: ${s.name}`;
-    emoji.textContent = s.emoji;
+
+    if (label){
+      // Mensaje personalizado + color según emoción
+      label.textContent = s.message;
+      label.style.color = s.color;
+    }
+
+    if (emoji){
+      emoji.textContent = s.emoji;
+    }
   }
 
   range.addEventListener("input", () => update(+range.value));
@@ -162,13 +203,12 @@ $$(".btn.cta").forEach(b=> b.addEventListener("click", ()=> showSection(b.datase
 
     // parámetros del aro (mismo radio que usamos en posAt)
     const R = 70;
-    const ringInner = R - 10; // grosor interno
-    const ringOuter = R + 10; // grosor externo
+    const ringInner = R - 10;
+    const ringOuter = R + 10;
 
     const touchingRing = (y <= cy) && distCenter >= ringInner && distCenter <= ringOuter;
-    const touchingKnob = distKnob <= 20; // tocar la bolita
+    const touchingKnob = distKnob <= 20;
 
-    // si no toca ni la bolita ni la barra del círculo, no hacemos nada
     if (!touchingRing && !touchingKnob) return;
 
     dragging = true;
@@ -190,6 +230,7 @@ $$(".btn.cta").forEach(b=> b.addEventListener("click", ()=> showSection(b.datase
 
   update(+range.value || 20);
 })();
+
 
 /* Confeti */
 const CONFETTI_COLORS=["#CFEAFF","#E5D6FF","#FFF4B8","#FFD9C8","#FFD6E7"];
@@ -565,75 +606,233 @@ back.appendChild(backIcon);
 
 /* ===== Semáforo de las sensaciones ===== */
 (() => {
-  const wrap=$("#semaforo"); if(!wrap) return;
-  const cardsContainer=$(".traffic-cards",wrap);
-  const zones=$$(".traffic-zone",wrap);
-  const msg=$(".traffic-msg",wrap);
-  const reset=$("[data-game='semaforo']",wrap);
+  const wrap = $("#semaforo");
+  if (!wrap) return;
 
-  const scenarios=[
-    {id:"abrazo",emoji:"🤗",text:"Abrazo cariñoso"},
-    {id:"gritos",emoji:"😣",text:"Gritos fuertes"},
-    {id:"secreto",emoji:"🤫",text:"Secreto que incomoda"},
-    {id:"ayuda",emoji:"🧑‍🏫",text:"Persona adulta que ayuda"},
-    {id:"foto",emoji:"📸",text:"Piden foto rara"},
-    {id:"juego",emoji:"🎮",text:"Juego respetuoso"}
+  const cardsContainer = $(".traffic-cards", wrap);
+  const zones          = $$(".traffic-zone", wrap);
+  const msg            = $(".traffic-msg", wrap);
+  const reset          = $("[data-game='semaforo']", wrap);
+
+  // Cada situación con su color "más correcto"
+  const scenarios = [
+    { id: "abrazo", emoji: "🤗", text: "Abrazo cariñoso",        correct: "green"  },
+    { id: "gritos", emoji: "😣", text: "Gritos fuertes",         correct: "red"    },
+    { id: "secreto",emoji: "🤫", text: "Secreto que incomoda",   correct: "yellow" },
+    { id: "ayuda",  emoji: "🧑‍🏫", text: "Persona adulta que ayuda", correct: "green"  },
+    { id: "foto",   emoji: "📸", text: "Piden foto rara",        correct: "red"    },
+    { id: "juego",  emoji: "🎮", text: "Juego respetuoso",       correct: "green"  }
   ];
 
-  function createCards(){
-    cardsContainer.innerHTML="";
-    scenarios.forEach(s=>{
-      const card=document.createElement("button");
-      card.type="button";
-      card.className="traffic-card";
-      card.draggable=true;
-      card.dataset.sid=s.id;
-      card.innerHTML=`<span class="emoji">${s.emoji}</span><span class="text">${s.text}</span>`;
-      card.addEventListener("dragstart",e=>{
-        e.dataTransfer.effectAllowed="move";
-        e.dataTransfer.setData("text/plain",s.id);
-        setTimeout(()=>card.classList.add("dragging"),0);
+  const scenariosById = Object.fromEntries(scenarios.map(s => [s.id, s]));
+
+  // Mensajes por combinación (situación + color)
+  // tone: "good" (acertó), "warn" (duda/alerta), "bad" (no seguro)
+  const explanations = {
+    abrazo: {
+      green: {
+        text: "Un abrazo cariñoso que tú quieres recibir suele sentirse seguro y bonito.",
+        tone: "good"
+      },
+      yellow: {
+        text: "Si un abrazo te hace dudar o te incomoda, aunque digan que es cariñoso, vale la pena escuchar esa sensación.",
+        tone: "warn"
+      },
+      red: {
+        text: "Si te obligan a dar un abrazo o tocan tu cuerpo sin permiso, no es seguro aunque lo llamen cariñoso.",
+        tone: "bad"
+      }
+    },
+    gritos: {
+      green: {
+        text: "Los gritos fuertes casi nunca se sienten seguros. Tal vez este color no le queda a esta situación.",
+        tone: "bad"
+      },
+      yellow: {
+        text: "Si alguien grita y te hace sentir incómoda/o, es una señal de alerta. Puedes pedir que bajen la voz o alejarte.",
+        tone: "warn"
+      },
+      red: {
+        text: "Cuando hay gritos que asustan o lastiman, es una señal clara de que la situación no es segura.",
+        tone: "bad"
+      }
+    },
+    secreto: {
+      green: {
+        text: "Un secreto que incomoda no debe estar en verde. Los secretos que duelen se cuentan, no se guardan.",
+        tone: "bad"
+      },
+      yellow: {
+        text: "Si un secreto te incomoda o no estás segura/o, es una señal para hablar con alguien de confianza.",
+        tone: "warn"
+      },
+      red: {
+        text: "Si el secreto da miedo, vergüenza o te hace sentir en peligro, es una situación no segura. Contarlo es importante.",
+        tone: "bad"
+      }
+    },
+    ayuda: {
+      green: {
+        text: "Una persona adulta que escucha, respeta y cuida normalmente está en la zona segura.",
+        tone: "good"
+      },
+      yellow: {
+        text: "Si una persona adulta dice que ayuda pero te hace dudar o te incomoda, puedes buscar a otra persona de confianza.",
+        tone: "warn"
+      },
+      red: {
+        text: "Si una persona adulta lastima, amenaza o no respeta tus límites, no es segura aunque diga que ayuda.",
+        tone: "bad"
+      }
+    },
+    foto: {
+      green: {
+        text: "Pedir una 'foto rara' o de partes privadas nunca es una situación segura, aunque parezca un juego.",
+        tone: "bad"
+      },
+      yellow: {
+        text: "Si te confunde que pidan una foto rara, esa duda es una alerta. Puedes decir que no y pedir ayuda.",
+        tone: "warn"
+      },
+      red: {
+        text: "Cuando piden fotos raras o íntimas, es una situación no segura. Tienes derecho a decir que no y contarlo.",
+        tone: "bad"
+      }
+    },
+    juego: {
+      green: {
+        text: "Un juego respetuoso, donde todas las personas están de acuerdo y nadie se siente mal, suele ser seguro.",
+        tone: "good"
+      },
+      yellow: {
+        text: "Si en el juego empiezas a sentirte incómoda/o, excluida/o o presionada/o, es momento de poner atención.",
+        tone: "warn"
+      },
+      red: {
+        text: "Si en el juego te lastiman, insultan o te obligan a hacer cosas que no quieres, deja de ser seguro.",
+        tone: "bad"
+      }
+    }
+  };
+
+  const toneColor = {
+    good: "#15803d",  // verde
+    warn: "#eab308",  // amarillo
+    bad:  "#b91c1c"   // rojo
+  };
+
+  let placements = {};
+
+  function setMessage(text, tone) {
+    if (!msg) return;
+    msg.textContent = text || "";
+    msg.style.color = toneColor[tone] || "var(--ink)";
+  }
+
+  function createCards() {
+    cardsContainer.innerHTML = "";
+    placements = {};
+    setMessage("", null);
+
+    // limpiar cartas que hayan quedado dentro de las zonas
+    zones.forEach(z => {
+      $$(".traffic-card", z).forEach(c => c.remove());
+    });
+
+    scenarios.forEach(s => {
+      const card = document.createElement("button");
+      card.type = "button";
+      card.className = "traffic-card";
+      card.draggable = true;
+      card.dataset.sid = s.id;
+      card.innerHTML = `
+        <span class="emoji">${s.emoji}</span>
+        <span class="text">${s.text}</span>
+      `.trim();
+
+      card.addEventListener("dragstart", e => {
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", s.id);
+        setTimeout(() => card.classList.add("dragging"), 0);
       });
-      card.addEventListener("dragend",()=>{
+
+      card.addEventListener("dragend", () => {
         card.classList.remove("dragging");
       });
+
       cardsContainer.appendChild(card);
     });
   }
 
-  zones.forEach(zone=>{
-    zone.addEventListener("dragover",e=>{
-      e.preventDefault();
-    });
-    zone.addEventListener("drop",e=>{
-      e.preventDefault();
-      const id=e.dataTransfer.getData("text/plain");
-      if(!id) return;
-      const card=document.querySelector(`.traffic-card[data-sid="${id}"]`);
-      if(card) zone.appendChild(card);
-      checkAllPlaced();
-    });
-  });
+  function handleDrop(sid, zoneKey) {
+    const scenario = scenariosById[sid];
+    if (!scenario) return;
 
-  function checkAllPlaced(){
-    const remaining=cardsContainer.querySelectorAll(".traffic-card").length;
-    if(remaining===0){
-      msg.textContent="Has colocado todas las situaciones. Si algo te incomoda, puedes contarlo.";
-      celebrate();
+    placements[sid] = zoneKey;
+
+    const exp = explanations[sid]?.[zoneKey];
+    if (exp) {
+      setMessage(exp.text, exp.tone);
+    } else {
+      const ok = zoneKey === scenario.correct;
+      setMessage(
+        ok
+          ? "Esta situación se parece a algo seguro."
+          : "Parece que este color no encaja del todo con cómo se siente esta situación.",
+        ok ? "good" : "bad"
+      );
+    }
+
+    // Si todas están en el color correcto, celebramos
+    const allPlaced  = scenarios.every(s => placements[s.id]);
+    const allCorrect = scenarios.every(s => placements[s.id] === s.correct);
+
+    if (allCorrect) {
+      setMessage(
+        "¡Lo hiciste muy bien! Clasificaste todas las situaciones según cómo se sienten.",
+        "good"
+      );
+      if (typeof celebrate === "function") {
+        celebrate();
+      }
+    } else if (allPlaced) {
+      // Todas colocadas pero no todas correctas: pista suave
+      setMessage(
+        (msg.textContent || "") +
+          " Revisa si alguna situación podría ir mejor en otro color.",
+        "warn"
+      );
     }
   }
 
-  function init(){
-    zones.forEach(z=>{
-      z.querySelectorAll(".traffic-card").forEach(c=>c.remove());
-    });
-    msg.textContent="";
-    createCards();
-  }
+  zones.forEach(zone => {
+    const zoneKey = zone.dataset.zone;
 
-  reset?.addEventListener("click",init);
-  init();
+    zone.addEventListener("dragover", e => {
+      e.preventDefault();
+    });
+
+    zone.addEventListener("drop", e => {
+      e.preventDefault();
+      const sid = e.dataTransfer.getData("text/plain");
+      if (!sid) return;
+
+      // Buscar la carta en cualquier parte del juego
+      const card = wrap.querySelector(`.traffic-card[data-sid="${sid}"]`);
+      if (!card) return;
+
+      zone.appendChild(card);
+      handleDrop(sid, zoneKey);
+    });
+  });
+
+  reset.addEventListener("click", () => {
+    createCards();
+  });
+
+  createCards();
 })();
+
 
 /* ===== Carrusel Aprende ===== */
 (() => {
