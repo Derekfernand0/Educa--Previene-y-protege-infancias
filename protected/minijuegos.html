@@ -163,6 +163,48 @@
   }
 }
 
+/* ===== Controles táctiles (móvil) ===== */
+.touch-controls{
+  margin-top: 16px;
+  display: none;            /* por defecto oculto en escritorio */
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.touch-row{
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 4px 0;
+}
+
+.touch-btn{
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  border: none;
+  font-size: 26px;
+  background: #94caff;
+  color: #fff;
+  box-shadow: 0 3px 6px rgba(0,0,0,.18);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.touch-btn:active{
+  transform: translateY(2px);
+  box-shadow: 0 1px 3px rgba(0,0,0,.25);
+}
+
+/* Mostrar controles táctiles en pantallas pequeñas */
+@media (max-width: 900px){
+  .touch-controls{
+    display: flex;
+    flex-direction: column;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -191,6 +233,18 @@
         <p>Perdiste, Fluttershy 😔💛</p>
         <button onclick="reiniciarJuego()">Reiniciar juego</button>
       </div>
+            <!-- Controles táctiles para celular -->
+      <div class="touch-controls" aria-label="Controles táctiles del gusanito">
+        <div class="touch-row">
+          <button class="touch-btn" data-dir="up">⬆️</button>
+        </div>
+        <div class="touch-row">
+          <button class="touch-btn" data-dir="left">⬅️</button>
+          <button class="touch-btn" data-dir="down">⬇️</button>
+          <button class="touch-btn" data-dir="right">➡️</button>
+        </div>
+      </div>
+
     </div>
 
     <!-- DERECHA: Tabla de puntos -->
@@ -295,12 +349,40 @@ function generarComida() {
   };
 }
 
-function cambiarDireccion(e) {
-  if (e.key === "ArrowUp" && dy === 0) { dx = 0; dy = -20; }
-  if (e.key === "ArrowDown" && dy === 0) { dx = 0; dy = 20; }
-  if (e.key === "ArrowLeft" && dx === 0) { dx = -20; dy = 0; }
-  if (e.key === "ArrowRight" && dx === 0) { dx = 20; dy = 0; }
+// Cambiar dirección de forma genérica
+function setDirection(dir){
+  if (dir === "up" && dy === 0){
+    dx = 0; dy = -20;
+  }
+  if (dir === "down" && dy === 0){
+    dx = 0; dy = 20;
+  }
+  if (dir === "left" && dx === 0){
+    dx = -20; dy = 0;
+  }
+  if (dir === "right" && dx === 0){
+    dx = 20; dy = 0;
+  }
 }
+
+// Teclado (PC)
+document.addEventListener("keydown", cambiarDireccion);
+
+function cambiarDireccion(e) {
+  if (e.key === "ArrowUp")    setDirection("up");
+  if (e.key === "ArrowDown")  setDirection("down");
+  if (e.key === "ArrowLeft")  setDirection("left");
+  if (e.key === "ArrowRight") setDirection("right");
+}
+
+// Controles táctiles (móvil)
+document.querySelectorAll(".touch-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const dir = btn.dataset.dir;
+    setDirection(dir);
+  });
+});
+
 
 function colision(c) {
   for (let i = 0; i < snake.length; i++) {
