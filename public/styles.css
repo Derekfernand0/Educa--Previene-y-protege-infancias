@@ -4588,3 +4588,17 @@ body[data-theme="dark"] .sopa-cell {
   from { transform: translateY(0); }
   to { transform: translateY(-10px); }
 }
+
+
+/* Logo en el encabezado */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* separa logo y texto */
+}
+
+.brand-logo {
+  height: 40px;     /* puedes subir o bajar el tamaño */
+  width: auto;
+  display: block;
+}
