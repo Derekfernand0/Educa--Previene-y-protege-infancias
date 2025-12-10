@@ -2613,6 +2613,145 @@ function initDragGame(containerId, items, onDrop) {
   render("start");
 })();
 
+
+//Semáforo de Prevención
+(() => {
+  const wrap = $("#semaforo"); if (!wrap) return;
+  
+  const card = $("#semCard", wrap);
+  const scoreEl = $("#semScore", wrap);
+  const startBtn = $("#startSemBtn", wrap);
+  const feedback = $("#semFeedback", wrap);
+  const buttons = $$(".sem-btn", wrap);
+
+  // 1. LISTA AMPLIADA DE SITUACIONES
+  // green = Seguro, yellow = Alerta/Incómodo (Límites), red = Peligro
+  const allLevels = [
+    // --- VERDE (Seguro / Confianza) ---
+    { t: "Abrazo de mamá o papá cuando tú quieres", e: "🤗", c: "green" },
+    { t: "La doctora te revisa con tu mamá presente", e: "👩‍⚕️", c: "green" },
+    { t: "Jugar y reír con tus amigos en el recreo", e: "⚽", c: "green" },
+    { t: "Tu abuela te da la mano para cruzar la calle", e: "👵", c: "green" },
+    { t: "Chocar las manos con tu mejor amigo", e: "🙏", c: "green" },
+    { t: "Decir 'NO' a algo que no te gusta", e: "🛑", c: "green" }, // Decir no es seguro y sano
+    { t: "Tu tío te lee un cuento en la sala", e: "📖", c: "green" },
+    { t: "Bañarte tú solito/a con la puerta cerrada", e: "🚿", c: "green" },
+
+    // --- AMARILLO (Alerta / Incomodidad / Límites) ---
+    { t: "Un familiar te pide beso y tú NO quieres", e: "💋", c: "yellow" },
+    { t: "Alguien te hace cosquillas y no para", e: "😖", c: "yellow" },
+    { t: "Un amigo te empuja jugando y te duele", e: "😣", c: "yellow" },
+    { t: "Sientes 'mariposas malas' en la panza", e: "🦋", c: "yellow" },
+    { t: "Alguien te dice 'qué bonito cuerpo tienes'", e: "👀", c: "yellow" },
+    { t: "Te obligan a saludar de beso a una visita", e: "😒", c: "yellow" },
+
+    // --- ROJO (Peligro / Pedir Ayuda Urgente) ---
+    { t: "Un desconocido te ofrece dulces o regalos", e: "🍬", c: "red" },
+    { t: "Alguien te pide guardar un secreto 'malo'", e: "🤫", c: "red" },
+    { t: "Te piden que te quites la ropa para una foto", e: "📸", c: "red" },
+    { t: "Un extraño te invita a subir a su coche", e: "🚗", c: "red" },
+    { t: "Alguien toca tus partes privadas", e: "👙", c: "red" },
+    { t: "Te amenazan si cuentas lo que pasó", e: "😠", c: "red" },
+    { t: "Un desconocido te contacta por internet", e: "💻", c: "red" }
+  ];
+
+  let deck = []; // Aquí guardaremos las cartas barajadas
+  let score = 0;
+  let isPlaying = false;
+  let currentItem = null;
+
+  // Función para barajar (Shuffle)
+  function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  function getNextCardFromDeck() {
+    // Si la baraja está vacía, la llenamos y barajamos de nuevo
+    if (deck.length === 0) {
+      deck = [...allLevels]; // Copia nueva
+      shuffle(deck);
+    }
+    return deck.pop(); // Sacamos la última carta
+  }
+
+  function showFeedback(isCorrect) {
+    feedback.className = "sem-feedback"; // reset
+    if (isCorrect) {
+      feedback.textContent = "¡BIEN! 👍";
+      feedback.classList.add("correct");
+      score += 10;
+    } else {
+      feedback.textContent = "OOPS ✋";
+      feedback.classList.add("wrong");
+      // No bajamos puntos, solo no sumamos, para animar a seguir
+    }
+    scoreEl.textContent = score;
+
+    // Ocultar feedback y pasar a la siguiente
+    setTimeout(() => {
+      feedback.className = "sem-feedback";
+      nextCard();
+    }, 900); // Un poco más de tiempo para leer
+  }
+
+  function nextCard() {
+    // Animación visual de "pop"
+    card.classList.remove("pop");
+    void card.offsetWidth; // forzar reflow
+    card.classList.add("pop");
+
+    // Obtener siguiente carta de la baraja (sin repetir inmediato)
+    currentItem = getNextCardFromDeck();
+
+    // Renderizar
+    card.querySelector(".sem-emoji").textContent = currentItem.e;
+    card.querySelector(".sem-text").textContent = currentItem.t;
+  }
+
+  function startGame() {
+    score = 0;
+    scoreEl.textContent = "0";
+    isPlaying = true;
+    startBtn.textContent = "Reiniciar Juego";
+    
+    // Reiniciamos la baraja al empezar juego nuevo
+    deck = [...allLevels]; 
+    shuffle(deck);
+    
+    // Habilitar botones
+    buttons.forEach(b => {
+      b.disabled = false;
+      b.style.opacity = "1";
+    });
+    
+    nextCard();
+  }
+
+  // Listeners botones de colores
+  buttons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (!isPlaying) {
+        startGame(); 
+        return;
+      }
+      const userColor = btn.dataset.color;
+      
+      // Lógica flexible:
+      // Si es YELLOW, a veces puede confundirse con RED o GREEN según contexto.
+      // Aquí validamos estricto, pero podrías hacerlo más suave.
+      const isCorrect = (userColor === currentItem.c);
+      
+      showFeedback(isCorrect);
+    });
+  });
+
+  startBtn.addEventListener("click", startGame);
+})();
+
 /* ===== Semáforo del Cuerpo Visual (Interactivo) ===== */
 (() => {
   const container = document.getElementById("semaforo-body");
