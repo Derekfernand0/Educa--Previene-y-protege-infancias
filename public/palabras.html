@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KIVA: Palabras de Poder</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #e3f2fd; --primary: #1e88e5; --card-bg: #fff; --text: #37474f; --sec: #ffb74d;
+        }
+        [data-theme="dark"] {
+            --bg-color: #0f172a; --primary: #60a5fa; --card-bg: #1e293b; --text: #f1f5f9;
+        }
+        body {
+            font-family: 'Nunito', sans-serif; background: var(--bg-color); color: var(--text);
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 20px;
+            transition: background 0.3s;
+        }
+        .theme-btn { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; background:none; border:none; cursor:pointer; }
+        
+        .game-card {
+            background: var(--card-bg); padding: 30px; border-radius: 20px; width: 100%; max-width: 600px;
+            text-align: center; position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .slot {
+            width: 50px; height: 50px; border-bottom: 4px solid #cfd8dc; display: flex; justify-content: center;
+            align-items: center; font-size: 1.5rem; font-family: 'Fredoka'; color: var(--primary);
+        }
+        .slot.filled { border-color: var(--primary); background: rgba(30,136,229,0.1); border-radius: 8px; }
+        
+        .letter-btn {
+            width: 50px; height: 50px; background: var(--sec); color: #3e2723; border: none; border-radius: 10px;
+            font-size: 1.5rem; font-family: 'Fredoka'; cursor: pointer; box-shadow: 0 4px rgba(0,0,0,0.2);
+        }
+        .letter-btn.used { opacity: 0; pointer-events: none; }
+        
+        .feedback-overlay {
+            position: absolute; inset: 0; background: rgba(255,255,255,0.95); display: flex; flex-direction: column;
+            justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        [data-theme="dark"] .feedback-overlay { background: rgba(15,23,42,0.95); }
+        .feedback-overlay.active { opacity: 1; pointer-events: all; }
+        
+        .btn-action { background: transparent; border: 2px solid #90a4ae; color: #90a4ae; padding: 8px 16px; border-radius: 20px; cursor: pointer; }
+        .btn-next { background: var(--primary); color: #fff; border: none; padding: 10px 25px; border-radius: 20px; margin-top: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <button id="themeToggle" class="theme-btn">🌙</button>
+    <header>
+        <h1 style="font-family:'Fredoka'; color:var(--primary)">Palabras de Poder</h1>
+        <div>Descubre las palabras que te hacen fuerte.</div>
+    </header>
+    <br>
+    <main class="game-card">
+        <div class="feedback-overlay" id="feedbackOverlay">
+            <h2 id="fbTitle" style="color:#43a047">¡Correcto!</h2>
+            <p id="fbMsg" style="padding:0 20px"></p>
+            <button class="btn-next" onclick="nextLevel()">Siguiente ➡</button>
+        </div>
+        <div class="feedback-overlay" id="finalOverlay">
+            <h2>¡Juego Completado!</h2>
+            <p>Usa estas palabras para protegerte.</p>
+            <button class="btn-action" onclick="window.location.href='index.html'">Salir</button>
+        </div>
+
+        <div style="font-size:3rem; margin-bottom:10px" id="hintIcon">🛡️</div>
+        <div id="hintText" style="font-weight:bold; color:var(--primary); font-size:1.2rem; margin-bottom:20px">...</div>
+        
+        <div id="slotsContainer" style="display:flex; justify-content:center; gap:8px; margin-bottom:30px; flex-wrap:wrap"></div>
+        <div id="lettersPool" style="display:flex; justify-content:center; gap:10px; flex-wrap:wrap"></div>
+        
+        <div style="margin-top:30px; display:flex; justify-content:space-between">
+            <button class="btn-action" onclick="loadLevel()">Reiniciar</button>
+            <button class="btn-action" onclick="window.location.href='index.html'">Salir</button>
+        </div>
+    </main>
+
+    <script>
+        // Tema
+        const tBtn = document.getElementById('themeToggle');
+        if(localStorage.getItem('theme') === 'dark'){ document.body.setAttribute('data-theme','dark'); tBtn.textContent='☀️'; }
+        tBtn.addEventListener('click', ()=>{
+            const isDark = document.body.getAttribute('data-theme')==='dark';
+            document.body.setAttribute('data-theme', isDark ? '' : 'dark');
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+            tBtn.textContent = isDark ? '🌙' : '☀️';
+        });
+
+        // Game Logic
+        const levels = [
+            {w:"RESPETO", i:"🤝", h:"Tratar bien a los demás y que te traten bien a ti.", m:"¡Exacto! Mereces respeto siempre."},
+            {w:"NO", i:"🛑", h:"Palabra corta que usas cuando algo no te gusta.", m:"Decir NO te protege."},
+            {w:"CUERPO", i:"🧍", h:"Es tuyo y nadie puede tocarlo sin permiso.", m:"Tu cuerpo es tu territorio."},
+            {w:"AYUDA", i:"🙋", h:"Lo que pides a un adulto si tienes miedo.", m:"Pedir ayuda es de valientes."},
+            {w:"SECRETO", i:"🤫", h:"Si te hace sentir mal, es un mal...", m:"¡Los secretos malos se cuentan!"}
+        ];
+        let curr = 0, filled = [];
+
+        function loadLevel() {
+            if(curr >= levels.length) { document.getElementById('finalOverlay').classList.add('active'); return; }
+            document.getElementById('feedbackOverlay').classList.remove('active');
+            const l = levels[curr];
+            document.getElementById('hintText').textContent = l.h;
+            document.getElementById('hintIcon').textContent = l.i;
+            
+            const slots = document.getElementById('slotsContainer'); slots.innerHTML = '';
+            filled = new Array(l.w.length).fill(null);
+            for(let i=0; i<l.w.length; i++) {
+                const d = document.createElement('div'); d.className='slot'; 
+                d.onclick=()=>remove(i); slots.appendChild(d);
+            }
+
+            const pool = document.getElementById('lettersPool'); pool.innerHTML = '';
+            l.w.split('').sort(()=>Math.random()-.5).forEach((char, idx) => {
+                const b = document.createElement('button'); b.className='letter-btn';
+                b.textContent = char; b.dataset.id = idx;
+                b.onclick = () => add(char, idx, b);
+                pool.appendChild(b);
+            });
+        }
+
+        function add(char, id, btn) {
+            const idx = filled.findIndex(x => x===null);
+            if(idx !== -1) {
+                filled[idx] = {c:char, id:id};
+                const s = document.querySelectorAll('.slot')[idx];
+                s.textContent = char; s.classList.add('filled');
+                btn.classList.add('used');
+                if(!filled.includes(null)) check();
+            }
+        }
+
+        function remove(idx) {
+            if(filled[idx]) {
+                const btn = document.querySelector(`.letter-btn[data-id="${filled[idx].id}"]`);
+                btn.classList.remove('used');
+                const s = document.querySelectorAll('.slot')[idx];
+                s.textContent = ''; s.classList.remove('filled');
+                filled[idx] = null;
+            }
+        }
+
+        function check() {
+            const w = filled.map(x=>x.c).join('');
+            if(w === levels[curr].w) {
+                document.getElementById('fbMsg').textContent = levels[curr].m;
+                document.getElementById('feedbackOverlay').classList.add('active');
+            } else {
+                document.getElementById('slotsContainer').animate([{transform:'translateX(0)'},{transform:'translateX(5px)'},{transform:'translateX(-5px)'},{transform:'translateX(0)'}],200);
+            }
+        }
+        function nextLevel() { curr++; loadLevel(); }
+        loadLevel();
+    </script>
+</body>
+</html>

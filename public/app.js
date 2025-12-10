@@ -600,62 +600,91 @@ back.appendChild(backIcon);
   init();
 })();
 
+
 /* ===== Arma el mensaje ===== */
 (() => {
-  const game=$("#mensaje"); if(!game) return;
-  const box=$(".chips",game), out=$(".msg-out",game), reset=$("[data-game='mensaje']",game);
-  const pieces=["Hablar","con","alguien","de","confianza","es","valentía"]; const goal=pieces.join(" ");
-  let dragEl=null; const chipColors=["#FFD6E7","#FFF4B8","#E5D6FF","#FFD9C8","#CFEAFF","#FFE6F2"];
-  const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a;};
+  const game = $("#mensaje");
+  if (!game) return;
+
+  const box   = $(".chips", game),
+        out   = $(".msg-out", game),
+        reset = $("[data-game='mensaje']", game);
+
+  const pieces = ["Hablar","con","alguien","de","confianza","es","valentía"];
+  const goal   = pieces.join(" ");
+
+  let dragEl = null;
+  const chipColors = ["#FFD6E7","#FFF4B8","#E5D6FF","#FFD9C8","#CFEAFF","#FFE6F2"];
+
+  const shuffle = a => {
+    for (let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  };
+
   function init(){
-    box.innerHTML="";
-    out.textContent="";
-    shuffle(pieces.map((t,i)=>({t,i}))).forEach(o=>{
-      const b=document.createElement("button");
-      b.className="chip";
-      b.textContent=o.t;
-      b.dataset.idx=o.i;
-      b.draggable=true;
-      b.style.background=chipColors[o.i%chipColors.length];
+    box.innerHTML = "";
+    out.textContent = "";
+
+    shuffle(pieces.map((t, i) => ({ t, i }))).forEach(o => {
+      const b = document.createElement("button");
+      b.className = "chip";
+      b.textContent = o.t;
+      b.dataset.idx = o.i;
+      b.draggable = true;
+      b.style.background = chipColors[o.i % chipColors.length];
       box.appendChild(b);
     });
   }
-  box.addEventListener("pointerdown", e=>{
-    const el=e.target.closest(".chip"); if(!el) return;
+
+  box.addEventListener("pointerdown", e => {
+    const el = e.target.closest(".chip");
+    if (!el) return;
     e.preventDefault();
-    dragEl=el;
+    dragEl = el;
     el.classList.add("dragging");
-    document.addEventListener("pointermove",move);
-    document.addEventListener("pointerup",up,{once:true});
+    document.addEventListener("pointermove", move);
+    document.addEventListener("pointerup", up, { once: true });
   });
+
   function move(e){
-    if(!dragEl) return;
-    const over=document.elementFromPoint(e.clientX,e.clientY)?.closest(".chip");
-    if(over&&over!==dragEl){
-      const r=over.getBoundingClientRect();
-      const next=(e.clientX-r.left)>(r.width/2);
-      if(next&&over.nextSibling) box.insertBefore(dragEl,over.nextSibling);
-      else if(!next) box.insertBefore(dragEl,over);
+    if (!dragEl) return;
+    const over = document.elementFromPoint(e.clientX, e.clientY)?.closest(".chip");
+    if (over && over !== dragEl){
+      const r    = over.getBoundingClientRect();
+      const next = (e.clientX - r.left) > (r.width / 2);
+      if (next && over.nextSibling) box.insertBefore(dragEl, over.nextSibling);
+      else if (!next) box.insertBefore(dragEl, over);
     }
   }
+
   function up(){
-    if(!dragEl) return;
+    if (!dragEl) return;
     dragEl.classList.remove("dragging");
-    dragEl=null;
-    document.removeEventListener("pointermove",move);
+    dragEl = null;
+    document.removeEventListener("pointermove", move);
     check();
   }
+
   function check(){
-    const cur=[...$$(".chip",box)].map(e=>e.textContent).join(" ");
-    out.textContent=(cur===goal)?"Mensaje listo. Pedir ayuda es un acto de valentía.":"";
-    if(cur===goal) celebrate();
+    // 👇 ESTA LÍNEA ES LA IMPORTANTE
+    const cur = [...$$(".chip", box)].map(e => e.textContent).join(" ");
+    out.textContent = (cur === goal)
+      ? "Mensaje listo. Pedir ayuda es un acto de valentía."
+      : "";
+    if (cur === goal) celebrate();
   }
-  reset.addEventListener("click",init); init();
+
+  reset.addEventListener("click", init);
+  init();
 })();
+
 
 /* ===== Semáforo de las sensaciones ===== */
 (() => {
-  const wrap = $("#semaforo");
+  const wrap = $("semaforo");
   if (!wrap) return;
 
   const cardsContainer = $(".traffic-cards", wrap);
@@ -885,12 +914,31 @@ back.appendChild(backIcon);
 
 /* ===== Carrusel Aprende ===== */
 (() => {
-  const car=$("#carousel"); if(!car) return;
-  const track=$(".car-track",car), slides=$$(".slide",car); let idx=0;
-  const go=i=>{ idx=(i+slides.length)%slides.length; track.style.transform=`translateX(-${idx*100}%)`; };
-  $(".prev",car).addEventListener("click",()=>go(idx-1));
-  $(".next",car).addEventListener("click",()=>go(idx+1));
+  const car = $("#carousel");
+  if (!car) return;
+
+  const track  = $(".car-track", car);
+  const slides = $$(".slide", car);
+  if (!track || !slides.length) return;
+
+  let idx = 0;
+
+  const go = (i) => {
+    idx = (i + slides.length) % slides.length;
+    track.style.transform = `translateX(-${idx * 100}%)`;
+  };
+
+  const prevBtn = $(".car-btn.prev", car) || $(".prev", car);
+  const nextBtn = $(".car-btn.next", car) || $(".next", car);
+
+  if (prevBtn) {
+    prevBtn.addEventListener("click", () => go(idx - 1));
+  }
+  if (nextBtn) {
+    nextBtn.addEventListener("click", () => go(idx + 1));
+  }
 })();
+
 
 /* ===== Ayuda y Reflexiones (poblar) ===== */
 const HELP_MX = [
@@ -2100,3 +2148,706 @@ if (denunciaSection){
   })();
 
 })();
+
+/* ===== Chat: Detecta el Engaño (Versión Inteligente sin Repeticiones) ===== */
+(() => {
+  const wrap = document.getElementById("chatGame");
+  if (!wrap) return;
+
+  const screen = document.getElementById("chatScreen");
+  const optsDiv = document.getElementById("chatOptions");
+  const feedback = document.getElementById("chatFeedback");
+  const resetBtn = document.getElementById("resetChat");
+
+  // Escenarios de chat (8 situaciones)
+  const scenariosData = [
+    { 
+      id: 1,
+      sender: "Desconocido", 
+      text: "Hola, vi tu perfil y me caíste súper bien. ¿Tienes fotos? 😉",
+      options: [
+        { text: "¡Claro! ¿Quién eres?", safe: false, reply: "⛔ ¡Alto! Nunca envíes fotos a desconocidos. Pueden usarlas para hacerte daño." },
+        { text: "No te conozco, bloquear.", safe: true, reply: "✅ ¡Excelente! Bloquear es lo más seguro." }
+      ]
+    },
+    { 
+      id: 2,
+      sender: "GamerPro_99", 
+      text: "Oye, te regalo 1000 monedas para el juego. Solo pásame tu contraseña para depositarlas. 🎮",
+      options: [
+        { text: "¡Gracias! Aquí está...", safe: false, reply: "⛔ ¡Peligro! Nunca des tu contraseña. Te robarán la cuenta." },
+        { text: "Nadie pide contraseñas para regalar cosas. Reportar.", safe: true, reply: "✅ ¡Muy bien! Identificaste una estafa (Phishing)." }
+      ]
+    },
+    { 
+      id: 3,
+      sender: "Amigo_Misterioso", 
+      text: "Vamos a vernos en el parque, pero es NUESTRO SECRETO 🤫. No le digas a tus papás.",
+      options: [
+        { text: "Bueno, pero rápido.", safe: false, reply: "⛔ ¡Alerta Roja! Los secretos que te piden ocultar a tus padres son peligrosos." },
+        { text: "No guardo secretos malos. Le diré a mi mamá.", safe: true, reply: "✅ ¡Perfecto! Cuéntaselo a un adulto de confianza inmediatamente." }
+      ]
+    },
+    { 
+      id: 4,
+      sender: "Perfil_Sin_Foto", 
+      text: "¿A qué escuela vas? Creo que te he visto a la salida. 🏫",
+      options: [
+        { text: "Voy a la escuela [Nombre].", safe: false, reply: "⛔ ¡Cuidado! Nunca des datos de tu ubicación o rutina a extraños." },
+        { text: "¿Quién eres? No doy esa información.", safe: true, reply: "✅ ¡Bien hecho! Protege tus datos personales siempre." }
+      ]
+    },
+    { 
+      id: 5,
+      sender: "Anónimo", 
+      text: "Si no haces lo que te digo, voy a subir tus fotos y todos se burlarán de ti. 😠",
+      options: [
+        { text: "Por favor no lo hagas, haré lo que sea.", safe: false, reply: "⛔ No cedas al chantaje. Eso les da más poder. Pide ayuda adulta urgente." },
+        { text: "No tengo miedo. Voy a avisar a un adulto.", safe: true, reply: "✅ ¡Valiente! Ante amenazas, no respondas y busca ayuda." }
+      ]
+    },
+    { 
+      id: 6,
+      sender: "Agencia_Talentos", 
+      text: "¡Hola! Tienes cara de modelo. Mándanos una foto de cuerpo completo para contratarte. 📸",
+      options: [
+        { text: "¡Wow! ¿En serio? Ahí va.", safe: false, reply: "⛔ ¡Es una trampa común! Los adultos no buscan niños modelos por chat privado." },
+        { text: "No creo en esto. Adiós.", safe: true, reply: "✅ ¡Inteligente! Si fuera real, hablarían con tus padres, no contigo en secreto." }
+      ]
+    },
+    { 
+      id: 7,
+      sender: "Usuario_X", 
+      text: "Mi cámara no funciona, pero prende la tuya para que nos conozcamos mejor. 📹",
+      options: [
+        { text: "Está bien, la prendo un rato.", safe: false, reply: "⛔ ¡Riesgo! No enciendas tu cámara para desconocidos. Podrían grabarte." },
+        { text: "No. No hago videollamadas con extraños.", safe: true, reply: "✅ ¡Exacto! Tu privacidad en video es muy importante." }
+      ]
+    },
+    { 
+      id: 8,
+      sender: "Lobo_Solitario", 
+      text: "Tus papás no te entienden como yo. Yo soy el único que te escucha de verdad. 🐺",
+      options: [
+        { text: "Sí, tienes razón. Ellos son malos.", safe: false, reply: "⛔ ¡Cuidado! Alguien que te pone en contra de tu familia te quiere aislar." },
+        { text: "Eso no es cierto. Me voy de este chat.", safe: true, reply: "✅ ¡Muy bien! Detectaste una manipulación. Aléjate de esa persona." }
+      ]
+    }
+  ];
+
+  let currentScenario = null;
+  let availableIndices = [];
+
+  function refillBag() {
+    availableIndices = scenariosData.map((_, index) => index);
+  }
+
+  refillBag();
+
+  function addMsg(text, type) {
+    const div = document.createElement("div");
+    div.className = "msg " + type;
+    div.textContent = text;
+    screen.appendChild(div);
+    screen.scrollTop = screen.scrollHeight;
+  }
+
+  function playScenario() {
+    optsDiv.style.display = "none";
+    setTimeout(() => {
+      addMsg(currentScenario.text, "receive");
+      setTimeout(() => {
+        showOptions();
+      }, 1200);
+    }, 600);
+  }
+
+  function showOptions() {
+    optsDiv.style.display = "flex";
+    optsDiv.innerHTML = "";
+
+    const shuffledOptions = currentScenario.options.slice().sort(() => Math.random() - 0.5);
+
+    shuffledOptions.forEach(opt => {
+      const btn = document.createElement("button");
+      btn.className = "btn-opt";
+      btn.textContent = opt.text;
+      btn.onclick = () => checkAnswer(opt);
+      optsDiv.appendChild(btn);
+    });
+  }
+
+  function checkAnswer(opt) {
+    addMsg(opt.text, "sent");
+    optsDiv.style.display = "none";
+
+    feedback.textContent = opt.reply;
+    feedback.style.color = opt.safe ? "#2ecc71" : "#e74c3c";
+
+    setTimeout(() => {
+      if (opt.safe) {
+        addMsg("🛡️ Has tomado la decisión segura.", "receive");
+      } else {
+        addMsg("⚠️ Situación de riesgo. Bloqueando usuario...", "receive");
+      }
+    }, 600);
+  }
+
+  function reset() {
+    screen.innerHTML = "";
+    feedback.textContent = "";
+
+    if (availableIndices.length === 0) {
+      refillBag();
+    }
+
+    const randomIndexPosition = Math.floor(Math.random() * availableIndices.length);
+    const scenarioIndex = availableIndices[randomIndexPosition];
+
+    availableIndices.splice(randomIndexPosition, 1);
+    currentScenario = scenariosData[scenarioIndex];
+
+    playScenario();
+  }
+
+  if (resetBtn) resetBtn.addEventListener("click", reset);
+  reset();
+})();
+
+/* --- Utilidad genérica Drag & Drop (Touch + Mouse) --- */
+function initDragGame(containerId, items, onDrop) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const pool = container.querySelector(".draggables-pool");
+  const zones = container.querySelectorAll(".drop-zone");
+  const feedback = container.querySelector(".feedback-msg");
+  const resetBtn = container.querySelector(".reset-btn");
+
+  let completed = 0;
+
+  function createItems() {
+    if (!pool) return;
+    pool.innerHTML = "";
+    completed = 0;
+    if (feedback) {
+      feedback.textContent = "";
+      feedback.style.color = "";
+    }
+
+    const shuffled = items.slice().sort(() => Math.random() - 0.5);
+
+    shuffled.forEach(item => {
+      const el = document.createElement("div");
+      el.className = "drag-item";
+      el.textContent = item.label;
+      el.dataset.target = item.target;
+
+      el.addEventListener("mousedown", startDrag);
+      el.addEventListener("touchstart", startDrag, { passive: false });
+
+      pool.appendChild(el);
+    });
+  }
+
+  let currentDrag = null;
+  let startX = 0;
+  let startY = 0;
+  let originalX = 0;
+  let originalY = 0;
+
+  function startDrag(e) {
+    if (!(e.target instanceof HTMLElement)) return;
+    const el = e.target;
+    if (el.classList.contains("correct")) return;
+
+    e.preventDefault();
+    currentDrag = el;
+
+    const evt = e.type.includes("touch") ? e.touches[0] : e;
+    const rect = el.getBoundingClientRect();
+
+    startX = evt.clientX;
+    startY = evt.clientY;
+    originalX = rect.left;
+    originalY = rect.top;
+
+    el.style.position = "fixed";
+    el.style.zIndex = "1000";
+    el.style.left = originalX + "px";
+    el.style.top = originalY + "px";
+    el.style.width = rect.width + "px";
+
+    document.addEventListener("mousemove", moveDrag);
+    document.addEventListener("touchmove", moveDrag, { passive: false });
+    document.addEventListener("mouseup", endDrag);
+    document.addEventListener("touchend", endDrag);
+  }
+
+  function moveDrag(e) {
+    if (!currentDrag) return;
+    e.preventDefault();
+    const evt = e.type.includes("touch") ? e.touches[0] : e;
+    const dx = evt.clientX - startX;
+    const dy = evt.clientY - startY;
+    currentDrag.style.transform = "translate(" + dx + "px, " + dy + "px)";
+  }
+
+  function endDrag(e) {
+    if (!currentDrag) return;
+
+    document.removeEventListener("mousemove", moveDrag);
+    document.removeEventListener("touchmove", moveDrag);
+    document.removeEventListener("mouseup", endDrag);
+    document.removeEventListener("touchend", endDrag);
+
+    const rect = currentDrag.getBoundingClientRect();
+    const center = {
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2
+    };
+
+    let droppedZone = null;
+    zones.forEach(z => {
+      const zRect = z.getBoundingClientRect();
+      if (
+        center.x >= zRect.left &&
+        center.x <= zRect.right &&
+        center.y >= zRect.top &&
+        center.y <= zRect.bottom
+      ) {
+        droppedZone = z;
+      }
+    });
+
+    currentDrag.style.position = "";
+    currentDrag.style.zIndex = "";
+    currentDrag.style.left = "";
+    currentDrag.style.top = "";
+    currentDrag.style.width = "";
+    currentDrag.style.transform = "";
+
+    if (droppedZone) {
+      const itemType = currentDrag.dataset.target;
+      const zoneType = droppedZone.dataset.type;
+
+      if (onDrop(itemType, zoneType, currentDrag, feedback)) {
+        droppedZone.classList.add("active");
+        setTimeout(() => droppedZone.classList.remove("active"), 200);
+        completed++;
+        if (completed === items.length) {
+          if (typeof celebrate === "function") celebrate();
+          if (feedback) {
+            feedback.textContent = "¡Excelente! Has clasificado todo correctamente.";
+            feedback.style.color = "var(--ring)";
+          }
+        }
+      }
+    }
+
+    currentDrag = null;
+  }
+
+  if (resetBtn) resetBtn.addEventListener("click", createItems);
+  createItems();
+}
+
+/* --- 🙅‍♀️ Juego: Mi cuerpo, mis reglas --- */
+(() => {
+  const container = document.getElementById("misReglas");
+  if (!container) return;
+
+  const items = [
+    { label: "🤗 Abrazo que quiero", target: "ok" },
+    { label: "👙 Tocar bajo ropa", target: "bad" },
+    { label: "🤐 Guardar secreto malo", target: "bad" },
+    { label: "🩺 Doctor con mamá", target: "ok" },
+    { label: "📸 Fotos sin ropa", target: "bad" },
+    { label: "✋ Decir NO", target: "ok" }
+  ];
+
+  initDragGame("misReglas", items, (itemType, zoneType, el, feedback) => {
+    if (!feedback) return itemType === zoneType;
+
+    if (itemType === zoneType) {
+      el.classList.add("correct");
+      feedback.textContent = "¡Correcto! Tú decides sobre tu cuerpo.";
+      feedback.style.color = "var(--ring)";
+      return true;
+    } else {
+      el.classList.add("wrong");
+      setTimeout(() => el.classList.remove("wrong"), 500);
+      feedback.textContent = "Ups. Recuerda: si te incomoda, NO está permitido.";
+      feedback.style.color = "#e11d48";
+      return false;
+    }
+  });
+})();
+
+/* --- 🏠 Juego: Mapa de Lugares Seguros --- */
+(() => {
+  const container = document.getElementById("lugaresSeguros");
+  if (!container) return;
+
+  const touchAreas = container.querySelectorAll(".map-touch-area");
+
+  const states = [
+    { type: "safe", icon: "✅", label: "Seguro" },
+    { type: "warn", icon: "❓", label: "Precaución" },
+    { type: "bad",  icon: "⛔", label: "No seguro" }
+  ];
+
+  const placeStates = {};
+
+  touchAreas.forEach(area => {
+    const placeKey = area.dataset.place;
+    placeStates[placeKey] = -1;
+
+    area.addEventListener("click", () => {
+      const indicatorId = "ind-" + placeKey;
+      const indicatorEl = document.getElementById(indicatorId);
+      if (!indicatorEl) return;
+
+      placeStates[placeKey] = (placeStates[placeKey] + 1) % states.length;
+      const currentState = states[placeStates[placeKey]];
+
+      indicatorEl.innerHTML =
+        "<span class=\"map-ind-icon\">" + currentState.icon + "</span>" +
+        "<span class=\"map-ind-label\">" + currentState.label + "</span>";
+
+      indicatorEl.classList.remove("safe", "warn", "bad");
+      indicatorEl.classList.add(currentState.type);
+
+      indicatorEl.classList.remove("show");
+      void indicatorEl.offsetWidth;
+      indicatorEl.classList.add("show");
+    });
+  });
+})();
+
+/* --- 🎤 Juego: Rompe el silencio --- */
+(() => {
+  const container = document.getElementById("storyContainer");
+  const resetBtn = document.getElementById("resetStory");
+  if (!container) return;
+
+  const charEl = container.querySelector(".story-char");
+  const textEl = container.querySelector(".story-text");
+  const actions = container.querySelector(".story-actions");
+
+  const scenes = {
+    start: {
+      emoji: "😰",
+      t: "Alex tiene un secreto que le hace sentir mal y le da miedo contar. ¿Qué debe hacer?",
+      opts: [
+        { l: "Guardarlo para siempre", next: "bad1" },
+        { l: "Buscar a un adulto de confianza", next: "step2" }
+      ]
+    },
+    bad1: {
+      emoji: "😔",
+      t: "El secreto pesa mucho y Alex se siente solo. El silencio protege a quien le hizo daño.",
+      opts: [
+        { l: "Intentar hablar de nuevo", next: "step2" }
+      ]
+    },
+    step2: {
+      emoji: "🤔",
+      t: "Alex decide hablar. ¿A quién debería elegir?",
+      opts: [
+        { l: "A un desconocido en internet", next: "bad2" },
+        { l: "A su maestra o su abuela", next: "step3" }
+      ]
+    },
+    bad2: {
+      emoji: "🚫",
+      t: "¡Cuidado! En internet no sabes quién está realmente. Mejor alguien real.",
+      opts: [
+        { l: "Elegir a alguien de la familia/escuela", next: "step3" }
+      ]
+    },
+    step3: {
+      emoji: "🗣️",
+      t: "Está frente a su abuela pero tiene miedo. ¿Cómo lo dice?",
+      opts: [
+        { l: "'Tengo miedo de decirte algo...'", next: "end" },
+        { l: "Escribirlo en un papel", next: "end" }
+      ]
+    },
+    end: {
+      emoji: "😭",
+      t: "¡Alex lo contó! Su abuela lo abrazó y le dijo: 'Te creo, no es tu culpa'. Alex ya no carga el secreto solo.",
+      opts: []
+    }
+  };
+
+  function render(key) {
+    const s = scenes[key];
+    if (!s) return;
+    if (charEl) charEl.textContent = s.emoji;
+    if (textEl) textEl.textContent = s.t;
+    if (!actions) return;
+
+    actions.innerHTML = "";
+    if (s.opts.length > 0) {
+      s.opts.forEach(o => {
+        const btn = document.createElement("button");
+        btn.className = "btn story-btn";
+        btn.textContent = o.l;
+        btn.onclick = () => render(o.next);
+        actions.appendChild(btn);
+      });
+    } else {
+      if (typeof celebrate === "function") celebrate();
+      if (resetBtn) resetBtn.classList.remove("hidden");
+    }
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      resetBtn.classList.add("hidden");
+      render("start");
+    });
+  }
+
+  render("start");
+})();
+
+/* ===== Semáforo del Cuerpo Visual (Interactivo) ===== */
+(() => {
+  const container = document.getElementById("semaforo-body");
+  if (!container) return;
+
+  const dots = container.querySelectorAll(".body-dot");
+  const feedback = document.getElementById("bodyFeedback");
+  const wrapper = container.querySelector(".body-image-wrapper");
+
+  function activateDot(selectedDot) {
+    dots.forEach(d => d.classList.remove("active"));
+    selectedDot.classList.add("active");
+
+    const msg = selectedDot.dataset.msg;
+    const isRed = selectedDot.classList.contains("red");
+    const isYellow = selectedDot.classList.contains("yellow");
+    const isGreen = selectedDot.classList.contains("green");
+
+    if (!feedback) return;
+
+    feedback.className = "body-feedback";
+    void feedback.offsetWidth;
+
+    if (isRed) feedback.classList.add("is-red");
+    else if (isYellow) feedback.classList.add("is-yellow");
+    else if (isGreen) feedback.classList.add("is-green");
+
+    feedback.style.opacity = "0";
+    feedback.textContent = msg;
+
+    setTimeout(() => {
+      feedback.style.opacity = "1";
+    }, 50);
+  }
+
+  dots.forEach(dot => {
+    dot.addEventListener("click", e => {
+      e.stopPropagation();
+      activateDot(dot);
+    });
+  });
+
+  if (wrapper && feedback) {
+    wrapper.addEventListener("click", e => {
+      if (e.target === wrapper || e.target.classList.contains("body-bg")) {
+        dots.forEach(d => d.classList.remove("active"));
+        feedback.className = "body-feedback";
+        feedback.textContent = "👆 Toca los puntos de colores en el dibujo.";
+      }
+    });
+  }
+})();
+
+/* =========================================
+   KIVA ARCADE - Control de pestañas
+   ========================================= */
+function playGame(gameId) {
+  const tabs = document.querySelectorAll(".arcade-tab");
+  const games = document.querySelectorAll(".arcade-game");
+
+  tabs.forEach(t => t.classList.remove("active"));
+  games.forEach(g => g.classList.remove("active"));
+
+  tabs.forEach(btn => {
+    const attr = btn.getAttribute("onclick") || "";
+    if (attr.includes(gameId)) {
+      btn.classList.add("active");
+    }
+  });
+
+  const gameEl = document.getElementById(gameId);
+  if (gameEl) gameEl.classList.add("active");
+}
+
+/* ===== LÓGICA DEL CÍRCULO DE CONFIANZA ===== */
+const trustData = [
+  { id: "t1", text: "Dar un abrazo", group: "family", icon: "🤗" },
+  { id: "t2", text: "Contar un secreto", group: "family", icon: "💬" },
+  { id: "t3", text: "Jugar en el parque", group: "friends", icon: "⚽" },
+  { id: "t4", text: "Prestar juguetes", group: "friends", icon: "🧸" },
+  { id: "t5", text: "Saludar de lejos", group: "known", icon: "👋" },
+  { id: "t6", text: "Pedir ayuda si me pierdo", group: "community", icon: "👮" },
+  { id: "t7", text: "No abrir la puerta", group: "strangers", icon: "🚪" },
+  { id: "t8", text: "No aceptar regalos", group: "strangers", icon: "🍬" },
+  { id: "t9", text: "Decir mi nombre", group: "known", icon: "🗣️" }
+];
+
+let draggedItem = null;
+let touchClone = null;
+
+function initTrustGame() {
+  const pool = document.getElementById("trustPool");
+  const cols = document.querySelectorAll(".trust-drop-zone");
+  const feedback = document.getElementById("trustFeedback");
+  if (!pool || !feedback) return;
+
+  pool.innerHTML = "";
+  cols.forEach(col => (col.innerHTML = ""));
+
+  feedback.textContent = "Selecciona una ficha y arrástrala a su lugar.";
+  feedback.style.color = "var(--ink)";
+
+  const shuffled = trustData.slice().sort(() => Math.random() - 0.5);
+
+  shuffled.forEach(item => {
+    const div = document.createElement("div");
+    div.classList.add("trust-item");
+    div.setAttribute("draggable", "true");
+    div.dataset.group = item.group;
+    div.innerHTML = "<span style=\"font-size:1.2rem\">" +
+      item.icon +
+      "</span><br>" +
+      item.text;
+
+    div.addEventListener("dragstart", handleDragStart);
+    div.addEventListener("dragend", handleDragEnd);
+
+    div.addEventListener("touchstart", handleTouchStart, { passive: false });
+    div.addEventListener("touchmove", handleTouchMove, { passive: false });
+    div.addEventListener("touchend", handleTouchEnd);
+
+    pool.appendChild(div);
+  });
+}
+
+function handleDragStart(e) {
+  draggedItem = this;
+  this.style.opacity = "0.5";
+}
+
+function handleDragEnd() {
+  draggedItem = null;
+  this.style.opacity = "1";
+  document.querySelectorAll(".trust-col").forEach(col => {
+    col.classList.remove("active-drop");
+  });
+}
+
+document.querySelectorAll(".trust-col").forEach(col => {
+  col.addEventListener("dragover", e => {
+    e.preventDefault();
+    col.classList.add("active-drop");
+  });
+
+  col.addEventListener("dragleave", () => {
+    col.classList.remove("active-drop");
+  });
+
+  col.addEventListener("drop", e => {
+    e.preventDefault();
+    col.classList.remove("active-drop");
+    const targetGroup = col.dataset.group;
+    const zone = col.querySelector(".trust-drop-zone");
+    if (draggedItem && zone) {
+      validateDrop(draggedItem, targetGroup, zone);
+    }
+  });
+});
+
+function handleTouchStart(e) {
+  draggedItem = this;
+  const touch = e.touches[0];
+
+  touchClone = this.cloneNode(true);
+  touchClone.style.position = "fixed";
+  touchClone.style.width = this.offsetWidth + "px";
+  touchClone.style.opacity = "0.8";
+  touchClone.style.zIndex = "1000";
+  touchClone.style.pointerEvents = "none";
+
+  updateTouchPosition(touch);
+  document.body.appendChild(touchClone);
+
+  this.style.opacity = "0.4";
+}
+
+function handleTouchMove(e) {
+  e.preventDefault();
+  if (!touchClone) return;
+  updateTouchPosition(e.touches[0]);
+}
+
+function updateTouchPosition(touch) {
+  if (!touchClone) return;
+  touchClone.style.left = touch.clientX - touchClone.offsetWidth / 2 + "px";
+  touchClone.style.top = touch.clientY - touchClone.offsetHeight / 2 + "px";
+}
+
+function handleTouchEnd(e) {
+  if (touchClone) {
+    touchClone.remove();
+    touchClone = null;
+  }
+  this.style.opacity = "1";
+
+  const touch = e.changedTouches[0];
+  this.style.display = "none";
+  const elemBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+  this.style.display = "block";
+
+  const col = elemBelow ? elemBelow.closest(".trust-col") : null;
+  if (col) {
+    const targetGroup = col.dataset.group;
+    const zone = col.querySelector(".trust-drop-zone");
+    if (zone) {
+      validateDrop(this, targetGroup, zone);
+    }
+  }
+  draggedItem = null;
+}
+
+function validateDrop(item, targetGroup, dropZone) {
+  const itemGroup = item.dataset.group;
+  const feedback = document.getElementById("trustFeedback");
+  if (!feedback) return;
+
+  if (itemGroup === targetGroup) {
+    item.classList.add("correct");
+    item.draggable = false;
+    dropZone.appendChild(item);
+
+    feedback.textContent = "¡Muy bien! Esa es la zona correcta.";
+    feedback.style.color = "#16a34a";
+
+    const pool = document.getElementById("trustPool");
+    if (pool && pool.children.length === 0) {
+      feedback.textContent = "¡Felicidades! Has completado tu círculo de seguridad.";
+      if (typeof celebrate === "function") celebrate();
+    }
+  } else {
+    item.classList.add("wrong");
+    feedback.textContent = "Mmm, creo que esa acción no va con esa persona.";
+    feedback.style.color = "#dc2626";
+    setTimeout(() => item.classList.remove("wrong"), 500);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", initTrustGame);

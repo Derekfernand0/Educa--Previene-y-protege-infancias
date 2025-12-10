@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KIVA: Emociones</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #fff3e0; --text: #4e342e; --primary: #ff6f00; --card: #fff; }
+        [data-theme="dark"] { --bg: #0f172a; --text: #fed7aa; --primary: #fb923c; --card: #1e293b; }
+        
+        body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); display: flex; flex-direction: column; align-items: center; padding: 20px; min-height: 100vh; transition: background 0.3s; }
+        
+        .theme-btn { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; background:none; border:none; cursor:pointer; }
+        
+        .game-board { background: var(--card); padding: 30px; border-radius: 20px; max-width: 600px; width: 100%; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        .scenario-box { background: rgba(33,150,243,0.1); border: 2px solid #81d4fa; padding: 20px; border-radius: 15px; margin-bottom: 20px; font-weight: bold; font-size: 1.1rem; }
+        
+        .totem { width: 100px; height: 100px; border: 4px dashed #b0bec5; border-radius: 20px; margin: 0 auto 30px; display: grid; place-items: center; }
+        
+        .shapes-options { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .shape-btn { background: none; border: none; cursor: pointer; text-align: center; transition: transform 0.2s; }
+        .shape-btn:hover { transform: scale(1.1); }
+        
+        .icon { width: 60px; height: 60px; margin-bottom: 5px; }
+        .icon.circle { background: #ffd600; border-radius: 50%; }
+        .icon.triangle { width:0; height:0; border-left:35px solid transparent; border-right:35px solid transparent; border-bottom:70px solid #d50000; background:none; }
+        .icon.square { background: #2979ff; border-radius: 10px; }
+        .icon.star { background: #aa00ff; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
+        
+        .feedback { min-height: 50px; margin: 15px 0; font-weight: bold; }
+        .btn { padding: 10px 20px; border-radius: 50px; border: none; cursor: pointer; font-family: 'Fredoka'; }
+        .btn-exit { background: #cfd8dc; color: #333; }
+        .btn-next { background: var(--primary); color: #fff; display: none; }
+        
+        .placed { animation: pop 0.5s; }
+        @keyframes pop { 0%{transform:scale(0)} 100%{transform:scale(1)} }
+    </style>
+</head>
+<body>
+    <button id="themeToggle" class="theme-btn">🌙</button>
+    <h1>Emociones</h1>
+    <p>Elige la forma que sientes.</p>
+    
+    <div class="game-board">
+        <div class="scenario-box" id="text">...</div>
+        <div class="totem" id="slot">❓</div>
+        
+        <div class="shapes-options">
+            <button class="shape-btn" onclick="check('circle')"><div class="icon circle"></div>Seguro</button>
+            <button class="shape-btn" onclick="check('triangle')"><div class="icon triangle"></div>ALTO</button>
+            <button class="shape-btn" onclick="check('square')"><div class="icon square"></div>Triste</button>
+            <button class="shape-btn" onclick="check('star')"><div class="icon star"></div>Miedo</button>
+        </div>
+        
+        <div class="feedback" id="feedback"></div>
+        <div style="display:flex; justify-content:space-between">
+            <button class="btn btn-exit" onclick="window.location.href='index.html'">Salir</button>
+            <button class="btn btn-next" id="nextBtn" onclick="next()">Siguiente</button>
+        </div>
+    </div>
+
+    <script>
+        // Tema
+        const tBtn = document.getElementById('themeToggle');
+        if(localStorage.getItem('theme') === 'dark'){ document.body.setAttribute('data-theme','dark'); tBtn.textContent='☀️'; }
+        tBtn.addEventListener('click', ()=>{
+            const isDark = document.body.getAttribute('data-theme')==='dark';
+            document.body.setAttribute('data-theme', isDark ? '' : 'dark');
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+            tBtn.textContent = isDark ? '🌙' : '☀️';
+        });
+
+        const data = [
+            {t:"Abrazo de mamá.", s:"circle", f:"¡Sí! Cariño seguro (Círculo)."},
+            {t:"Un extraño te pide un beso.", s:"triangle", f:"¡ALTO! Es una alerta (Triángulo)."},
+            {t:"Te piden guardar un secreto malo.", s:"star", f:"¡Cuidado! Secreto malo = Alerta (Estrella)."},
+            {t:"Ves a alguien llorando.", s:"square", f:"Empatía (Cuadrado)."}
+        ];
+        let curr = 0; let done = false;
+
+        function load() {
+            if(curr>=data.length){ document.getElementById('text').textContent="¡Fin!"; return; }
+            document.getElementById('text').textContent = data[curr].t;
+            document.getElementById('slot').innerHTML = "❓";
+            document.getElementById('feedback').textContent = "";
+            document.getElementById('nextBtn').style.display = "none";
+            done = false;
+        }
+
+        function check(shape) {
+            if(done) return;
+            if(shape === data[curr].s) {
+                document.getElementById('feedback').textContent = data[curr].f;
+                document.getElementById('nextBtn').style.display = "block";
+                document.getElementById('slot').innerHTML = `<div class='icon ${shape} placed'></div>`;
+                // Fix visual para triangulo en slot
+                if(shape === 'triangle') document.querySelector('.placed').style.transform = "scale(0.8)";
+                done = true;
+            } else {
+                document.getElementById('feedback').textContent = "Piénsalo mejor...";
+            }
+        }
+        function next(){ curr++; load(); }
+        load();
+    </script>
+</body>
+</html>

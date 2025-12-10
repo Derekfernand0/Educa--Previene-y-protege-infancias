@@ -225,92 +225,332 @@
     </div>
   </section>
 
-  <!-- ===== EXPLORA ===== -->
-  <section id="explora" class="section gate-keep hidden" aria-labelledby="exploraTitle" data-bg="explora">
-    <h2 id="exploraTitle" class="h-doodles">Actividades interactivas</h2>
+<!-- ===== EXPLORA ===== -->
+<section id="explora" class="section gate-keep hidden" aria-labelledby="exploraTitle" data-bg="explora">
+  <h2 id="exploraTitle" class="h-doodles">Actividades interactivas</h2>
+    
+  <div class="game-block" style="text-align: center;">
+    <h3 class="h-doodles" style="color: var(--ring);">🎮 Zona de Juegos KIVA</h3>
+    <p class="small">Elige una actividad para aprender jugando:</p>
+        
+    <div class="grid four" style="margin-top: 20px;">
+      <a href="dibujo.html" class="learn-card blue" style="text-decoration: none; color: inherit; transition: transform 0.2s;">
+        <div class="learn-body" style="flex-direction: column; align-items: center; text-align: center;">
+          <div class="learn-ico" style="background: var(--paper); font-size: 2rem;">🎨</div>
+          <div class="learn-text">
+            <h3>Lienzo Creativo</h3>
+            <p class="small">Dibuja tu lugar seguro.</p>
+          </div>
+        </div>
+      </a>
 
-    <!-- Emocionómetro (dial) -->
-    <div class="game-block" id="emociono">
-      <h3>Emocionómetro</h3>
-      <p class="small">Gira el dial o toca un emoji.</p>
+      <a href="puzzle.html" class="learn-card yellow" style="text-decoration: none; color: inherit; transition: transform 0.2s;">
+        <div class="learn-body" style="flex-direction: column; align-items: center; text-align: center;">
+          <div class="learn-ico" style="background: var(--paper); font-size: 2rem;">🧩</div>
+          <div class="learn-text">
+            <h3>Armando Seguridad</h3>
+            <p class="small">Une las piezas.</p>
+          </div>
+        </div>
+      </a>
 
-      <div class="dial">
-        <svg viewBox="0 0 200 200" class="dial-svg" aria-hidden="true">
-          <defs>
-            <linearGradient id="gMood" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stop-color="#FFD6E7"/><stop offset="50%" stop-color="#E5D6FF"/><stop offset="100%" stop-color="#FFF4B8"/>
-            </linearGradient>
-          </defs>
+      <a href="palabras.html" class="learn-card lilac" style="text-decoration: none; color: inherit; transition: transform 0.2s;">
+        <div class="learn-body" style="flex-direction: column; align-items: center; text-align: center;">
+          <div class="learn-ico" style="background: var(--paper); font-size: 2rem;">📝</div>
+          <div class="learn-text">
+            <h3>Palabras de Poder</h3>
+            <p class="small">Descubre conceptos clave.</p>
+          </div>
+        </div>
+      </a>
+
+      <a href="emociones.html" class="learn-card peach" style="text-decoration: none; color: inherit; transition: transform 0.2s;">
+        <div class="learn-body" style="flex-direction: column; align-items: center; text-align: center;">
+          <div class="learn-ico" style="background: var(--paper); font-size: 2rem;">🎭</div>
+          <div class="learn-text">
+            <h3>Emociones</h3>
+            <p class="small">¿Qué sientes?</p>
+          </div>
+        </div>
+      </a>
+
+      <a href="laboratorio.html" class="learn-card pink" style="text-decoration: none; color: inherit; transition: transform 0.2s;">
+        <div class="learn-body" style="flex-direction: column; align-items: center; text-align: center;">
+          <div class="learn-ico" style="background: var(--paper); font-size: 2rem;">🧪</div>
+          <div class="learn-text">
+            <h3>Laboratorio</h3>
+            <p class="small">Mezcla valores.</p>
+          </div>
+        </div>
+      </a>
+
+      <a href="adivinanzas.html" class="learn-card blue" style="text-decoration: none; color: inherit; transition: transform 0.2s;">
+        <div class="learn-body" style="flex-direction: column; align-items: center; text-align: center;">
+          <div class="learn-ico" style="background: var(--paper); font-size: 2rem;">🕵️‍♀️</div>
+          <div class="learn-text">
+            <h3>Detective</h3>
+            <p class="small">Resuelve pistas.</p>
+          </div>
+        </div>
+      </a>
+
+      <a href="sopa.html" class="learn-card lilac" style="text-decoration: none; color: inherit; transition: transform 0.2s;">
+        <div class="learn-body" style="flex-direction: column; align-items: center; text-align: center;">
+          <div class="learn-ico" style="background: var(--paper); font-size: 2rem;">🔍</div>
+          <div class="learn-text">
+            <h3>Sopa de Letras</h3>
+            <p class="small">Busca herramientas.</p>
+          </div>
+        </div>
+      </a>
+
+      <a href="Jenga.html" class="learn-card yellow" style="text-decoration: none; color: inherit; transition: transform 0.2s;">
+        <div class="learn-body" style="flex-direction: column; align-items: center; text-align: center;">
+          <div class="learn-ico" style="background: var(--paper); font-size: 2rem;">🧱</div>
+          <div class="learn-text">
+            <h3>Torre del Apoyo</h3>
+            <p class="small">Construye confianza.</p>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="game-block" id="emociono">
+    <h3>Emocionómetro</h3>
+    <p class="small">Gira el dial o toca un emoji.</p>
+    <div class="dial">
+      <svg viewBox="0 0 200 200" class="dial-svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="gMood" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#FFD6E7"/>
+            <stop offset="50%" stop-color="#E5D6FF"/>
+            <stop offset="100%" stop-color="#FFF4B8"/>
+          </linearGradient>
+        </defs>
         <circle cx="100" cy="100" r="78" class="dial-bg"/>
         <path id="dialArc" d="M30,120 A70,70,0,1,1,170,120" class="dial-arc"/>
         <circle id="dialKnob" cx="30" cy="120" r="10" class="dial-knob"/>
-        </svg>
-        <div class="dial-emoji" id="dialEmoji">😊</div>
-        <input type="range" min="0" max="100" value="20" id="emoRange" aria-label="Emocionómetro" />
+      </svg>
+      <div class="dial-emoji" id="dialEmoji">😊</div>
+      <input type="range" min="0" max="100" value="20" id="emoRange" aria-label="Emocionómetro" />
+    </div>
+
+    <div class="dial-emojis">
+      <button data-v="10">😊</button><button data-v="35">🙂</button>
+      <button data-v="60">😕</button><button data-v="80">😔</button>
+      <button data-v="100">😠</button>
+    </div>
+
+    <div class="emo-label" aria-live="polite"></div>
+  </div>
+
+  <div class="game-block" id="muros">
+    <h3>Rompe el muro</h3>
+    <p class="small">Toca cada bloque para derribarlo.</p>
+    <div class="wall" aria-label="Pared de palabras"></div>
+    <p class="why" aria-live="polite"></p>
+    <button class="btn reset-btn icon-only" data-game="muros" aria-label="Reiniciar Rompe el muro">⟲</button>
+  </div>
+
+  <div class="game-block" id="memoria">
+    <h3>Descifra pares</h3>
+    <p class="small">Encuentra cada par y descubre su significado.</p>
+    <div class="memory-grid" aria-label="Cartas de memoria"></div>
+    <div class="memory-info small"></div>
+    <div class="memory-desc" aria-live="polite"></div>
+    <button class="btn reset-btn icon-only" data-game="memoria" aria-label="Reiniciar Memorama">⟲</button>
+  </div>
+
+  <div class="game-block" id="mensaje">
+    <h3>Arma el mensaje</h3>
+    <p class="small">Ordena los fragmentos para formar la frase.</p>
+    <div class="chips" aria-label="Fragmentos para ordenar"></div>
+    <div class="msg-out" aria-live="polite"></div>
+    <button class="btn reset-btn icon-only" data-game="mensaje" aria-label="Reiniciar Arma el mensaje">⟲</button>
+  </div>
+
+  <div class="game-block" id="semaforo">
+    <div class="semaforo-header">
+      <h3>🚦 Semáforo de Prevención</h3>
+      <div class="score-board">Puntos: <span id="semScore">0</span></div>
+    </div>
+    <p class="small">¿Seguro, Incómodo o Peligro? ¡Toca el color correcto rápido!</p>
+
+    <div class="sem-game-area">
+      <div class="sem-card" id="semCard">
+        <span class="sem-emoji">🎮</span>
+        <p class="sem-text">Presiona Iniciar</p>
       </div>
 
-      <div class="dial-emojis">
-        <button data-v="10">😊</button><button data-v="35">🙂</button>
-        <button data-v="60">😕</button><button data-v="80">😔</button>
-        <button data-v="100">😠</button>
+      <div class="sem-feedback" id="semFeedback"></div>
+
+      <div class="sem-controls">
+        <button class="sem-btn green" data-color="green" aria-label="Verde: Seguro">
+          🟢 Seguro
+        </button>
+        <button class="sem-btn yellow" data-color="yellow" aria-label="Amarillo: Alerta">
+          🟡 Alerta
+        </button>
+        <button class="sem-btn red" data-color="red" aria-label="Rojo: Peligro">
+          🔴 Peligro
+        </button>
+      </div>
+    </div>
+
+    <button class="btn mt" id="startSemBtn">¡Comenzar Juego!</button>
+  </div>
+
+  <div class="game-block" id="semaforo-body">
+    <h3>🚦 Semáforo del Cuerpo</h3>
+    <p class="small">Toca los círculos de colores sobre los niños para saber qué significan.</p>
+
+    <div class="body-traffic-container">
+      <div class="body-image-wrapper">
+        <img src="niños.jpg" alt="Semáforo del cuerpo" class="body-bg">
+        <button class="body-dot green" style="top: 26%; left: 32%;" data-msg="🟢 CABEZA: ¡Está bien! Las caricias en la cabeza de tus papás son cariño seguro."></button>
+        <button class="body-dot red" style="top: 42%; left: 32%;" data-msg="🔴 BOCA: ¡ALTO! Nadie puede obligarte a dar besos. Tu boca es tuya."></button>
+        <button class="body-dot red" style="top: 54%; left: 28%;" data-msg="🔴 PECHO: ¡Nadie toca! Es tu zona privada. Si alguien te toca, cuéntalo."></button>
+        <button class="body-dot red" style="top: 54%; left: 36%;" data-msg="🔴 PECHO: ¡Nadie toca! Es tu zona privada. Si alguien te toca, cuéntalo."></button>
+        <button class="body-dot yellow" style="top: 66%; left: 24%;" data-msg="🟡 MANOS: ¡Atención! Solo da la mano si tú quieres y te sientes cómoda/o."></button>
+        <button class="body-dot yellow" style="top: 66%; left: 40%;" data-msg="🟡 MANOS: ¡Atención! Solo da la mano si tú quieres y te sientes cómoda/o."></button>
+        <button class="body-dot red" style="top: 66%; left: 32%;" data-msg="🔴 ENTREPIERNA: ¡PROHIBIDO! Nadie debe tocar tus partes privadas. ¡Grita NO!"></button>
+        <button class="body-dot yellow" style="top: 80%; left: 32%;" data-msg="🟡 PIES: ¡Cuidado! Fíjate por dónde caminas y aléjate si algo no te gusta."></button>
+
+        <button class="body-dot green" style="top: 26%; left: 68%;" data-msg="🟢 MENTE: ¡Pensamientos sanos! Nadie debe pedirte guardar secretos malos."></button>
+        <button class="body-dot red" style="top: 42.5%; left: 68.5%;" data-msg="🔴 BOCA: ¡ALTO! Nadie extraño debe pedirte besos."></button>
+        <button class="body-dot red" style="top: 54%; left: 65.5%;" data-msg="🔴 PECHO: Zona privada. Nadie puede tocarte aquí bajo la ropa."></button>
+        <button class="body-dot red" style="top: 54%; left: 71.5%;" data-msg="🔴 PECHO: Zona privada. Nadie puede tocarte aquí bajo la ropa."></button>
+        <button class="body-dot yellow" style="top: 66%; left: 60%;" data-msg="🟡 MANOS: ¡Ojo! Ten cuidado quién te toma de la mano."></button>
+        <button class="body-dot yellow" style="top: 66%; left: 76%;" data-msg="🟡 MANOS: ¡Ojo! Ten cuidado quién te toma de la mano."></button>
+        <button class="body-dot red" style="top: 68%; left: 68.5%;" data-msg="🔴 ENTREPIERNA: ¡ALTO TOTAL! Nadie puede tocar ni pedirte que toques."></button>
+        <button class="body-dot yellow" style="top: 80%; left: 68%;" data-msg="🟡 PIES: ¡Cuidado! Si alguien te sigue, corre hacia un adulto de confianza."></button>
       </div>
 
-      <div class="emo-label" aria-live="polite"></div>
+      <div class="body-feedback" id="bodyFeedback">
+        👆 Toca los puntos de colores en el dibujo.
+      </div>
     </div>
+  </div>
 
-    <!-- 1. Rompe el muro -->
-    <div class="game-block" id="muros">
-      <h3>Rompe el muro</h3>
-      <p class="small">Toca cada bloque para derribarlo.</p>
-      <div class="wall" aria-label="Pared de palabras"></div>
-      <p class="why" aria-live="polite"></p>
-      <button class="btn reset-btn icon-only" data-game="muros" aria-label="Reiniciar Rompe el muro">⟲</button>
+  <div class="game-block" id="chatGame">
+    <h3>📱 Detecta el Engaño</h3>
+    <p class="small">Alguien te ha enviado un mensaje extraño. Elige la respuesta segura.</p>
+    <div class="chat-interface">
+      <div class="chat-screen" id="chatScreen"></div>
+      <div class="chat-options" id="chatOptions">
+        <button class="btn-opt" data-opt="A">Cargando opciones...</button>
+        <button class="btn-opt" data-opt="B">...</button>
+      </div>
     </div>
+    <div class="chat-feedback" id="chatFeedback"></div>
+    <button class="btn reset-btn icon-only" id="resetChat">⟲</button>
+  </div>
 
-    <!-- 2. Memorama -->
-    <div class="game-block" id="memoria">
-      <h3>Descifra pares</h3>
-      <p class="small">Encuentra cada par y descubre su significado.</p>
-      <div class="memory-grid" aria-label="Cartas de memoria"></div>
-      <div class="memory-info small"></div>
-      <div class="memory-desc" aria-live="polite"></div>
-      <button class="btn reset-btn icon-only" data-game="memoria" aria-label="Reiniciar Memorama">⟲</button>
-    </div>
-
-    <!-- 3. Arma el mensaje -->
-    <div class="game-block" id="mensaje">
-      <h3>Arma el mensaje</h3>
-      <p class="small">Ordena los fragmentos para formar la frase.</p>
-      <div class="chips" aria-label="Fragmentos para ordenar"></div>
-      <div class="msg-out" aria-live="polite"></div>
-      <button class="btn reset-btn icon-only" data-game="mensaje" aria-label="Reiniciar Arma el mensaje">⟲</button>
-    </div>
-
-    <!-- 4. Semáforo de las sensaciones -->
-    <div class="game-block" id="semaforo">
-      <h3>Semáforo de las sensaciones</h3>
-      <p class="small">Arrastra cada dibujito al color que se parezca más a cómo se siente.</p>
-      <div class="traffic-game">
-        <div class="traffic-cards" aria-label="Situaciones para clasificar"></div>
-        <div class="traffic-zones" aria-label="Semáforo">
-          <div class="traffic-zone green" data-zone="green">
-            <h4>🟢 Seguro</h4>
-            <p class="small">Se siente bien.</p>
-          </div>
-          <div class="traffic-zone yellow" data-zone="yellow">
-            <h4>🟡 Duda / incómodo</h4>
-            <p class="small">No estás segura/o.</p>
-          </div>
-          <div class="traffic-zone red" data-zone="red">
-            <h4>🔴 No seguro</h4>
-            <p class="small">Se siente mal.</p>
-          </div>
+  <center>
+    <div class="game-block" id="circuloConfianza">
+      <div class="game-header">
+        <div class="game-info">
+          <h3>Mi Círculo Seguro</h3>
+          <p class="small">Arrastra las tarjetas hacia la persona correcta. ¿Con quién harías esto?</p>
         </div>
       </div>
-      <div class="traffic-msg" aria-live="polite"></div>
-      <button class="btn reset-btn icon-only" data-game="semaforo" aria-label="Reiniciar Semáforo">⟲</button>
+
+      <div class="trust-game-container">
+        <div class="trust-board">
+          <div class="trust-col family" data-group="family">
+            <div class="trust-header header-blue">
+              <span class="t-emoji">👨‍👩‍👧</span>
+              <span class="t-name">Familia</span>
+            </div>
+            <div class="trust-drop-zone"></div>
+          </div>
+
+          <div class="trust-col friends" data-group="friends">
+            <div class="trust-header header-green">
+              <span class="t-emoji">👫</span>
+              <span class="t-name">Amigos</span>
+            </div>
+            <div class="trust-drop-zone"></div>
+          </div>
+
+          <div class="trust-col known" data-group="known">
+            <div class="trust-header header-yellow">
+              <span class="t-emoji">👋</span>
+              <span class="t-name">Conocidos</span>
+            </div>
+            <div class="trust-drop-zone"></div>
+          </div>
+
+          <div class="trust-col community" data-group="community">
+            <div class="trust-header header-orange">
+              <span class="t-emoji">👮‍♂️</span>
+              <span class="t-name">Ayudantes</span>
+            </div>
+            <div class="trust-drop-zone"></div>
+          </div>
+
+          <div class="trust-col strangers" data-group="strangers">
+            <div class="trust-header header-red">
+              <span class="t-emoji">🛑</span>
+              <span class="t-name">Extraños</span>
+            </div>
+            <div class="trust-drop-zone"></div>
+          </div>
+        </div>
+        
+        <div class="trust-pool-container">
+          <p class="pool-label">👇 Fichas disponibles (Arrástralas)</p>
+          <div class="trust-pool" id="trustPool"></div>
+        </div>
+
+        <div class="trust-footer">
+          <div class="trust-feedback" id="trustFeedback">Selecciona una ficha...</div>
+          <button class="btn-reset-trust" id="resetTrust" onclick="initTrustGame()">
+            <span>🔄</span> Reiniciar
+          </button>
+        </div>
+      </div>
     </div>
-  </section>
+  </center>
+
+  <div class="game-block" id="misReglas">
+    <h3>🙅‍♀️ Mi cuerpo, mis reglas</h3>
+    <p class="small">Hay acciones que están bien y otras que NO. Arrastra la acción al lugar correcto.</p>
+    <div class="drag-container">
+      <div class="draggables-pool" id="poolReglas"></div>
+      <div class="drop-zones">
+        <div class="drop-zone zone-ok" data-type="ok">
+          <span class="zone-icon">👍</span>
+          <span class="zone-label">Permitido</span>
+        </div>
+        <div class="drop-zone zone-bad" data-type="bad">
+          <span class="zone-icon">⛔</span>
+          <span class="zone-label">NO Permitido</span>
+        </div>
+      </div>
+    </div>
+    <div class="feedback-msg" id="msgReglas"></div>
+    <button class="btn reset-btn icon-only" id="resetReglas">⟲</button>
+  </div>
+
+  <div class="game-block" id="rompeSilencio">
+    <h3>🎤 Rompe el silencio</h3>
+    <p class="small">Ayuda a "Alex" a contar su historia. Elige la mejor opción para que se sienta libre.</p>
+    <div class="story-container" id="storyContainer">
+      <div class="story-scene">
+        <div class="story-char">😰</div>
+        <p class="story-text">Alex tiene un secreto que le hace sentir mal. ¿Qué debe hacer?</p>
+        <div class="story-actions">
+          <button class="btn story-btn" data-choice="A">Guardarlo para siempre</button>
+          <button class="btn story-btn" data-choice="B">Buscar a un adulto de confianza</button>
+        </div>
+      </div>
+    </div>
+    <button class="btn reset-btn icon-only hidden" id="resetStory">⟲</button>
+  </div>
+</section>
+
 
 <!-- ===== FORO ===== -->
 <section id="foro" class="section forum gate-keep hidden" aria-labelledby="foroTitle" data-bg="foro">
