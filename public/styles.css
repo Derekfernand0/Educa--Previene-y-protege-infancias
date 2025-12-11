@@ -4631,3 +4631,8 @@ body[data-theme="dark"] .sopa-cell {
 .section-top-nav .btn {
   font-size: 0.9rem;
 }
+
+/* Ocultar versión móvil por defecto */
+.title-multi-mobile {
+  display: none;
+}

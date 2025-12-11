@@ -148,3 +148,68 @@ body {
 
 /* Accesibilidad táctil */
 .reset-btn.icon-only{ width:44px;height:44px; border-radius:12px }
+
+
+/* ===== Título especial para móvil ===== */
+
+/* Logo + título alineados */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Ocultar título de escritorio en móvil */
+.title-desktop {
+  display: none !important;
+}
+
+/* Mostrar título móvil */
+.title-multi-mobile {
+  display: flex !important;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+/* Ajuste de tamaño */
+.title-multi-mobile b {
+  font-size: 1.25rem;
+}
+
+.title-multi .kiva,
+.title-multi-mobile .kiva{
+  background:linear-gradient(90deg,#F06543 0%, #FF7AA8 38%, #F2B300 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.title-multi .voz,
+.title-multi-mobile .voz{
+  color:#FFD88A;
+}
+
+.title-multi .y,
+.title-multi-mobile .y{
+  color:#FFA8A8;
+}
+
+.title-multi .apoyo,
+.title-multi-mobile .apoyo{
+  color:#A8B8FF;
+}
+
+.title-multi .Kids,
+.title-multi-mobile .Kids{
+  color:#F7A8B8;
+}
+
+.title-multi .Integrity,
+.title-multi-mobile .Integrity{
+  color:#B8A0FF;
+}
+
+.title-multi .coma,
+.title-multi-mobile .coma{
+  color:#9BC5FF;
+}
