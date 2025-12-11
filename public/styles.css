@@ -154,7 +154,12 @@ body[data-theme="dark"][data-bg="sobre"]::before{
 .brand{text-decoration:none; color:inherit; display:block}
 .title-multi b{font-weight:700; font-size:clamp(30px,6vw,60px); line-height:1; display:inline-block}
 .title-multi .kiva{background:linear-gradient(90deg,#F06543 0%, #FF7AA8 38%, #F2B300 100%); -webkit-background-clip:text; background-clip:text; color:transparent}
-.title-multi .voz{color:#3E97FF} .title-multi .y{color:#7C4DFF} .title-multi .apoyo{color:#F2B300}
+.title-multi .voz{color:#FFD88A} 
+.title-multi .y{color:#FFA8A8} 
+.title-multi .apoyo{color:#A8B8FF}
+.title-multi .Kids{color:#F7A8B8}
+.title-multi .Integrity{color:#B8A0FF}
+.title-multi .coma{color:#9BC5FF}
 .hamburger{position:absolute; right:16px; top:14px; width:46px; height:46px; border:1px solid var(--line); background:var(--card); border-radius:14px; display:grid; place-items:center; cursor:pointer}
 .hamburger span{display:block; width:24px; height:2px; background:var(--ink); margin:3px 0; border-radius:2px}
 
@@ -4601,4 +4606,28 @@ body[data-theme="dark"] .sopa-cell {
   height: 40px;     /* puedes subir o bajar el tamaño */
   width: auto;
   display: block;
+}
+
+
+.whatsapp-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.whatsapp-icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.section-top-nav {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.section-top-nav .btn {
+  font-size: 0.9rem;
 }

@@ -990,13 +990,32 @@ const HELP_TIERRA_BLANCA = [
         href = `tel:${c.value.replace(/\s+/g,"")}`;
       }
 
+      // 💬 contenido según el tipo
+      let linkHtml = "";
+
+      if (c.type === "WhatsApp") {
+        // Botón con logo de WhatsApp y sin mostrar el número
+        linkHtml = `
+          <a class="call whatsapp-link" target="_blank" rel="noopener" href="${href}">
+            <img src="whatsapp.svg" alt="Abrir chat de WhatsApp" class="whatsapp-icon">
+            <span>Hablar por WhatsApp</span>
+          </a>
+        `;
+      } else {
+        // Teléfono o web: se mantiene el texto que ya tenías
+        linkHtml = `
+          <a class="call" target="_blank" rel="noopener" href="${href}">
+            <strong>${c.value}</strong>
+          </a>
+        `;
+      }
+
       el.innerHTML = `
         <h4>${c.name}</h4>
         <p class="muted">${c.desc}</p>
-        <a class="call" target="_blank" rel="noopener" href="${href}">
-          <strong>${c.value}</strong>
-        </a>
+        ${linkHtml}
       `;
+
       mount.appendChild(el);
     });
   }
@@ -1006,6 +1025,7 @@ const HELP_TIERRA_BLANCA = [
   render(HELP_VERACRUZ, $("#helpGridVeracruz"));
   render(HELP_MX, $("#helpGridMX"));
 })();
+
 
 
 (() => {
