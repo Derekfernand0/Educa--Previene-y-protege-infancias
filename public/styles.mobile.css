@@ -105,7 +105,7 @@ body {
 }
 
 /* ========================================= */
-/* === RESTO DEL CSS MÓVIL (original tuyo) === */
+/* === RESTO DEL CSS MÓVIL === */
 /* ========================================= */
 
 /* Fondo de doodles más suave */
@@ -176,9 +176,30 @@ body {
   font-size: 1.25rem;
 }
 
-.title-multi .kiva,
-.title-multi-mobile .kiva{
-  background:linear-gradient(90deg,#F06543 0%, #FF7AA8 38%, #F2B300 100%);
+.title-multi .k,
+.title-multi-mobile .k{
+  background:#FFD88A;
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.title-multi .i,
+.title-multi-mobile .i{
+  background:#FFA8A8;
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.title-multi .v,
+.title-multi-mobile .v{
+  background:#B8A0FF;
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.title-multi .a,
+.title-multi-mobile .a{
+  background:#9BC5FF;
   -webkit-background-clip:text;
   background-clip:text;
   color:transparent;
@@ -186,12 +207,12 @@ body {
 
 .title-multi .voz,
 .title-multi-mobile .voz{
-  color:#FFD88A;
+  color:#A8B8FF;
 }
 
 .title-multi .y,
 .title-multi-mobile .y{
-  color:#FFA8A8;
+  color:#A8B8FF;
 }
 
 .title-multi .apoyo,
@@ -201,15 +222,20 @@ body {
 
 .title-multi .Kids,
 .title-multi-mobile .Kids{
-  color:#F7A8B8;
+  color:#A8B8FF;
 }
 
 .title-multi .Integrity,
 .title-multi-mobile .Integrity{
-  color:#B8A0FF;
+  color:#A8B8FF;
 }
 
 .title-multi .coma,
 .title-multi-mobile .coma{
-  color:#9BC5FF;
+  color:#A8B8FF;
+}
+
+.kiva-word {
+  display: inline-flex;
+  gap: 2px;
 }
