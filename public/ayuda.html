@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KIVA — Ayuda</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.mobile.css" media="only screen and (max-width: 600px)" />
+  <link rel="icon" type="image/png" href="favicon-kiva.png">
+</head>
+<body data-bg="ayuda">
+
+<header class="site-header">
+  <a class="brand" href="index.html" aria-label="Inicio">
+    <img
+      src="logo kiva sin fondo.png"
+      alt="Logo de KIVA Voz y Apoyo"
+      class="brand-logo"
+    >
+
+    <div class="title-multi title-desktop">
+      <b class="kiva">KIVA</b> 
+      <b class="guion">-</b>
+      <b class="Kids">Kid’s</b> 
+      <b class="Integrity">Integrity</b> 
+      <b class="coma">,</b> 
+      <b class="voz">Voz</b> 
+      <b class="y">y</b> 
+      <b class="apoyo">Apoyo</b>
+    </div>
+
+    <div class="title-multi-mobile">
+      <b class="kiva-word">
+        <span class="k">K</span>
+        <span class="i">I</span>
+        <span class="v">V</span>
+        <span class="a">A</span>
+      </b>
+      <b><span class="Kids">Kid’s</span> <span class="Integrity">Integrity</span></b>
+    </div>
+  </a>
+
+  <button class="hamburger" id="navOpen" aria-label="Abrir menú">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+<button id="themeToggle" class="mode-toggle" type="button">🌙</button>
+
+<nav class="sidenav" id="sidenav">
+  <button class="sidenav-close" id="navClose">×</button>
+  <a class="snav-link" href="index.html">🏠 Inicio</a>
+  <a class="snav-link" href="aprende.html">📚 Aprende & Galería</a>
+  <a class="snav-link" href="explora.html">🎮 Explora</a>
+  <a class="snav-link" href="ayuda.html">🆘 Ayuda</a>
+  <a class="snav-link" href="denuncia.html">⚖️ Cómo denunciar</a>
+  <a class="snav-link" href="reflexiones.html">💭 Reflexiones</a>
+  <a class="snav-link" href="sobre.html">ℹ️ Sobre</a>
+</nav>
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+
+<section class="section help" data-bg="ayuda">
+    <h2 class="h-doodles">Ayuda cuando la necesites</h2>
+
+    <div class="section-top-nav">
+      <a href="index.html" class="btn alt cta">Volver al inicio</a>
+    </div>
+
+    <p class="small">Si estás en peligro inmediato, llama al número de emergencia de tu país.</p>
+
+    <div class="reveal" data-reveal="tierrablanca">
+      <h3>Tierra Blanca (Veracruz)</h3>
+      <div class="grid three" id="helpGridTierraBlanca"></div>
+    </div>
+
+    <div class="reveal" data-reveal="veracruz">
+      <h3>Veracruz</h3>
+      <div class="grid three" id="helpGridVeracruz"></div>
+    </div>
+
+    <div class="reveal" data-reveal="mx">
+      <h3>México</h3>
+      <div class="grid three" id="helpGridMX"></div>
+
+      <div class="help-whats-wrap">
+        <a class="whats-btn" target="_blank" rel="noopener" href="https://wa.me/525555335533?text=Hola%2C%20necesito%20apoyo%20psicoemocional.">WhatsApp · Consejo Ciudadano</a>
+        <a class="whats-btn" target="_blank" rel="noopener" href="https://wa.me/525579009669?text=Contacto">WhatsApp · Contacto Joven</a>
+      </div>
+      <small class="help-note">WhatsApp operado por instituciones verificadas.</small>
+
+      <div class="help-contacts">
+        <h4>Consejeras SEP (hostigamiento y acoso sexual)</h4>
+        <p><strong>Diana Uribe Martínez</strong><br><a href="mailto:consejerahsyas.c@nube.sep.gob.mx">consejerahsyas.c@nube.sep.gob.mx</a><br>Cel. 55 1694 5537</p>
+        <p><strong>Roberto González Núñez</strong><br><a href="mailto:consejerahsyas.d@nube.sep.gob.mx">consejerahsyas.d@nube.sep.gob.mx</a><br>Tel. 55 5453 4826</p>
+      </div>
+    </div>
+</section>
+
+<footer class="site-footer"><div class="footer-inner"><small>KIVA · Voz y apoyo</small></div></footer>
+<script src="app.js" defer></script>
+</body>
+</html>

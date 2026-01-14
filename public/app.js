@@ -1,3 +1,4 @@
+
 /* Helpers */
 const $ = (s, r=document) => r.querySelector(s);
 const $$ = (s, r=document) => [...r.querySelectorAll(s)];
@@ -41,89 +42,35 @@ if (themeToggle){
 
 /* Navegación + fondo por sección */
 /* Navegación + fondo por sección */
-const backdrop = $("#navBackdrop"),
-      sidenav  = $("#sidenav");
+/* ===== MANEJO DEL MENÚ LATERAL ===== */
+const backdrop = document.getElementById("navBackdrop");
+const sidenav  = document.getElementById("sidenav");
+const navOpenBtn = document.getElementById("navOpen");
+const navCloseBtn = document.getElementById("navClose");
 
-$("#navOpen")?.addEventListener("click", () => {
-  sidenav.classList.add("open");
-  backdrop.hidden = false;
-  document.documentElement.style.overflow = "hidden";
-});
-$("#navClose")?.addEventListener("click", closeNav);
-backdrop?.addEventListener("click", closeNav);
+// Función para abrir
+if (navOpenBtn) {
+  navOpenBtn.addEventListener("click", () => {
+    sidenav.classList.add("open");
+    backdrop.hidden = false;
+    document.documentElement.style.overflow = "hidden"; // Evita scroll al estar abierto
+  });
+}
 
-function closeNav(){
-  sidenav.classList.remove("open");
-  backdrop.hidden = true;
+// Función para cerrar
+function closeNav() {
+  if (sidenav) sidenav.classList.remove("open");
+  if (backdrop) backdrop.hidden = true;
   document.documentElement.style.overflow = "";
 }
 
-/* 💫 Forzar scroll hasta arriba (todas las formas posibles) */
-function forceScrollTop(){
-  const go = () => {
-    window.scrollTo(0, 0);
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-  };
-  go();
-  // lo repetimos un frame después por si el layout cambia
-  requestAnimationFrame(go);
-}
+if (navCloseBtn) navCloseBtn.addEventListener("click", closeNav);
+if (backdrop) backdrop.addEventListener("click", closeNav);
 
-/* Cambiar de sección */
-function showSection(id){
-  if (!id) return;
-  const t = document.getElementById(id);
-  if (!t) return;
-
-  // ocultar todas las secciones
-  $$(".gate-keep").forEach(s => s.classList.add("hidden"));
-  t.classList.remove("hidden");
-
-  // actualizar fondo
-  document.body.dataset.bg = t.dataset.bg || id;
-
-  // cerrar menú lateral
-  closeNav();
-
-  // subir al inicio de la página SIEMPRE que cambiamos de sección
-  forceScrollTop();
-
-  // accesibilidad: foco sin volver a mover el scroll
-  t.setAttribute("tabindex","-1");
-  t.focus({ preventScroll: true });
-}
-
-/* Navegación por links del menú y elementos con data-target */
-document.addEventListener("click", (e) => {
-  const a = e.target.closest(".snav-link, [data-target]");
-  if (!a) return;
-
-  const hash = (a.dataset.target || (a.getAttribute("href") || "").replace(/^.*#/, "")).trim();
-  if (!hash) return;
-
-  e.preventDefault();
-  showSection(hash);
+// Cerrar menú si se hace clic en un enlace
+document.querySelectorAll('.snav-link').forEach(link => {
+  link.addEventListener('click', closeNav);
 });
-
-/* Botones principales del héroe (Aprende / Explora / Ayuda / etc.) */
-$$(".btn.cta").forEach(b => {
-  b.addEventListener("click", () => {
-    const target = b.dataset.open?.trim();
-    if (!target) return;
-    showSection(target);
-  });
-});
-
-(function initStart(){
-  const start = $("#inicio") || $(".gate-keep");
-  if (!start) return;
-  $$(".gate-keep").forEach(s => s.classList.add("hidden"));
-  start.classList.remove("hidden");
-  document.body.dataset.bg = "inicio";
-  // al cargar, también aseguramos estar arriba
-  forceScrollTop();
-})();
 
 /* Carrusel portada (botones + arrastre/ swipe) */
 
@@ -3008,5 +2955,163 @@ function validateDrop(item, targetGroup, dropZone) {
     setTimeout(() => item.classList.remove("wrong"), 500);
   }
 }
+
+/* ======================================================
+   JUEGO: ROMPE EL SILENCIO (Lógica Mejorada)
+   ====================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // 1. Verificamos si el juego existe en esta página para evitar errores
+    const storyContainer = document.getElementById('storyContainer');
+    if (!storyContainer) return; // Si no estamos en explora.html, no hace nada.
+
+    // 2. Base de datos de situaciones (Historias)
+    const stories = [
+        {
+            text: "Alex tiene un secreto que le hace sentir mal y le da miedo contarlo. ¿Qué debe hacer?",
+            char: "😰",
+            options: [
+                { 
+                    text: "Guardarlo para siempre", 
+                    correct: false, 
+                    feedback: "Guardar secretos malos nos hace daño por dentro. Es mejor soltar esa carga." 
+                },
+                { 
+                    text: "Buscar a un adulto de confianza", 
+                    correct: true, 
+                    feedback: "¡Muy bien! Hablar con alguien de confianza es el primer paso para estar seguro." 
+                }
+            ]
+        },
+        {
+            text: "Alguien en internet le pide a Sami que le mande una foto 'secreta' sin ropa. Dice que son amigos.",
+            char: "📱",
+            options: [
+                { 
+                    text: "Bloquear y avisar a sus padres", 
+                    correct: true, 
+                    feedback: "¡Exacto! Nunca envíes fotos privadas. Bloquear y contar es lo más seguro." 
+                },
+                { 
+                    text: "Mandarla solo una vez", 
+                    correct: false, 
+                    feedback: "¡No! Una vez que envías una foto, pierdes el control de ella. Nunca lo hagas." 
+                }
+            ]
+        },
+        {
+            text: "El entrenador le dice a Dani: 'Este es nuestro juego especial, no se lo digas a tu mamá'.",
+            char: "⚽",
+            options: [
+                { 
+                    text: "Guardar el secreto", 
+                    correct: false, 
+                    feedback: "Cuidado: Los adultos no deben pedirte guardar secretos sobre tu cuerpo o juegos extraños." 
+                },
+                { 
+                    text: "Correr y contárselo a mamá", 
+                    correct: true, 
+                    feedback: "¡Correcto! Los secretos que te hacen sentir incómodo no se guardan. ¡Cuéntalo!" 
+                }
+            ]
+        },
+        {
+            text: "Un tío le pide a Leo que se siente en sus piernas, pero a Leo no le gusta. ¿Qué hace?",
+            char: "🛋️",
+            options: [
+                { 
+                    text: "Aguantarse por educación", 
+                    correct: false, 
+                    feedback: "No. Nadie debe tocarte u obligarte a estar cerca si no quieres, aunque sea familia." 
+                },
+                { 
+                    text: "Decir 'NO quiero' y alejarse", 
+                    correct: true, 
+                    feedback: "¡Bien hecho! Tu cuerpo es tuyo y puedes decir NO a cualquier familiar sin miedo." 
+                }
+            ]
+        }
+    ];
+
+    // 3. Variables de control
+    let currentStoryIdx = 0;
+    const storyText = document.getElementById('storyText');
+    const storyChar = document.getElementById('storyChar');
+    const storyActions = document.getElementById('storyActions');
+    const storyResult = document.getElementById('storyResult');
+    const nextBtn = document.getElementById('nextStoryBtn');
+
+    // 4. Función para cargar una historia
+    function loadStory(idx) {
+        const story = stories[idx];
+        
+        // Actualizar textos
+        storyText.textContent = story.text;
+        storyChar.textContent = story.char;
+        
+        // Limpiar estado anterior
+        storyResult.textContent = "";
+        storyActions.innerHTML = ""; // Borra los botones viejos
+        nextBtn.style.display = "none"; // Oculta botón siguiente
+
+        // Crear botones nuevos
+        story.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = "btn story-btn"; // Clase base (asegúrate de tenerla en CSS o usa btn genérico)
+            btn.textContent = opt.text;
+            
+            // Estilos base para resetear colores si se reinicia
+            btn.style.backgroundColor = ""; 
+            btn.style.color = "";
+            btn.style.border = "1px solid #ccc";
+            btn.style.margin = "5px";
+
+            // Lógica al hacer click
+            btn.onclick = () => {
+                // 1. Mostrar feedback
+                storyResult.textContent = opt.feedback;
+                
+                // 2. Cambiar color según acierto o error
+                if (opt.correct) {
+                    // VERDE (Correcto)
+                    btn.style.backgroundColor = "#2ecc71"; 
+                    btn.style.borderColor = "#27ae60";
+                    btn.style.color = "#fff";
+                    storyResult.style.color = "#27ae60";
+                } else {
+                    // ROJO (Incorrecto)
+                    btn.style.backgroundColor = "#e74c3c"; 
+                    btn.style.borderColor = "#c0392b";
+                    btn.style.color = "#fff";
+                    storyResult.style.color = "#c0392b";
+                }
+
+                // 3. Deshabilitar todos los botones para que no cambien la respuesta
+                const allButtons = storyActions.querySelectorAll('button');
+                allButtons.forEach(b => b.disabled = true);
+
+                // 4. Mostrar botón de siguiente
+                nextBtn.style.display = "inline-block";
+            };
+
+            storyActions.appendChild(btn);
+        });
+    }
+
+    // 5. Evento del botón "Siguiente"
+    if (nextBtn) {
+        nextBtn.onclick = () => {
+            currentStoryIdx++;
+            // Si llegamos al final, volvemos al principio
+            if (currentStoryIdx >= stories.length) {
+                currentStoryIdx = 0;
+            }
+            loadStory(currentStoryIdx);
+        };
+    }
+
+    // 6. Iniciar el juego
+    loadStory(0);
+});
 
 document.addEventListener("DOMContentLoaded", initTrustGame);

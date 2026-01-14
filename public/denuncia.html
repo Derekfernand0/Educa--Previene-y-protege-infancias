@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KIVA — Cómo denunciar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.mobile.css" media="only screen and (max-width: 600px)" />
+  <link rel="icon" type="image/png" href="favicon-kiva.png">
+</head>
+<body data-bg="sobre">
+
+<header class="site-header">
+  <a class="brand" href="index.html" aria-label="Inicio">
+    <img src="logo kiva sin fondo.png" alt="Logo de KIVA Voz y Apoyo" class="brand-logo">
+    <div class="title-multi title-desktop">
+      <b class="kiva">KIVA</b> <b class="guion">-</b>
+      <b class="Kids">Kid’s</b> <b class="Integrity">Integrity</b> <b class="coma">,</b> 
+      <b class="voz">Voz</b> <b class="y">y</b> <b class="apoyo">Apoyo</b>
+    </div>
+    <div class="title-multi-mobile">
+      <b class="kiva-word"><span class="k">K</span><span class="i">I</span><span class="v">V</span><span class="a">A</span></b>
+      <b><span class="Kids">Kid’s</span> <span class="Integrity">Integrity</span></b>
+    </div>
+  </a>
+  <button class="hamburger" id="navOpen" aria-label="Abrir menú"><span></span><span></span><span></span></button>
+</header>
+<button id="themeToggle" class="mode-toggle" type="button">🌙</button>
+
+<nav class="sidenav" id="sidenav">
+  <button class="sidenav-close" id="navClose">×</button>
+  <a class="snav-link" href="index.html">🏠 Inicio</a>
+  <a class="snav-link" href="aprende.html">📚 Aprende & Galería</a>
+  <a class="snav-link" href="explora.html">🎮 Explora</a>
+  <a class="snav-link" href="ayuda.html">🆘 Ayuda</a>
+  <a class="snav-link" href="denuncia.html">⚖️ Cómo denunciar</a>
+  <a class="snav-link" href="reflexiones.html">💭 Reflexiones</a>
+  <a class="snav-link" href="sobre.html">ℹ️ Sobre</a>
+</nav>
+<div id="navBackdrop" class="nav-backdrop" hidden></div>
+
+<section class="section" data-bg="sobre">
+  <h2 class="h-doodles">Cómo denunciar</h2>
+  <div class="section-top-nav">
+    <a href="index.html" class="btn alt cta">Volver al inicio</a>
+  </div>
+
+  <p class="small">
+    Pasos interactivos para saber qué hacer, quién puede denunciar y qué llevar.
+  </p>
+
+  <div class="denuncia-steps-nav">
+    <div class="denuncia-steps-chips" id="stepsChips">
+      <button class="denuncia-step-chip is-active" data-target="step1">Paso 1 · Seguridad</button>
+      <button class="denuncia-step-chip" data-target="step2">Paso 2 · Quién denuncia</button>
+      <button class="denuncia-step-chip" data-target="step3">Paso 3 · Qué llevar</button>
+      <button class="denuncia-step-chip" data-target="step4">Paso 4 · Proceso</button>
+      <button class="denuncia-step-chip" data-target="step5">Paso 5 · Pruebas</button>
+      <button class="denuncia-step-chip" data-target="step6">Paso 6 · Después</button>
+      <button class="denuncia-step-chip" data-target="step7">Paso 7 · Formas</button>
+      <button class="denuncia-step-chip" data-target="step8">Paso 8 · Dudas</button>
+    </div>
+    <div class="denuncia-progress">
+      <span id="progressLabel" class="denuncia-progress-label">Paso 1 de 8</span>
+      <div class="denuncia-progress-bar">
+        <div class="denuncia-progress-fill" id="progressFill" style="width:12.5%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="denuncia-step" id="step1">
+    <h3>1. Primero: busca seguridad y apoyo</h3>
+    <p>Antes de denunciar, busca estar a salvo. Toca una tarjeta para saber a quién contarle:</p>
+    
+    <div class="trust-grid" id="trustGrid">
+      <button class="trust-card" data-msg="✅ ¡Excelente opción! Los maestros pueden activar protocolos de seguridad.">
+        <span class="trust-emoji">👩‍🏫</span>
+        <span class="trust-label">Maestra / Maestro</span>
+      </button>
+      <button class="trust-card" data-msg="✅ ¡Sí! Tu familia debe ser tu primer escudo de protección.">
+        <span class="trust-emoji">👨‍👩‍👧</span>
+        <span class="trust-label">Mamá, papá o cuidador</span>
+      </button>
+      <button class="trust-card" data-msg="✅ ¡Muy bien! Son profesionales que saben cómo escuchar y ayudar.">
+        <span class="trust-emoji">👩‍⚕️</span>
+        <span class="trust-label">Psicóloga escolar</span>
+      </button>
+      <button class="trust-card warning" data-msg="⚠️ ¡Cuidado! No confíes en desconocidos de internet, pueden mentir.">
+        <span class="trust-emoji">❓</span>
+        <span class="trust-label">Desconocido en internet</span>
+      </button>
+      <button class="trust-card warning" data-msg="⚠️ ¡Peligro! Nunca te vayas con adultos que no conoces bien.">
+        <span class="trust-emoji">🚗</span>
+        <span class="trust-label">Extraño que ofrece ayuda</span>
+      </button>
+    </div>
+    
+    <p class="trust-message" id="trustMessage" style="font-weight:700; margin-top:15px; min-height:1.5em; color:var(--ring);"></p>
+  </div>
+
+  <div class="denuncia-step" id="step2" hidden>
+    <h3>2. ¿Quién puede denunciar?</h3>
+    <p class="small">Elige quién eres para ver la información:</p>
+
+    <div class="denuncia-roles">
+      <div class="denuncia-roles-toggles">
+        <button class="role-toggle is-active" data-role="nino">🧸 Soy niña / niño</button>
+        <button class="role-toggle" data-role="adulto">🧑‍🦱 Soy adulto acompañante</button>
+        <button class="role-toggle" data-role="testigo">👀 Soy testigo</button>
+      </div>
+
+      <div class="denuncia-roles-panel">
+        <div class="role-content" id="role-nino">
+          <p><strong>Si eres niña, niño o adolescente:</strong></p>
+          <ul>
+            <li>No es tu culpa. Tienes derecho a ser protegido.</li>
+            <li>Cuéntale a un adulto de confianza para que te acompañe.</li>
+            <li>No necesitas saber "palabras difíciles", solo contar la verdad.</li>
+          </ul>
+        </div>
+        <div class="role-content" id="role-adulto" hidden>
+          <p><strong>Si eres mamá, papá o cuidador:</strong></p>
+          <ul>
+            <li>Es tu deber proteger. Si sospechas, denuncia.</li>
+            <li>No necesitas pruebas perfectas, la autoridad debe investigar.</li>
+            <li>Tu denuncia activa medidas de protección inmediatas.</li>
+          </ul>
+        </div>
+        <div class="role-content" id="role-testigo" hidden>
+          <p><strong>Si eres vecino o testigo:</strong></p>
+          <ul>
+            <li>Puedes hacer denuncias anónimas al 089.</li>
+            <li>Tu voz puede salvar la vida de un menor.</li>
+            <li>No necesitas haber visto todo, reporta lo que sabes.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="denuncia-step" id="step3" hidden>
+    <h3>3. ¿Qué llevar al denunciar?</h3>
+    <p class="small">Marca lo que ya tienes listo (toca los círculos):</p>
+
+    <div class="denuncia-checklist">
+      <div class="denuncia-checklist-status small">
+        Tienes <span id="checkCount" style="font-weight:bold; color:var(--ring);">0</span> cosas listas.
+      </div>
+
+      <div class="denuncia-checklist-grid">
+        <button class="check-pill"><span class="check-mark">⚫</span> Identificación oficial</button>
+        <button class="check-pill"><span class="check-mark">⚫</span> Nombre de la víctima</button>
+        <button class="check-pill"><span class="check-mark">⚫</span> Dirección de los hechos</button>
+        <button class="check-pill"><span class="check-mark">⚫</span> Fechas aproximadas</button>
+        <button class="check-pill"><span class="check-mark">⚫</span> Pruebas (mensajes/fotos)</button>
+        <button class="check-pill"><span class="check-mark">⚫</span> Datos de testigos</button>
+      </div>
+      
+      <p class="small mt"><b>Nota:</b> Si te falta algo, ¡ve igual! La autoridad debe recibirte.</p>
+    </div>
+  </div>
+
+  <div class="denuncia-step" id="step4" hidden>
+    <h3>4. El camino de la denuncia</h3>
+    <p class="small">Toca los números para ver qué pasa en cada momento:</p>
+
+    <div class="denuncia-flow">
+      <div class="denuncia-flow-steps">
+        <button class="flow-node is-active" data-phase="p1"><span class="flow-number">1</span> Antes</button>
+        <button class="flow-node" data-phase="p2"><span class="flow-number">2</span> Llegada</button>
+        <button class="flow-node" data-phase="p3"><span class="flow-number">3</span> Relato</button>
+        <button class="flow-node" data-phase="p4"><span class="flow-number">4</span> Registro</button>
+      </div>
+
+      <div class="denuncia-flow-panels">
+        <div class="flow-panel" id="p1">
+          <h4>1. Antes de ir</h4>
+          <p>Anota lo que recuerdes. Si tienes pruebas (mensajes, ropa sucia), guárdalas en una bolsa de papel o toma fotos.</p>
+        </div>
+        <div class="flow-panel" id="p2" hidden>
+          <h4>2. Al llegar (Ministerio Público)</h4>
+          <p>Ve a la ventanilla y di: "Quiero denunciar un delito contra un menor". Deben pasarte con un fiscal especializado.</p>
+        </div>
+        <div class="flow-panel" id="p3" hidden>
+          <h4>3. Contar lo que pasó</h4>
+          <p>Te harán preguntas. Si eres niño/a, deben tratarte con cuidado y paciencia. Puedes pedir pausas si te cansas.</p>
+        </div>
+        <div class="flow-panel" id="p4" hidden>
+          <h4>4. Registro (Carpeta)</h4>
+          <p>Te darán un número de "Carpeta de Investigación". ¡Anótalo y guárdalo! Es la llave para preguntar cómo va tu caso.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="denuncia-step" id="step5" hidden>
+    <h3>5. Documentos importantes</h3>
+    <p class="small">Toca cada tarjeta para saber por qué sirve:</p>
+    
+    <div class="evidence-wrap">
+      <div class="evidence-chips">
+        <button class="evidence-chip is-active" data-ev="ev1">🗣️ Declaración</button>
+        <button class="evidence-chip" data-ev="ev2">📱 Digitales</button>
+        <button class="evidence-chip" data-ev="ev3">🩺 Médicos</button>
+        <button class="evidence-chip" data-ev="ev4">🧠 Psicológicos</button>
+      </div>
+
+      <div class="evidence-panel">
+        <div class="ev-content" id="ev1">
+          <h4>Declaración</h4>
+          <p>Es lo que tú cuentas. Tu palabra es la prueba más importante al inicio. Deben escucharte y creerte.</p>
+        </div>
+        <div class="ev-content" id="ev2" hidden>
+          <h4>Pruebas Digitales</h4>
+          <p>Capturas de pantalla, mensajes de WhatsApp, audios o fotos. No borres nada del celular, entrégalo tal cual.</p>
+        </div>
+        <div class="ev-content" id="ev3" hidden>
+          <h4>Certificados Médicos</h4>
+          <p>Documentos de doctores que revisaron lesiones. Si no tienes, la Fiscalía te mandará con un médico legista.</p>
+        </div>
+        <div class="ev-content" id="ev4" hidden>
+          <h4>Informes Psicológicos</h4>
+          <p>Ayudan a demostrar cómo te afectó emocionalmente la situación. Es vital para entender el daño invisible.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="denuncia-step" id="step6" hidden>
+    <h3>6. ¿Qué pasa después?</h3>
+    <div class="denuncia-timeline">
+      <div class="timeline-stages">
+        <button class="timeline-node is-active" data-time="t1"><span class="timeline-dot"></span> Investigación</button>
+        <button class="timeline-node" data-time="t2"><span class="timeline-dot"></span> Protección</button>
+        <button class="timeline-node" data-time="t3"><span class="timeline-dot"></span> Resolución</button>
+      </div>
+
+      <div class="timeline-panels">
+        <div class="t-content" id="t1">
+          <h4>Investigación</h4>
+          <p>La policía buscará testigos, videos y pruebas. Puede tardar un poco, ten paciencia.</p>
+        </div>
+        <div class="t-content" id="t2" hidden>
+          <h4>Medidas de Protección</h4>
+          <p>La autoridad puede ordenar que el agresor NO se te acerque ni te hable. ¡Pídelas!</p>
+        </div>
+        <div class="t-content" id="t3" hidden>
+          <h4>Resolución</h4>
+          <p>Se decide si hay juicio. Es importante tener un abogado o asesor jurídico (son gratis en la Fiscalía).</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline-emotions mt">
+      <p class="small">¿Cómo te sientes? Toca una emoción:</p>
+      <div class="emotion-buttons">
+        <button class="emotion-btn" data-mood="miedo">😟 Tengo miedo</button>
+        <button class="emotion-btn" data-mood="enojo">😠 Tengo enojo</button>
+        <button class="emotion-btn" data-mood="confu">😕 Estoy confundido</button>
+      </div>
+      <p id="moodMsg" class="small mt" style="font-weight:700; color:var(--ring); min-height:1.2em;"></p>
+    </div>
+  </div>
+
+  <div class="denuncia-step" id="step7" hidden>
+    <h3>7. Formas de denunciar</h3>
+    <div class="grid three">
+      <div class="about-card tone-blue">
+        <h4>🏛️ Presencial</h4>
+        <p class="small">Ir a la Fiscalía. Es la forma más segura y completa.</p>
+      </div>
+      <div class="about-card tone-lilac">
+        <h4>📞 Teléfono</h4>
+        <p class="small">Llama al 911 (emergencias) o 089 (anónimo) para pedir orientación.</p>
+      </div>
+      <div class="about-card tone-pink">
+        <h4>🌐 En línea</h4>
+        <p class="small">Busca "Denuncia en línea [Tu Estado]" en Google. Sirve para pre-denuncias.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="denuncia-step" id="step8" hidden>
+    <h3>8. Preguntas Frecuentes</h3>
+    <div class="faq-list">
+      <div class="faq-item">
+        <button class="faq-question">¿Me van a cobrar?</button>
+        <div class="faq-answer" hidden><p>NO. La justicia es gratuita. Nadie debe pedirte dinero.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">¿Puedo ir acompañado?</button>
+        <div class="faq-answer" hidden><p>SÍ. Siempre ve con un adulto de confianza o abogado.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question">¿Y si tengo miedo de ver al agresor?</button>
+        <div class="faq-answer" hidden><p>Pide estar en un cuarto separado. Tienes derecho a no verlo.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-row mt">
+    <a href="ayuda.html" class="btn cta">Necesito ayuda urgente</a>
+    <a href="index.html" class="btn alt cta">Volver al inicio</a>
+  </div>
+</section>
+
+<footer class="site-footer"><div class="footer-inner"><small>KIVA · Voz y apoyo</small></div></footer>
+
+<script src="app.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // 1. NAVEGACIÓN DE PASOS PRINCIPAL
+    const chips = document.querySelectorAll('.denuncia-step-chip');
+    const steps = document.querySelectorAll('.denuncia-step');
+    const progressFill = document.getElementById('progressFill');
+    const progressLabel = document.getElementById('progressLabel');
+
+    chips.forEach((chip, index) => {
+        chip.addEventListener('click', () => {
+            chips.forEach(c => c.classList.remove('is-active'));
+            chip.classList.add('is-active');
+            
+            steps.forEach(s => s.hidden = true);
+            const target = document.getElementById(chip.dataset.target);
+            if(target) target.hidden = false;
+
+            const pct = ((index + 1) / chips.length) * 100;
+            progressFill.style.width = pct + '%';
+            progressLabel.textContent = `Paso ${index + 1} de ${chips.length}`;
+        });
+    });
+
+    // 2. PASO 1: TARJETAS DE CONFIANZA
+    const trustCards = document.querySelectorAll('.trust-card');
+    const trustMsg = document.getElementById('trustMessage');
+    trustCards.forEach(card => {
+        card.addEventListener('click', () => {
+            // Resetear estilos visuales simples
+            trustCards.forEach(c => {
+                c.style.borderColor = 'var(--line)';
+                c.style.background = 'var(--paper)';
+            });
+            // Aplicar estilo activo
+            card.style.borderColor = 'var(--ring)';
+            card.style.background = '#eef2ff';
+            
+            // Mostrar mensaje
+            trustMsg.textContent = card.dataset.msg;
+            
+            // Color del mensaje según si es advertencia
+            if(card.classList.contains('warning')) {
+                trustMsg.style.color = '#dc2626'; // Rojo
+            } else {
+                trustMsg.style.color = '#16a34a'; // Verde
+            }
+        });
+    });
+
+    // 3. PASO 2: SELECTOR DE ROLES
+    const roleBtns = document.querySelectorAll('.role-toggle');
+    const roleContents = document.querySelectorAll('.role-content');
+    roleBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            roleBtns.forEach(b => b.classList.remove('is-active'));
+            btn.classList.add('is-active');
+            
+            roleContents.forEach(c => c.hidden = true);
+            document.getElementById(`role-${btn.dataset.role}`).hidden = false;
+        });
+    });
+
+    // 4. PASO 3: CHECKLIST
+    const checkPills = document.querySelectorAll('.check-pill');
+    const checkCount = document.getElementById('checkCount');
+    checkPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+            pill.classList.toggle('is-checked');
+            // Cambiar icono visualmente
+            const mark = pill.querySelector('.check-mark');
+            if(pill.classList.contains('is-checked')){
+                pill.style.background = '#dcfce7';
+                pill.style.borderColor = '#16a34a';
+                mark.textContent = '✅';
+            } else {
+                pill.style.background = '';
+                pill.style.borderColor = '';
+                mark.textContent = '⚫';
+            }
+            // Actualizar contador
+            const total = document.querySelectorAll('.check-pill.is-checked').length;
+            checkCount.textContent = total;
+        });
+    });
+
+    // 5. PASO 4: STEPPER (Diagrama de flujo)
+    const flowNodes = document.querySelectorAll('.flow-node');
+    const flowPanels = document.querySelectorAll('.flow-panel');
+    flowNodes.forEach(node => {
+        node.addEventListener('click', () => {
+            flowNodes.forEach(n => n.classList.remove('is-active'));
+            node.classList.add('is-active');
+            
+            flowPanels.forEach(p => p.hidden = true);
+            document.getElementById(node.dataset.phase).hidden = false;
+        });
+    });
+
+    // 6. PASO 5: PESTAÑAS DE EVIDENCIA
+    const evChips = document.querySelectorAll('.evidence-chip');
+    const evContents = document.querySelectorAll('.ev-content');
+    evChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            evChips.forEach(c => c.classList.remove('is-active'));
+            chip.classList.add('is-active');
+            
+            evContents.forEach(c => c.hidden = true);
+            document.getElementById(chip.dataset.ev).hidden = false;
+        });
+    });
+
+    // 7. PASO 6: LÍNEA DE TIEMPO + EMOCIONES
+    const timeNodes = document.querySelectorAll('.timeline-node');
+    const timePanels = document.querySelectorAll('.t-content');
+    timeNodes.forEach(node => {
+        node.addEventListener('click', () => {
+            timeNodes.forEach(n => n.classList.remove('is-active'));
+            node.classList.add('is-active');
+            
+            timePanels.forEach(p => p.hidden = true);
+            document.getElementById(node.dataset.time).hidden = false;
+        });
+    });
+
+    const emoBtns = document.querySelectorAll('.emotion-btn');
+    const moodMsg = document.getElementById('moodMsg');
+    const moods = {
+        miedo: "Es normal sentir miedo. Eres muy valiente por buscar ayuda.",
+        enojo: "El enojo te ayuda a poner límites. Úsalo para pedir justicia.",
+        confu: "Paso a paso. No tienes que resolver todo hoy. Respira."
+    };
+    emoBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            moodMsg.textContent = moods[btn.dataset.mood];
+        });
+    });
+
+    // 8. PASO 8: ACORDEONES
+    const faqQuestions = document.querySelectorAll('.faq-question');
+    faqQuestions.forEach(q => {
+        q.addEventListener('click', () => {
+            const answer = q.nextElementSibling;
+            answer.hidden = !answer.hidden;
+        });
+    });
+});
+</script>
+
+</body>
+</html>

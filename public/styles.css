@@ -4637,3 +4637,100 @@ body[data-theme="dark"] .sopa-cell {
 .title-multi-mobile {
   display: none;
 }
+
+/* ===== CORRECCIÓN DE BOTONES Y ENLACES (Agrega esto al final de styles.css) ===== */
+
+/* Quitar subrayado y color azul a los botones que ahora son enlaces */
+.btn, 
+.home-pill, 
+.cta, 
+.snav-link,
+.whats-btn,
+.call {
+  text-decoration: none !important; /* Quita la raya abajo */
+  display: inline-flex;             /* Asegura que respeten el tamaño */
+  align-items: center;
+  justify-content: center;
+  color: var(--ink) !important;     /* Fuerza el color negro/oscuro en lugar de azul */
+}
+
+/* Ajuste específico para botones con fondo oscuro si los hubiera */
+.btn:hover, 
+.home-pill:hover {
+  text-decoration: none;
+}
+
+/* Asegurar que el logo no tenga raya */
+.brand {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ===== ARREGLO DEL MENÚ LATERAL (Pegar al final de styles.css) ===== */
+
+/* Contenedor del menú en columna vertical */
+.sidenav {
+  display: flex !important;
+  flex-direction: column !important; /* Elementos uno debajo del otro */
+  gap: 8px !important; /* Espacio entre botones */
+  align-items: stretch !important; /* Que ocupen todo el ancho */
+}
+
+/* Estilo de cada botón del menú */
+.snav-link {
+  width: 100% !important;
+  margin: 0 !important;
+  display: flex !important;
+  justify-content: flex-start !important; /* Texto alineado a la izquierda */
+  text-align: left !important;
+  box-sizing: border-box !important;
+}
+
+/* Ajuste para el botón de cerrar (la X) */
+.sidenav-close {
+  align-self: flex-end; /* La X se queda a la derecha */
+  margin-bottom: 15px !important;
+}
+
+
+/* ===== ARREGLO FINAL DEL FOOTER Y MENÚ ===== */
+
+/* 1. Footer: Que se vea limpio y horizontal */
+.f-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin: 15px 0;
+}
+
+.footer-link {
+  text-decoration: none;
+  color: var(--ink-2);
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 5px 10px;
+  border-radius: 8px;
+  transition: color 0.2s, background 0.2s;
+  /* Quitamos bordes y fondos grises */
+  background: transparent; 
+  border: none; 
+}
+
+.footer-link:hover {
+  background-color: rgba(0,0,0,0.05);
+  color: var(--ring);
+}
+
+/* 2. Menú Lateral (Sidenav): Asegurar que funcione y se vea bien */
+.sidenav {
+  /* Asegura que esté encima de todo */
+  z-index: 9999 !important; 
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nav-backdrop {
+  z-index: 9998 !important;
+}
