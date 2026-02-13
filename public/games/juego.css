@@ -1,0 +1,99 @@
+/* Estilos Base */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #1a1a1a;
+}
+
+.game-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Fondo con Desenfoque */
+.background-blur {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, #4facfe 0%, #00f2fe 100%); /* Color temporal */
+    filter: blur(15px);
+    transition: filter 1s ease;
+    z-index: -1;
+}
+
+/* Título y Botón */
+.ui-start {
+    text-align: center;
+    z-index: 10;
+    transition: opacity 0.8s ease;
+}
+
+.titulo-juego {
+    color: white;
+    font-size: 4rem;
+    text-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    margin-bottom: 50px;
+    transition: transform 0.8s ease, opacity 0.8s ease;
+}
+
+.btn-inicio {
+    padding: 20px 50px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    background-color: #ff4757;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    animation: latido 1.5s infinite;
+    transition: transform 0.8s ease, opacity 0.8s ease;
+}
+
+/* Animación de Latido */
+@keyframes latido {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); box-shadow: 0 15px 30px rgba(255, 71, 87, 0.4); }
+    100% { transform: scale(1); }
+}
+
+/* Animaciones de salida */
+.fade-up { transform: translateY(-200px); opacity: 0; }
+.fade-down { transform: translateY(200px); opacity: 0; }
+
+/* El Mar */
+.ocean-container {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.water {
+    width: 200%; /* Más ancho para que el loop no se corte */
+    height: 100%;
+    background-image: url('../iconos/mar.png'); /* Ruta según tu carpeta */
+    background-repeat: repeat-x;
+    background-size: contain;
+    position: absolute;
+    bottom: 0;
+    animation: oleaje 5s linear infinite;
+}
+
+@keyframes oleaje {
+    0% { transform: translateX(0) translateY(0); }
+    50% { transform: translateX(-25%) translateY(10px); }
+    100% { transform: translateX(-50%) translateY(0); }
+}
