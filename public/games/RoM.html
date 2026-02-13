@@ -8,7 +8,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+<div class="game-container" id="gameContainer">
+    <div class="background-blur" id="bgBlur"></div>
 
+    <div class="world" id="world">
+        <div id="player" class="player">
+            <div class="player-head"></div>
+            <div class="player-body"></div>
+        </div>
+        
+        <div id="platformStack"></div>
+    </div>
+
+    <div class="ui-start" id="uiStart">
+        <h1 class="titulo-juego">RESPONDE O AHÓGATE</h1>
+        <button class="btn-inicio" id="btnInicio">¡COMENZAR!</button>
+    </div>
+
+    <div class="ocean-container">
+        <div class="water" id="waterLayer"></div>
+    </div>
+</div>
     <div class="game-container" id="gameContainer">
         <div class="background-blur" id="bgBlur"></div>
 

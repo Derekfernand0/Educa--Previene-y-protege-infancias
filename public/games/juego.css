@@ -97,3 +97,54 @@ body, html {
     50% { transform: translateX(-25%) translateY(10px); }
     100% { transform: translateX(-50%) translateY(0); }
 }
+
+/* --- Nuevo: Sistema de Plataformas y Jugador --- */
+
+.world {
+    position: absolute;
+    bottom: 200px; /* Inicia justo arriba del mar */
+    width: 100%;
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#platformStack {
+    display: flex;
+    flex-direction: column-reverse; /* El nuevo bloque aparece arriba */
+    align-items: center;
+}
+
+.bloque {
+    width: 200px;
+    height: 40px;
+    margin: 1px 0;
+    border-radius: 5px;
+    box-shadow: inset 0 -5px rgba(0,0,0,0.2);
+    animation: aparecerBloque 0.5s ease-out;
+}
+
+.player {
+    width: 40px;
+    height: 60px;
+    background-color: #ffcc00; /* Color del personaje */
+    position: relative;
+    z-index: 5;
+    margin-bottom: -5px; /* Para que pise bien el bloque */
+    transition: transform 0.5s ease;
+    border-radius: 5px 5px 0 0;
+}
+
+.player-head {
+    width: 25px;
+    height: 25px;
+    background: #ffdbac;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+
+@keyframes aparecerBloque {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
