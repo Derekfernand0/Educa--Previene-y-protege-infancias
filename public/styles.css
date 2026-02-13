@@ -1,4 +1,4 @@
-/* ===== KIVA v4.3 — Portada con carrusel; dial sin sombra; muro fluido; responsive sólido ===== */
+/* ===== KIVA v4.3 ===== */
 :root{
   --lilac:#E5D6FF; --blue:#CFEAFF; --pink:#FFD6E7; --yellow:#FFF4B8; --peach:#FFD9C8;
   --paper:#FFFFFF; --card:#FFFFFF; --ink:#101522; --ink-2:#2A3550; --line:rgba(0,0,0,.14);
@@ -8,7 +8,7 @@
   --shadow-lg:0 14px 40px rgba(0,0,0,.16);
 }
 
-/* ===== Paleta modo oscuro (usa las mismas variables) ===== */
+/* ===== Paleta modo oscuro ===== */
 body[data-theme="dark"]{
   --paper:#020617;
   --card:#020617;
@@ -24,7 +24,7 @@ body[data-theme="dark"]{
   --yellow:#eab308;
   --peach:#f97316;
 }
-/* Help cards en modo oscuro — degradado bonito */
+/* Help cards en modo oscuro  */
 body[data-theme="dark"] .help .help-card{
   background:linear-gradient(
     180deg,
@@ -42,7 +42,7 @@ body{margin:0; overflow-x:hidden; font-family:"Nunito",system-ui,-apple-system,S
 h1,h2,h3{font-family:"Fredoka", system-ui; margin:0 0 12px; line-height:1.15}
 p{margin:0 0 12px} small{color:var(--muted)}
 
-/* Transiciones suaves entre claro/oscuro */
+/* Transiciones */
 html,
 body,
 body::before{
@@ -164,10 +164,10 @@ body[data-theme="dark"][data-bg="sobre"]::before{
 .hamburger{position:absolute; right:16px; top:14px; width:46px; height:46px; border:1px solid var(--line); background:var(--card); border-radius:14px; display:grid; place-items:center; cursor:pointer}
 .hamburger span{display:block; width:24px; height:2px; background:var(--ink); margin:3px 0; border-radius:2px}
 
-/* Botón flotante modo claro/oscuro (abajo a la derecha) */
+/* Botón flotante modo claro/oscuro */
 .mode-toggle{
   position:fixed;
-  bottom:18px;       /* 👈 ahora abajo */
+  bottom:18px;       
   right:18px;
   z-index:20;
   width:44px;
@@ -295,7 +295,7 @@ body[data-theme="dark"] .mode-toggle{
   background: #CFEAFF;
 }
 
-/* Modo oscuro: que se vea bonito también */
+/* Modo oscuro */
 
 body[data-theme="dark"] .home-support-inner{
   background: color-mix(in oklab, var(--card) 92%, #020617 8%);
@@ -362,7 +362,7 @@ body[data-theme="dark"] .home-pill.alt{
 .car-btn{position:absolute; top:50%; transform:translateY(-50%); background:var(--card); border:1px solid var(--line); color:var(--ink); width:40px; height:40px; border-radius:50%; cursor:pointer}
 .car-btn.prev{left:10px} .car-btn.next{right:10px}
 
-/* ===== Tarjetas de juegos: recorte de desbordes ===== */
+/* ===== Tarjetas de juegos ===== */
 .game-block{
   background:var(--card);
   border:1px solid var(--line);
@@ -374,7 +374,7 @@ body[data-theme="dark"] .home-pill.alt{
   overflow:hidden;
 }
 
-/* ===== Dial Emocionómetro (encaja y sin sombra) ===== */
+/* ===== Dial Emocionómetro ===== */
 .dial{position:relative; width:min(360px, 100%); margin-inline:auto}
 .dial-svg{width:100%; height:auto; display:block}
 .dial-bg{fill:#fff; stroke:var(--line); stroke-width:2}
@@ -390,7 +390,7 @@ body[data-theme="dark"] .home-pill.alt{
 #muros .wall{
   display:grid;
   gap:12px;
-  grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); /* más ancho para que quepan las palabras */
+  grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); 
   width:100%;
 }
 .brick{
@@ -399,7 +399,7 @@ body[data-theme="dark"] .home-pill.alt{
   color:#111; font-weight:800; font-size:.95rem;
   transition:transform .12s, opacity .2s;
   cursor:pointer; position:relative; box-shadow:var(--shadow-sm);
-  white-space:nowrap;          /* NO partir palabras */
+  white-space:nowrap;          
 }
 .brick.hit::after{content:""; position:absolute; inset:-4px; border-radius:16px; border:2px solid var(--blue); opacity:0; animation:hit .45s ease}
 @keyframes hit{0%{opacity:.8; transform:scale(1)} 100%{opacity:0; transform:scale(1.1)}}
@@ -414,12 +414,10 @@ body[data-theme="dark"] .home-pill.alt{
   inset:0;
   transform-style:preserve-3d;
   transition:transform .38s ease;
-  /* empieza mostrando el reverso */
   transform:rotateY(180deg);
 }
 
 .cardm.revealed .cardm-inner{
-  /* al voltear, se ve el frente (imagen + palabra) */
   transform:rotateY(0deg);
 }
 
@@ -435,7 +433,6 @@ body[data-theme="dark"] .home-pill.alt{
   justify-content:center;
 }
 
-/* Frente: imagen + texto */
 .cardm-front{
   border:1px dashed var(--line);
   font-weight:900;
@@ -454,7 +451,6 @@ body[data-theme="dark"] .home-pill.alt{
   font-size:.9rem;
 }
 
-/* Reverso: todas iguales */
 .cardm-back{
   transform:rotateY(180deg);
   border:1px solid var(--line);
@@ -542,7 +538,7 @@ body[data-theme="dark"] .home-pill.alt{
   font-weight:800;
 }
 
-/* Ajustes para semáforo en modo oscuro (fondos menos brillantes) */
+/* Ajustes para semáforo en modo oscuro */
 body[data-theme="dark"] .traffic-card{
   background:var(--card);
 }
@@ -604,7 +600,7 @@ body[data-theme="dark"] .help-contacts{
 .blog-grid.colorful .blog-card:nth-child(4n+3){background:linear-gradient(180deg,#fff,#fff7de)}
 .blog-grid.colorful .blog-card:nth-child(4n+4){background:linear-gradient(180deg,#fff,#ffefe8)}
 
-/* Blog en modo oscuro: cartas más oscuras pero con toque pastel */
+/* Blog en modo oscuro */
 body[data-theme="dark"] .blog-grid.colorful .blog-card{
   background:linear-gradient(180deg, rgba(15,23,42,.95), rgba(15,23,42,.8));
 }
@@ -621,7 +617,7 @@ body[data-theme="dark"] .blog-card .tag{
 .tone-peach{background:linear-gradient(180deg,#ffffff,#ffefe8)}
 .tone-yellow{background:linear-gradient(180deg,#ffffff,#fff7de)}
 
-/* Tonos en modo oscuro: más sutiles */
+/* Tonos en modo oscuro */
 body[data-theme="dark"] .tone-lilac{
   background:linear-gradient(180deg,#020617,#111827);
 }
@@ -657,7 +653,7 @@ body[data-theme="dark"] .tone-yellow{
 }
 
 #denuncia{
-  position:relative; /* para el confeti */
+  position:relative;
 }
 
 /* Menú de pasos */
@@ -998,7 +994,7 @@ body[data-theme="dark"] .check-pill{
   position:relative;
 }
 
-/* Línea de fondo opcional (solo cuando hay espacio horizontal) */
+/* Línea de fondo opcional  */
 @media (min-width: 640px){
   .denuncia-flow-steps::before{
     content:"";
@@ -4171,11 +4167,6 @@ body[data-theme="dark"] .body-feedback.is-red {
 
 
 
-
-/* =========================================
-   NUEVO: Estilos Mapa de Lugares Seguros (SVG Estático)
-   ========================================= */
-
 .map-container {
   width: 100%;
   overflow: hidden;
@@ -4427,9 +4418,7 @@ body[data-theme="dark"] .trust-item { background: var(--card); color: var(--ink)
   height: 400;
 }
 
-/* =========================================
-   ESTILOS KIVA ARCADE (JUEGOS NUEVOS)
-   ========================================= */
+
 
 /* Navegación de pestañas */
 .arcade-nav {
@@ -4536,7 +4525,7 @@ body[data-theme="dark"] .trust-item { background: var(--card); color: var(--ink)
 .sopa-cell.found { background: #dcfce7; color: #15803d; border-color: #22c55e; animation: popIn 0.3s; }
 @keyframes popIn { from{transform:scale(0.5)} to{transform:scale(1)} }
 
-/* MODO OSCURO (Ajustes rápidos) */
+/* MODO OSCURO  */
 body[data-theme="dark"] .arcade-tab { background: var(--card); color: var(--ink); }
 body[data-theme="dark"] .arcade-tab.active { background: var(--ring); color: #fff; }
 body[data-theme="dark"] .canvas-box { border-color: #444; }
@@ -4544,14 +4533,13 @@ body[data-theme="dark"] .puzzle-tile,
 body[data-theme="dark"] .ttt-box,
 body[data-theme="dark"] .sopa-cell { background: #1e293b; border-color: #334155; color: #fff; }
 
-/* ESTILOS SOPA MEJORADOS */
 .sopa-grid {
   display: grid;
   grid-template-columns: repeat(5, 50px);
   gap: 5px;
   justify-content: center;
   margin: 15px auto;
-  user-select: none; /* Importante para que no parezca texto seleccionado */
+  user-select: none; 
 }
 
 .sopa-cell {
@@ -4565,7 +4553,7 @@ body[data-theme="dark"] .sopa-cell { background: #1e293b; border-color: #334155;
   justify-content: center;
   font-family: "Fredoka", sans-serif;
   font-weight: 700;
-  font-size: 1.4rem; /* Letra grande y legible */
+  font-size: 1.4rem; 
   cursor: pointer;
   transition: all 0.2s;
   color: var(--ink);
@@ -4586,7 +4574,7 @@ body[data-theme="dark"] .sopa-cell {
   border-color: #334155;
   color: #fff;
 }
-/* Animación de victoria */
+
 .win-bounce {
   animation: winBounce 0.6s infinite alternate;
 }
@@ -4596,15 +4584,14 @@ body[data-theme="dark"] .sopa-cell {
 }
 
 
-/* Logo en el encabezado */
 .brand {
   display: flex;
   align-items: center;
-  gap: 0.75rem; /* separa logo y texto */
+  gap: 0.75rem; 
 }
 
 .brand-logo {
-  height: 40px;     /* puedes subir o bajar el tamaño */
+  height: 40px;     
   width: auto;
   display: block;
 }
@@ -4633,69 +4620,60 @@ body[data-theme="dark"] .sopa-cell {
   font-size: 0.9rem;
 }
 
-/* Ocultar versión móvil por defecto */
 .title-multi-mobile {
   display: none;
 }
 
-/* ===== CORRECCIÓN DE BOTONES Y ENLACES (Agrega esto al final de styles.css) ===== */
 
-/* Quitar subrayado y color azul a los botones que ahora son enlaces */
 .btn, 
 .home-pill, 
 .cta, 
 .snav-link,
 .whats-btn,
 .call {
-  text-decoration: none !important; /* Quita la raya abajo */
-  display: inline-flex;             /* Asegura que respeten el tamaño */
+  text-decoration: none !important; 
+  display: inline-flex;             
   align-items: center;
   justify-content: center;
-  color: var(--ink) !important;     /* Fuerza el color negro/oscuro en lugar de azul */
+  color: var(--ink) !important;     
 }
 
-/* Ajuste específico para botones con fondo oscuro si los hubiera */
 .btn:hover, 
 .home-pill:hover {
   text-decoration: none;
 }
 
-/* Asegurar que el logo no tenga raya */
 .brand {
   text-decoration: none;
   color: inherit;
 }
 
-/* ===== ARREGLO DEL MENÚ LATERAL (Pegar al final de styles.css) ===== */
 
-/* Contenedor del menú en columna vertical */
 .sidenav {
   display: flex !important;
-  flex-direction: column !important; /* Elementos uno debajo del otro */
-  gap: 8px !important; /* Espacio entre botones */
-  align-items: stretch !important; /* Que ocupen todo el ancho */
+  flex-direction: column !important; 
+  gap: 8px !important;
+  align-items: stretch !important;
 }
 
-/* Estilo de cada botón del menú */
+
 .snav-link {
   width: 100% !important;
   margin: 0 !important;
   display: flex !important;
-  justify-content: flex-start !important; /* Texto alineado a la izquierda */
+  justify-content: flex-start !important; 
   text-align: left !important;
   box-sizing: border-box !important;
 }
 
-/* Ajuste para el botón de cerrar (la X) */
 .sidenav-close {
-  align-self: flex-end; /* La X se queda a la derecha */
+  align-self: flex-end; 
   margin-bottom: 15px !important;
 }
 
 
-/* ===== ARREGLO FINAL DEL FOOTER Y MENÚ ===== */
+/* ===== FOOTER Y MENÚ ===== */
 
-/* 1. Footer: Que se vea limpio y horizontal */
 .f-links {
   display: flex;
   flex-wrap: wrap;
@@ -4712,7 +4690,6 @@ body[data-theme="dark"] .sopa-cell {
   padding: 5px 10px;
   border-radius: 8px;
   transition: color 0.2s, background 0.2s;
-  /* Quitamos bordes y fondos grises */
   background: transparent; 
   border: none; 
 }
@@ -4722,9 +4699,8 @@ body[data-theme="dark"] .sopa-cell {
   color: var(--ring);
 }
 
-/* 2. Menú Lateral (Sidenav): Asegurar que funcione y se vea bien */
+/* 2. Menú Lateral (Sidenav) */
 .sidenav {
-  /* Asegura que esté encima de todo */
   z-index: 9999 !important; 
   display: flex;
   flex-direction: column;
