@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Responder y Proteger</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<h1>Responder y Proteger 💛</h1>
+
+<div class="game-wrapper">
+
+    <div class="towers-area">
+
+        <div class="tower-container">
+            <canvas id="profileCanvas" width="60" height="60"></canvas>
+            <div class="tower" id="playerTower"></div>
+        </div>
+
+        <div class="tower-container">
+            <div class="profile" id="bot1Profile"></div>
+            <div class="tower red" id="bot1Tower"></div>
+        </div>
+
+        <div class="tower-container">
+            <div class="profile" id="bot2Profile"></div>
+            <div class="tower blue" id="bot2Tower"></div>
+        </div>
+
+        <div class="tower-container">
+            <div class="profile" id="bot3Profile"></div>
+            <div class="tower purple" id="bot3Tower"></div>
+        </div>
+
+        <div class="water" id="water"></div>
+
+    </div>
+
+</div>
+
+<div class="question-box">
+    <p id="question"></p>
+    <div class="options">
+        <button onclick="selectAnswer(0)"></button>
+        <button onclick="selectAnswer(1)"></button>
+        <button onclick="selectAnswer(2)"></button>
+    </div>
+</div>
+
+<button onclick="toggleCanvas()">🎨 Personalizar Perfil</button>
+
+<div class="canvas-panel" id="canvasPanel">
+    <canvas id="drawCanvas" width="200" height="200"></canvas>
+    <button onclick="clearCanvas()">Limpiar</button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
