@@ -2799,11 +2799,11 @@ const trustData = [
   { id: "t2", text: "Contar un secreto", group: "family", icon: "💬" },
   { id: "t3", text: "Jugar en el parque", group: "friends", icon: "⚽" },
   { id: "t4", text: "Prestar juguetes", group: "friends", icon: "🧸" },
-  { id: "t5", text: "Saludar de lejos", group: "known", icon: "👋" },
+  { id: "t5", text: "Saludar de lejos", group: "community", icon: "👋" },
   { id: "t6", text: "Pedir ayuda si me pierdo", group: "community", icon: "👮" },
   { id: "t7", text: "No abrir la puerta", group: "strangers", icon: "🚪" },
   { id: "t8", text: "No aceptar regalos", group: "strangers", icon: "🍬" },
-  { id: "t9", text: "Decir mi nombre", group: "known", icon: "🗣️" }
+  { id: "t9", text: "Decir mi nombre", group: "family", icon: "🗣️" }
 ];
 
 let draggedItem = null;

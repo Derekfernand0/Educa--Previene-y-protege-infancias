@@ -48,24 +48,32 @@ const baseDePreguntas = [
     { p: "¿Qué es la línea de ayuda Contacto Joven?", r: ["Apoyo emocional por WhatsApp", "Venta de juegos", "Red social"], c: 0 },
     { p: "¿Qué es el autocuidado?", r: ["Acciones para proteger tu bienestar", "Comer dulces", "Dormir todo el día"], c: 0 },
     { p: "¿Por qué es importante hablar?", r: ["Para meter en problemas", "Para romper el silencio y sanar", "Para ser famoso"], c: 1 },
-    { p: "¿KIVA es un lugar seguro?", r: ["Sí, para aprender y pedir ayuda", "No", "Es solo para adultos"], c: 0 }
+    { p: "¿KIVA es un lugar seguro?", r: ["Sí, para aprender y saber pedir ayuda", "No", "Es solo para adultos"], c: 0 }
 ];
-
 /* --- VARIABLES DE CONTROL --- */
 let preguntasJuego = [];
 let indicePregunta = 0;
 let puntosTotales = 0;
 let tiempo = 10;
 let intervaloTiempo;
-let alturaMar = 200;
 let juegoActivo = false;
 
-/* --- INICIO DEL JUEGO --- */
+let bloquesJugador = 0;
+let bloquesAgua = 0;
+const ALTO_BLOQUE = 41; 
+
+// --- CONFIGURACIÓN DE PUNTOS ---
+const multiplicadorPuntos = 1; // Aquí puedes cambiar el valor en el futuro (ej. 2 o 3)
+// ------------------------------
+
 document.addEventListener('DOMContentLoaded', () => {
     const btnInicio = document.getElementById('btnInicio');
+    const btnInst = document.getElementById('btnInstrucciones');
+    const modalInst = document.getElementById('modalInstrucciones');
+    const btnCerrarInst = document.getElementById('btnCerrarInst');
     
+    // Iniciar Juego
     btnInicio.addEventListener('click', () => {
-        // Animaciones de salida de la portada
         document.querySelector('.titulo-juego').classList.add('fade-up');
         btnInicio.classList.add('fade-down');
         document.getElementById('bgBlur').style.filter = "blur(0px)";
@@ -73,20 +81,43 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             document.getElementById('uiStart').style.display = 'none';
             document.getElementById('uiJuego').style.display = 'block';
-            iniciarLógicaJuego();
+            iniciarLogicaJuego();
         }, 800);
     });
+
+    // Abrir Instrucciones
+    btnInst.onclick = () => {
+        modalInst.style.display = 'flex';
+    };
+
+    // Cerrar Instrucciones
+    btnCerrarInst.onclick = () => {
+        modalInst.style.display = 'none';
+    };
+
+    // Cerrar modal si se hace clic fuera
+    window.onclick = (event) => {
+        if (event.target == modalInst) {
+            modalInst.style.display = 'none';
+        }
+    };
 });
 
-function iniciarLógicaJuego() {
+function iniciarLogicaJuego() {
     juegoActivo = true;
-    // Seleccionar 30 preguntas al azar
+    // Seleccionamos 30 preguntas al azar de la baseDePreguntas
     preguntasJuego = [...baseDePreguntas].sort(() => Math.random() - 0.5).slice(0, 30);
+    
     indicePregunta = 0;
     puntosTotales = 0;
-    alturaMar = 200;
+    bloquesAgua = 0;
+    bloquesJugador = 0;
     
-    agregarBloques(3); // Base inicial
+    document.getElementById('platformStack').innerHTML = '';
+    
+    // El jugador inicia con 3 bloques de ventaja sobre el agua
+    agregarBloquesVisuales(3); 
+    actualizarPosiciones();
     mostrarPregunta();
 }
 
@@ -115,7 +146,6 @@ function mostrarPregunta() {
     resetTimer();
 }
 
-/* --- TEMPORIZADOR --- */
 function resetTimer() {
     clearInterval(intervaloTiempo);
     tiempo = 10;
@@ -125,17 +155,15 @@ function resetTimer() {
         actualizarBarraUI();
         if (tiempo <= 0) {
             clearInterval(intervaloTiempo);
-            verificarRespuesta(-1); // Tiempo agotado
+            verificarRespuesta(-1);
         }
     }, 1000);
 }
 
 function actualizarBarraUI() {
     document.getElementById('timerBar').style.width = (tiempo * 10) + "%";
-    document.getElementById('timerText').innerText = tiempo;
 }
 
-/* --- LÓGICA DE RESPUESTA --- */
 function verificarRespuesta(indiceSeleccionado) {
     if (!juegoActivo) return;
     clearInterval(intervaloTiempo);
@@ -143,27 +171,37 @@ function verificarRespuesta(indiceSeleccionado) {
     const correcta = preguntasJuego[indicePregunta].c;
 
     if (indiceSeleccionado === correcta) {
-        const ganancia = tiempo > 0 ? tiempo : 1; 
-        puntosTotales += ganancia;
-        agregarBloques(ganancia);
+        // Lógica corregida: Segundos restantes multiplicados por el valor definido
+        let gananciaFinal = tiempo * multiplicadorPuntos;
+        
+        // Mínimo 1 bloque si acertó justo a tiempo
+        if (gananciaFinal <= 0) gananciaFinal = 1;
+
+        puntosTotales += gananciaFinal;
+        agregarBloquesVisuales(gananciaFinal);
     }
 
-    // El mar sube cada ronda
-    let subidaAgua = (indicePregunta < 10) ? 15 : 25; 
-    alturaMar += subidaAgua;
-    document.getElementById('oceanContainer').style.height = alturaMar + "px";
+    // El agua sube 5 bloques en cada turno sin falta
+    bloquesAgua += 5;
 
-    validarColision();
+    actualizarPosiciones();
+
+    // CONDICIÓN DE DERROTA: Agua supera al Jugador
+    if (bloquesAgua > bloquesJugador) {
+        finalizarJuego(false);
+        return;
+    }
 
     if (juegoActivo) {
         indicePregunta++;
-        document.getElementById('puntosTotales').innerText = puntosTotales;
+        // Actualizamos los textos de puntajes
+        document.getElementById('puntosTotales').innerText = bloquesJugador;
+        document.getElementById('puntosAgua').innerText = bloquesAgua;
         setTimeout(mostrarPregunta, 800);
     }
 }
 
-/* --- MECÁNICAS DE MUNDO --- */
-function agregarBloques(cantidad) {
+function agregarBloquesVisuales(cantidad) {
     const stack = document.getElementById('platformStack');
     const colores = ['#FF5733', '#33FF57', '#3357FF', '#F333FF', '#FF33A8'];
     
@@ -172,18 +210,23 @@ function agregarBloques(cantidad) {
         b.className = 'bloque';
         b.style.backgroundColor = colores[Math.floor(Math.random() * colores.length)];
         stack.appendChild(b);
+        bloquesJugador++;
     }
-    actualizarCamara();
 }
 
-function actualizarCamara() {
+function actualizarPosiciones() {
+    // Actualizar texto del indicador derecho
+    document.getElementById('puntosAgua').innerText = bloquesAgua;
+
+    // Ajustar altura del contenedor de agua
+    const ocean = document.getElementById('oceanContainer');
+    ocean.style.height = (bloquesAgua * ALTO_BLOQUE) + "px";
+
+    // Mover el contenedor "World" para seguir al jugador (Efecto Cámara)
     const world = document.getElementById('world');
-    const numBloques = document.querySelectorAll('.bloque').length;
-    const alturaTotal = numBloques * 41; 
-    
-    // Lock de cámara: El jugador se mantiene al 70% de la pantalla (abajo)
-    const puntoEnPantalla = window.innerHeight * 0.7;
-    const offset = alturaTotal - puntoEnPantalla;
+    const alturaTotalJugador = bloquesJugador * ALTO_BLOQUE; 
+    const puntoVista = window.innerHeight * 0.4; 
+    const offset = alturaTotalJugador - puntoVista;
 
     if (offset > 0) {
         world.style.transform = `translateY(${offset}px)`;
@@ -192,31 +235,20 @@ function actualizarCamara() {
     }
 }
 
-function validarColision() {
-    const player = document.getElementById('player').getBoundingClientRect();
-    const water = document.getElementById('oceanContainer').getBoundingClientRect();
-
-    // Si el borde superior del agua toca o supera los pies del jugador
-    if (water.top < player.bottom) {
-        finalizarJuego(false);
-    }
-}
-
 function finalizarJuego(victoria) {
     juegoActivo = false;
     clearInterval(intervaloTiempo);
     document.getElementById('uiJuego').style.display = 'none';
-    
-    // Mostramos el modal de Game Over (debe estar en el HTML)
     const modal = document.getElementById('uiGameOver');
     if(modal) {
         modal.style.display = 'flex';
+        const tituloFin = document.getElementById('gameResultTitle');
         if (victoria) {
-            document.getElementById('gameResultTitle').innerText = "¡FELICIDADES, TE SALVASTE!";
-            document.getElementById('gameResultTitle').style.color = "#2ed573";
+            tituloFin.innerText = "¡FELICIDADES, TE SALVASTE!";
+            tituloFin.style.color = "#2ed573";
+        } else {
+            tituloFin.innerText = "¡TE HAS AHOGADO!";
+            tituloFin.style.color = "#ff4757";
         }
-    } else {
-        alert(victoria ? "¡Ganaste!" : "¡Te has ahogado!");
-        location.reload();
     }
 }

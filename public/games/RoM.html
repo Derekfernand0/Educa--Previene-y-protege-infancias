@@ -3,20 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Responde o Ahógate - Juego</title>
+    <title>Responde o Ahógate</title>
     <link rel="stylesheet" href="juego.css">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="game-container" id="gameContainer">
+    <div class="game-container">
         <div class="background-blur" id="bgBlur"></div>
 
+        <div class="ui-top-nav">
+            <button class="btn-nav" onclick="window.location.href='../secciones/explora.html'">← SALIR</button>
+            <button class="btn-nav" id="btnInstrucciones">INSTRUCCIONES (?)</button>
+        </div>
+
         <div class="world" id="world">
-            <div id="player" class="player">
-                <div class="player-head"></div>
-                <div class="player-body"></div>
-            </div>
+            <div id="player" class="player"></div>
             <div id="platformStack"></div>
+
+            <div class="ocean-container" id="oceanContainer">
+                <div class="water"></div>
+            </div>
+        </div>
+
+        <div class="ui-water-level">
+            <p>Nivel del agua:</p>
+            <span id="puntosAgua">0</span>
         </div>
 
         <div class="ui-start" id="uiStart">
@@ -25,32 +36,37 @@
         </div>
 
         <div class="ui-juego" id="uiJuego" style="display: none;">
-            <div class="timer-container">
-                <div id="timerBar" class="timer-bar"></div>
+            <div class="stats-bar">
+                Pregunta: <span id="numPregunta">0</span>/30 | Tus Bloques: <span id="puntosTotales">0</span>
             </div>
             <div class="pregunta-card">
-                <div id="timerText" class="timer-number">10</div>
-                <h2 id="textoPregunta">¿Pregunta?</h2>
+                <div class="timer-container"><div id="timerBar" class="timer-bar"></div></div>
+                <h2 id="textoPregunta">Cargando...</h2>
                 <div class="opciones-container" id="contenedorOpciones"></div>
             </div>
-            <div class="stats">
-                Pregunta: <span id="numPregunta">0</span>/30 | Bloques: <span id="puntosTotales">0</span>
+        </div>
+
+        <div id="modalInstrucciones" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h2>¿Cómo jugar?</h2>
+                <ul style="text-align: left; margin: 20px 0;">
+                    <li>✅ <b>Responde correctamente:</b> Subirás bloques según el tiempo que te sobre.</li>
+                    <li>⏱ <b>¡Sé rápido!</b> Entre más rápido contestes, más alto subirás.</li>
+                    <li>🌊 <b>Cuidado con el mar:</b> El agua sube 5 bloques en cada turno.</li>
+                    <li>❌ <b>No dejes que te alcance:</b> Si el nivel del agua es mayor al tuyo, pierdes.</li>
+                </ul>
+                <button class="btn-inicio" id="btnCerrarInst">ENTENDIDO</button>
             </div>
         </div>
 
         <div id="uiGameOver" class="modal" style="display: none;">
             <div class="modal-content">
                 <h1 id="gameResultTitle">¡TE HAS AHOGADO!</h1>
-                <p>El agua te alcanzó. Inténtalo de nuevo para salvarte.</p>
+                <p>El agua subió demasiado rápido.</p>
                 <button class="btn-inicio" onclick="location.reload()">REINTENTAR</button>
             </div>
         </div>
-
-        <div class="ocean-container" id="oceanContainer">
-            <div class="water" id="waterLayer"></div>
-        </div>
     </div>
-
     <script src="juego.js"></script>
 </body>
 </html>
