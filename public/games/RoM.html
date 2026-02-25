@@ -8,36 +8,45 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<div class="game-container" id="gameContainer">
-    <div class="background-blur" id="bgBlur"></div>
-
-    <div class="world" id="world">
-        <div id="player" class="player">
-            <div class="player-head"></div>
-            <div class="player-body"></div>
-        </div>
-        
-        <div id="platformStack"></div>
-    </div>
-
-    <div class="ui-start" id="uiStart">
-        <h1 class="titulo-juego">RESPONDE O AHÓGATE</h1>
-        <button class="btn-inicio" id="btnInicio">¡COMENZAR!</button>
-    </div>
-
-    <div class="ocean-container">
-        <div class="water" id="waterLayer"></div>
-    </div>
-</div>
     <div class="game-container" id="gameContainer">
         <div class="background-blur" id="bgBlur"></div>
+
+        <div class="world" id="world">
+            <div id="player" class="player">
+                <div class="player-head"></div>
+                <div class="player-body"></div>
+            </div>
+            <div id="platformStack"></div>
+        </div>
 
         <div class="ui-start" id="uiStart">
             <h1 class="titulo-juego">RESPONDE O AHÓGATE</h1>
             <button class="btn-inicio" id="btnInicio">¡COMENZAR!</button>
         </div>
 
-        <div class="ocean-container">
+        <div class="ui-juego" id="uiJuego" style="display: none;">
+            <div class="timer-container">
+                <div id="timerBar" class="timer-bar"></div>
+            </div>
+            <div class="pregunta-card">
+                <div id="timerText" class="timer-number">10</div>
+                <h2 id="textoPregunta">¿Pregunta?</h2>
+                <div class="opciones-container" id="contenedorOpciones"></div>
+            </div>
+            <div class="stats">
+                Pregunta: <span id="numPregunta">0</span>/30 | Bloques: <span id="puntosTotales">0</span>
+            </div>
+        </div>
+
+        <div id="uiGameOver" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h1 id="gameResultTitle">¡TE HAS AHOGADO!</h1>
+                <p>El agua te alcanzó. Inténtalo de nuevo para salvarte.</p>
+                <button class="btn-inicio" onclick="location.reload()">REINTENTAR</button>
+            </div>
+        </div>
+
+        <div class="ocean-container" id="oceanContainer">
             <div class="water" id="waterLayer"></div>
         </div>
     </div>

@@ -1,4 +1,4 @@
-/* Estilos Base */
+/* --- ESTILOS BASE --- */
 body, html {
     margin: 0;
     padding: 0;
@@ -19,30 +19,80 @@ body, html {
     justify-content: center;
 }
 
-/* Fondo con Desenfoque */
+/* --- ESCENARIO Y FONDO --- */
 .background-blur {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, #4facfe 0%, #00f2fe 100%); /* Color temporal */
+    background: linear-gradient(to bottom, #4facfe 0%, #00f2fe 100%);
     filter: blur(15px);
     transition: filter 1s ease;
     z-index: -1;
 }
 
-/* Título y Botón */
+.world {
+    position: absolute;
+    bottom: 200px; 
+    width: 100%;
+    /* Transición suave para el efecto de cámara */
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 5;
+}
+
+/* --- JUGADOR Y BLOQUES --- */
+#platformStack {
+    display: flex;
+    flex-direction: column-reverse; 
+    align-items: center;
+}
+
+.bloque {
+    width: 220px;
+    height: 40px;
+    margin: 1px 0;
+    border-radius: 8px;
+    box-shadow: inset 0 -5px rgba(0,0,0,0.2);
+    animation: aparecerBloque 0.4s ease-out;
+}
+
+.player {
+    width: 40px;
+    height: 60px;
+    background-color: #ffcc00;
+    position: relative;
+    z-index: 10;
+    margin-bottom: -5px; 
+    border-radius: 5px 5px 0 0;
+}
+
+.player-head {
+    width: 25px;
+    height: 25px;
+    background: #ffdbac;
+    border-radius: 50%;
+    margin: 0 auto;
+}
+
+@keyframes aparecerBloque {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* --- INTERFAZ DE INICIO --- */
 .ui-start {
     text-align: center;
-    z-index: 10;
-    transition: opacity 0.8s ease;
+    z-index: 100;
 }
 
 .titulo-juego {
     color: white;
-    font-size: 4rem;
-    text-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    font-size: 3.5rem;
+    text-shadow: 0 5px 15px rgba(0,0,0,0.4);
     margin-bottom: 50px;
     transition: transform 0.8s ease, opacity 0.8s ease;
 }
@@ -61,24 +111,99 @@ body, html {
     transition: transform 0.8s ease, opacity 0.8s ease;
 }
 
-/* Animación de Latido */
 @keyframes latido {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); box-shadow: 0 15px 30px rgba(255, 71, 87, 0.4); }
-    100% { transform: scale(1); }
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); box-shadow: 0 15px 30px rgba(255, 71, 87, 0.4); }
 }
 
-/* Animaciones de salida */
-.fade-up { transform: translateY(-200px); opacity: 0; }
-.fade-down { transform: translateY(200px); opacity: 0; }
+/* --- INTERFAZ DE JUEGO (PREGUNTAS) --- */
+.ui-juego {
+    position: absolute;
+    top: 5%;
+    width: 90%;
+    max-width: 550px;
+    z-index: 100;
+    text-align: center;
+}
 
-/* El Mar */
+.pregunta-card {
+    background: white;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    margin-top: 15px;
+}
+
+.pregunta-card h2 {
+    color: #333;
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+}
+
+.opciones-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.btn-opcion {
+    padding: 14px;
+    border: 2px solid #4facfe;
+    border-radius: 12px;
+    background: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-opcion:hover {
+    background: #4facfe;
+    color: white;
+}
+
+/* Barra de Tiempo */
+.timer-container {
+    width: 100%;
+    height: 12px;
+    background: #eee;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.timer-bar {
+    height: 100%;
+    background: #ff4757;
+    width: 100%;
+    transition: width 0.1s linear;
+}
+
+#timerText {
+    color: #ff4757;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.stats {
+    margin-top: 15px;
+    color: white;
+    font-weight: bold;
+    background: rgba(0,0,0,0.6);
+    padding: 8px 20px;
+    border-radius: 25px;
+    display: inline-block;
+}
+
+/* --- EL MAR --- */
 .ocean-container {
     position: absolute;
     bottom: 0;
     width: 100%;
     height: 200px;
     overflow: hidden;
+    z-index: 20;
+    transition: height 0.8s ease; /* Para que el agua suba fluido */
 }
 
 .water {
@@ -90,61 +215,41 @@ body, html {
     position: absolute;
     bottom: 0;
     animation: oleaje 5s linear infinite;
+    opacity: 0.9;
 }
 
 @keyframes oleaje {
-    0% { transform: translateX(0) translateY(0); }
-    50% { transform: translateX(-25%) translateY(10px); }
-    100% { transform: translateX(-50%) translateY(0); }
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
 }
 
-/* --- Sistema de Plataformas y Jugador --- */
-
-.world {
-    position: absolute;
-    bottom: 200px; 
+/* --- MODAL DE GAME OVER --- */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100%;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
 }
 
-#platformStack {
-    display: flex;
-    flex-direction: column-reverse; 
-    align-items: center;
+.modal-content {
+    background: white;
+    padding: 40px;
+    border-radius: 25px;
+    text-align: center;
+    max-width: 400px;
 }
 
-.bloque {
-    width: 200px;
-    height: 40px;
-    margin: 1px 0;
-    border-radius: 5px;
-    box-shadow: inset 0 -5px rgba(0,0,0,0.2);
-    animation: aparecerBloque 0.5s ease-out;
-}
+/* --- ANIMACIONES DE TRANSICIÓN --- */
+.fade-up { transform: translateY(-500px); opacity: 0; }
+.fade-down { transform: translateY(500px); opacity: 0; }
 
-.player {
-    width: 40px;
-    height: 60px;
-    background-color: #ffcc00; /* Color del personaje */
-    position: relative;
-    z-index: 5;
-    margin-bottom: -5px; 
-    transition: transform 0.5s ease;
-    border-radius: 5px 5px 0 0;
-}
-
-.player-head {
-    width: 25px;
-    height: 25px;
-    background: #ffdbac;
-    border-radius: 50%;
-    margin: 0 auto;
-}
-
-@keyframes aparecerBloque {
-    from { transform: scale(0); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
 }

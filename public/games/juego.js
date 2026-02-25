@@ -1,72 +1,222 @@
+const baseDePreguntas = [
+    { p: "¿Qué significan las siglas KIVA?", r: ["Kids International Video Association", "Kid’s Integrity, Voz y Apoyo", "Kids In Veracruz Association"], c: 1 },
+    { p: "¿Cuál es el mensaje de la sección 'Aprende'?", r: ["Jugar videojuegos", "Que el abuso es tu culpa", "Conocer tu cuerpo y derechos"], c: 2 },
+    { p: "¿Es verdad que el abuso solo pasa con desconocidos?", r: ["Sí, siempre son extraños.", "No, puede ser alguien cercano.", "Sí, la familia siempre protege."], c: 1 },
+    { p: "¿Qué debes hacer si alguien te confía que ha sido lastimado?", r: ["Escuchar, creer y buscar ayuda.", "Ignorarlo.", "Decirle que es mentira."], c: 0 },
+    { p: "¿Qué define la página como 'Consentimiento'?", r: ["Decir sí por un regalo.", "No hay consentimiento si hay miedo o presión.", "Quedarse callado."], c: 1 },
+    { p: "Si estás en peligro inmediato en México, ¿a qué número llamas?", r: ["089", "911", "112"], c: 1 },
+    { p: "¿Cuál es el primer paso antes de denunciar?", r: ["Comprar una cámara.", "Guardar silencio.", "Buscar seguridad en un adulto de confianza."], c: 2 },
+    { p: "¿Qué institución ofrece apoyo por WhatsApp?", r: ["Consejo Ciudadano / Contacto Joven", "La policía de tránsito", "El hospital"], c: 0 },
+    { p: "¿Quién puede denunciar un abuso contra un menor?", r: ["Solo abogados", "Cualquier persona", "Solo la víctima mayor de edad"], c: 1 },
+    { p: "¿Qué es la Carpeta de Investigación?", r: ["Registro que identifica tu caso", "Un cuaderno de la escuela", "Una lista de tareas"], c: 0 },
+    { p: "¿Qué debes hacer con las pruebas digitales?", r: ["Borrarlas", "No borrarlas y entregarlas", "Cambiarlas"], c: 1 },
+    { p: "¿Es necesario tener 'pruebas perfectas' para denunciar?", r: ["Sí, si no no te creen", "No, la autoridad debe investigar", "Solo si es un desconocido"], c: 1 },
+    { p: "¿Qué número se usa para denuncia anónima?", r: ["089", "911", "060"], c: 0 },
+    { p: "¿Cuál es una señal de alerta de abuso?", r: ["Sacar buenas notas", "Cambios de ánimo o evitar lugares", "Hacer deporte"], c: 1 },
+    { p: "¿Qué es una Medida de Protección?", r: ["Que el agresor no se acerque", "Que el niño no salga", "Una multa pequeña"], c: 0 },
+    { p: "¿Qué se recomienda llevar al denunciar?", r: ["Juguetes", "Identificación y pruebas", "Ropa nueva"], c: 1 },
+    { p: "¿Cómo debe ser el trato al niño en la Fiscalía?", r: ["Rápido", "Muchos interrogatorios", "Con paciencia y pausas"], c: 2 },
+    { p: "¿Cuál es un mito sobre contar lo que pasó?", r: ["Que 'rompe familias'", "Que ayuda a protegerte", "Que no es tu culpa"], c: 0 },
+    { p: "¿Quién es una opción INSEGURA para pedir ayuda?", r: ["Maestro", "Psicóloga", "Desconocido en internet"], c: 2 },
+    { p: "¿Qué costo tiene denunciar?", r: ["Es gratuito", "Depende de las pruebas", "Es una cuota fija"], c: 0 },
+    { p: "¿Para qué sirven los informes psicológicos?", r: ["Para ver si miente", "Demostrar el daño emocional", "Dar medicinas"], c: 1 },
+    { p: "¿Puedes ir acompañado a denunciar?", r: ["No, solo", "Sí, con un adulto de confianza", "Solo si el juez quiere"], c: 1 },
+    { p: "¿Qué pasa si te falta un documento al denunciar?", r: ["Deben recibirte y orientarte", "Te mandan a casa", "Se cancela todo"], c: 0 },
+    { p: "¿Cuál es el objetivo de 'Reflexiones' en KIVA?", r: ["Matemáticas", "Expresarse y fortalecer el entorno", "Ver noticias"], c: 1 },
+    { p: "¿Qué sentimiento es normal al buscar ayuda?", r: ["Culpa", "Miedo o confusión, pero eres valiente", "Diversión"], c: 1 },
+    { p: "¿Qué debe hacer un testigo de abuso?", r: ["Nada", "Reportar lo que sabe", "Investigar por su cuenta"], c: 1 },
+    { p: "¿Qué significa 'el silencio no es consentimiento'?", r: ["No decir 'no' no es aceptar", "Hay que estar callado", "Callar es decir sí"], c: 0 },
+    { p: "¿A quién contactar en la SEP por acoso?", r: ["Solo al director", "Consejeros Diana o Roberto", "Policía vial"], c: 1 },
+    { p: "¿Fase donde la policía busca videos y testigos?", r: ["Investigación", "Sentencia", "Registro"], c: 0 },
+    { p: "¿Qué derecho fundamental protege KIVA?", r: ["Tener juguetes", "Vivir sin violencia", "Internet libre"], c: 1 },
+    { p: "¿Es el abuso culpa de la víctima?", r: ["A veces", "Nunca es culpa del niño", "Solo si no avisó"], c: 1 },
+    { p: "¿Qué es una red de apoyo?", r: ["Gente de confianza que te ayuda", "Una red de pescar", "Una red social"], c: 0 },
+    { p: "¿Debes guardar un secreto que te hace sentir mal?", r: ["Sí", "No, cuéntalo a un adulto", "Solo si te lo piden"], c: 1 },
+    { p: "¿Qué es el maltrato emocional?", r: ["Gritos y humillaciones", "Un abrazo", "Hacer la tarea"], c: 0 },
+    { p: "¿A quién pertenece tu cuerpo?", r: ["A tus padres", "A ti mismo", "Al gobierno"], c: 1 },
+    { p: "¿Qué es un 'secreto sucio'?", r: ["Sobre una sorpresa", "Uno que da miedo o incomodidad", "Uno que no entiendes"], c: 1 },
+    { p: "¿Cómo puedes ayudar a un amigo?", r: ["Diciéndole miedoso", "Acompañándolo a hablar", "Contándolo en redes"], c: 1 },
+    { p: "¿Qué es la prevención?", r: ["Actuar antes de que algo pase", "Castigar", "Llorar después"], c: 0 },
+    { p: "¿Dónde encontrar información en KIVA?", r: ["Ayuda y Aprende", "Solo juegos", "En ninguna parte"], c: 0 },
+    { p: "¿El abuso puede ocurrir en internet?", r: ["No", "Sí, ciberacoso o grooming", "Solo en la calle"], c: 1 },
+    { p: "¿Qué es el grooming?", r: ["Un juego", "Engaño de un adulto por internet", "Hacer amigos"], c: 1 },
+    { p: "¿Qué significa ser resiliente?", r: ["Rendirse", "Superar dificultades", "No sentir nada"], c: 1 },
+    { p: "¿Es importante conocer tus derechos?", r: ["No mucho", "Sí, para protegerte", "Solo para adultos"], c: 1 },
+    { p: "¿Qué partes de tu cuerpo son privadas?", r: ["Solo la cara", "Las que cubre el traje de baño", "Ninguna"], c: 1 },
+    { p: "¿Qué es un contacto físico incómodo?", r: ["Un choque de manos", "Cualquiera que te haga sentir mal", "Un abrazo de mamá"], c: 1 },
+    { p: "¿A quién le puedes decir 'NO'?", r: ["A nadie", "A cualquier persona que te incomode", "Solo a niños"], c: 1 },
+    { p: "¿Qué es la línea de ayuda Contacto Joven?", r: ["Apoyo emocional por WhatsApp", "Venta de juegos", "Red social"], c: 0 },
+    { p: "¿Qué es el autocuidado?", r: ["Acciones para proteger tu bienestar", "Comer dulces", "Dormir todo el día"], c: 0 },
+    { p: "¿Por qué es importante hablar?", r: ["Para meter en problemas", "Para romper el silencio y sanar", "Para ser famoso"], c: 1 },
+    { p: "¿KIVA es un lugar seguro?", r: ["Sí, para aprender y pedir ayuda", "No", "Es solo para adultos"], c: 0 }
+];
+
+/* --- VARIABLES DE CONTROL --- */
+let preguntasJuego = [];
+let indicePregunta = 0;
+let puntosTotales = 0;
+let tiempo = 10;
+let intervaloTiempo;
+let alturaMar = 200;
+let juegoActivo = false;
+
+/* --- INICIO DEL JUEGO --- */
 document.addEventListener('DOMContentLoaded', () => {
     const btnInicio = document.getElementById('btnInicio');
-    const titulo = document.querySelector('.titulo-juego');
-    const bgBlur = document.getElementById('bgBlur');
-
-    btnInicio.addEventListener('click', () => {
-        // animaciones de salida
-        titulo.classList.add('fade-up');
-        btnInicio.classList.add('fade-down');
-
-        // Quitamos el desenfoque del fondo
-        bgBlur.style.filter = "blur(0px)";
-
-        setTimeout(() => {
-            titulo.style.display = 'none';
-            btnInicio.style.display = 'none';
-            console.log("El juego ha comenzado oficialmente.");
-        }, 800);
-    });
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const btnInicio = document.getElementById('btnInicio');
-    const world = document.getElementById('world');
-    const platformStack = document.getElementById('platformStack');
-    const waterLayer = document.getElementById('waterLayer');
     
-    let alturaActual = 0; // Puntos/bloques acumulados
-    let nivelMar = 200;   // Altura inicial del mar
-
     btnInicio.addEventListener('click', () => {
+        // Animaciones de salida de la portada
         document.querySelector('.titulo-juego').classList.add('fade-up');
         btnInicio.classList.add('fade-down');
         document.getElementById('bgBlur').style.filter = "blur(0px)";
 
         setTimeout(() => {
-            // Iniciamos con 3 bloques
-            agregarBloques(3);
+            document.getElementById('uiStart').style.display = 'none';
+            document.getElementById('uiJuego').style.display = 'block';
+            iniciarLógicaJuego();
         }, 800);
     });
-
-    function agregarBloques(cantidad) {
-        const colores = ['#4c3a76', '#1d4ed8', '#db2777', '#eab308', '#f97316'];
-        
-        for (let i = 0; i < cantidad; i++) {
-            const bloque = document.createElement('div');
-            bloque.className = 'bloque';
-            bloque.style.backgroundColor = colores[Math.floor(Math.random() * colores.length)];
-            platformStack.appendChild(bloque);
-            alturaActual++;
-        }
-
-        actualizarCamara();
-    }
-
-    function actualizarCamara() {
-        // Cada bloque mide aprox 40px. 
-        const desplazamiento = alturaActual * 42; 
-        
-        if (desplazamiento > window.innerHeight / 2) {
-            // Calculamos cuánto bajar el mundo para centrar al jugador
-            const offset = desplazamiento - (window.innerHeight / 2);
-            world.style.transform = `translateY(${offset}px)`;
-        }
-    }
-
-    // sistema de ahogamiento (subir el mar)
-    function subirMar() {
-        nivelMar += 20; // Sube 20px cada vez que se llame
-        waterLayer.parentElement.style.height = `${nivelMar}px`;
-    }
 });
+
+function iniciarLógicaJuego() {
+    juegoActivo = true;
+    // Seleccionar 30 preguntas al azar
+    preguntasJuego = [...baseDePreguntas].sort(() => Math.random() - 0.5).slice(0, 30);
+    indicePregunta = 0;
+    puntosTotales = 0;
+    alturaMar = 200;
+    
+    agregarBloques(3); // Base inicial
+    mostrarPregunta();
+}
+
+function mostrarPregunta() {
+    if (!juegoActivo) return;
+    if (indicePregunta >= 30) {
+        finalizarJuego(true);
+        return;
+    }
+
+    const data = preguntasJuego[indicePregunta];
+    document.getElementById('textoPregunta').innerText = data.p;
+    document.getElementById('numPregunta').innerText = indicePregunta + 1;
+    
+    const contenedor = document.getElementById('contenedorOpciones');
+    contenedor.innerHTML = '';
+    
+    data.r.forEach((opcion, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-opcion';
+        btn.innerText = opcion;
+        btn.onclick = () => verificarRespuesta(i);
+        contenedor.appendChild(btn);
+    });
+
+    resetTimer();
+}
+
+/* --- TEMPORIZADOR --- */
+function resetTimer() {
+    clearInterval(intervaloTiempo);
+    tiempo = 10;
+    actualizarBarraUI();
+    intervaloTiempo = setInterval(() => {
+        tiempo--;
+        actualizarBarraUI();
+        if (tiempo <= 0) {
+            clearInterval(intervaloTiempo);
+            verificarRespuesta(-1); // Tiempo agotado
+        }
+    }, 1000);
+}
+
+function actualizarBarraUI() {
+    document.getElementById('timerBar').style.width = (tiempo * 10) + "%";
+    document.getElementById('timerText').innerText = tiempo;
+}
+
+/* --- LÓGICA DE RESPUESTA --- */
+function verificarRespuesta(indiceSeleccionado) {
+    if (!juegoActivo) return;
+    clearInterval(intervaloTiempo);
+    
+    const correcta = preguntasJuego[indicePregunta].c;
+
+    if (indiceSeleccionado === correcta) {
+        const ganancia = tiempo > 0 ? tiempo : 1; 
+        puntosTotales += ganancia;
+        agregarBloques(ganancia);
+    }
+
+    // El mar sube cada ronda
+    let subidaAgua = (indicePregunta < 10) ? 15 : 25; 
+    alturaMar += subidaAgua;
+    document.getElementById('oceanContainer').style.height = alturaMar + "px";
+
+    validarColision();
+
+    if (juegoActivo) {
+        indicePregunta++;
+        document.getElementById('puntosTotales').innerText = puntosTotales;
+        setTimeout(mostrarPregunta, 800);
+    }
+}
+
+/* --- MECÁNICAS DE MUNDO --- */
+function agregarBloques(cantidad) {
+    const stack = document.getElementById('platformStack');
+    const colores = ['#FF5733', '#33FF57', '#3357FF', '#F333FF', '#FF33A8'];
+    
+    for (let i = 0; i < cantidad; i++) {
+        const b = document.createElement('div');
+        b.className = 'bloque';
+        b.style.backgroundColor = colores[Math.floor(Math.random() * colores.length)];
+        stack.appendChild(b);
+    }
+    actualizarCamara();
+}
+
+function actualizarCamara() {
+    const world = document.getElementById('world');
+    const numBloques = document.querySelectorAll('.bloque').length;
+    const alturaTotal = numBloques * 41; 
+    
+    // Lock de cámara: El jugador se mantiene al 70% de la pantalla (abajo)
+    const puntoEnPantalla = window.innerHeight * 0.7;
+    const offset = alturaTotal - puntoEnPantalla;
+
+    if (offset > 0) {
+        world.style.transform = `translateY(${offset}px)`;
+    } else {
+        world.style.transform = `translateY(0px)`;
+    }
+}
+
+function validarColision() {
+    const player = document.getElementById('player').getBoundingClientRect();
+    const water = document.getElementById('oceanContainer').getBoundingClientRect();
+
+    // Si el borde superior del agua toca o supera los pies del jugador
+    if (water.top < player.bottom) {
+        finalizarJuego(false);
+    }
+}
+
+function finalizarJuego(victoria) {
+    juegoActivo = false;
+    clearInterval(intervaloTiempo);
+    document.getElementById('uiJuego').style.display = 'none';
+    
+    // Mostramos el modal de Game Over (debe estar en el HTML)
+    const modal = document.getElementById('uiGameOver');
+    if(modal) {
+        modal.style.display = 'flex';
+        if (victoria) {
+            document.getElementById('gameResultTitle').innerText = "¡FELICIDADES, TE SALVASTE!";
+            document.getElementById('gameResultTitle').style.color = "#2ed573";
+        }
+    } else {
+        alert(victoria ? "¡Ganaste!" : "¡Te has ahogado!");
+        location.reload();
+    }
+}
