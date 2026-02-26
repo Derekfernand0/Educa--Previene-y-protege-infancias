@@ -26,7 +26,7 @@ const baseDePreguntas = [
     { p: "¿Qué sentimiento es normal al buscar ayuda?", r: ["Culpa", "Miedo o confusión, pero eres valiente", "Diversión"], c: 1 },
     { p: "¿Qué debe hacer un testigo de abuso?", r: ["Nada", "Reportar lo que sabe", "Investigar por su cuenta"], c: 1 },
     { p: "¿Qué significa 'el silencio no es consentimiento'?", r: ["No decir 'no' no es aceptar", "Hay que estar callado", "Callar es decir sí"], c: 0 },
-    { p: "¿A quién contactar en la SEP por acoso?", r: ["Solo al director", "Consejeros Diana o Roberto", "Policía vial"], c: 1 },
+    { p: "¿A quién contactar en la SEP por acoso?", r: ["Solo al director", "Consejeros Especializados", "Policía vial"], c: 1 },
     { p: "¿Fase donde la policía busca videos y testigos?", r: ["Investigación", "Sentencia", "Registro"], c: 0 },
     { p: "¿Qué derecho fundamental protege KIVA?", r: ["Tener juguetes", "Vivir sin violencia", "Internet libre"], c: 1 },
     { p: "¿Es el abuso culpa de la víctima?", r: ["A veces", "Nunca es culpa del niño", "Solo si no avisó"], c: 1 },

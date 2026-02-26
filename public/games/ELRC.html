@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego Educativo de Prevención</title>
+    <link rel="stylesheet" href="ELRC.css">
+</head>
+<body>
+    <div id="efecto-pantalla"></div>
+
+    <div id="fondo-juego" class="fondo-borroso"></div>
+
+    <div id="pantalla-inicial" class="pantalla-completa">
+        <img src="../iconos/TELRC.png" alt="Título del Juego" id="titulo-imagen">
+        <button id="btn-iniciar" class="latido">Iniciar</button>
+    </div>
+
+    <div id="interfaz-juego" class="oculto">
+        <header class="barra-superior">
+            <a href="../secciones/explora.html" id="btn-volver">← Volver</a>
+            <div id="contenedor-corazones">
+                </div>
+            <button id="btn-instrucciones">Instrucciones</button>
+        </header>
+
+        <div id="temporizador">Tiempo: <span>15</span>s</div>
+
+        <div id="contenedor-pregunta">
+            <h2 id="texto-pregunta">Cargando pregunta...</h2>
+        </div>
+
+        <div id="contenedor-puertas">
+            <div class="opcion-puerta" onclick="elegirPuerta(0)">
+                <div class="texto-opcion" id="texto-opcion-0">Opción 1</div>
+                <img src="../iconos/puerta.png" alt="Puerta 1" id="img-puerta-0" class="imagen-puerta">
+            </div>
+            <div class="opcion-puerta" onclick="elegirPuerta(1)">
+                <div class="texto-opcion" id="texto-opcion-1">Opción 2</div>
+                <img src="../iconos/puerta.png" alt="Puerta 2" id="img-puerta-1" class="imagen-puerta">
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-instrucciones" class="modal oculto">
+        <div class="modal-contenido">
+            <h3>¿Cómo jugar?</h3>
+            <p>Lee la pregunta atentamente y elige la puerta con la respuesta correcta.</p>
+            <ul>
+                <li>Tienes 15 segundos para responder.</li>
+                <li>Si aciertas, ganas 1 corazón (máximo 10).</li>
+                <li>Si te equivocas o se acaba el tiempo, pierdes 1 corazón.</li>
+                <li>Si te quedas sin corazones, el juego termina.</li>
+            </ul>
+            <button onclick="cerrarModal()">Entendido</button>
+        </div>
+    </div>
+
+    <div id="pantalla-fin" class="pantalla-completa oculto">
+        <h1 id="mensaje-fin"></h1>
+        <button onclick="reiniciarJuego()">Volver a jugar</button>
+    </div>
+
+    <script src="ELRC.js"></script>
+</body>
+</html>
