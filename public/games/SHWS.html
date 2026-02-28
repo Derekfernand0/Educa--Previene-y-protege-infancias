@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador: Preparación de Shawarmas</title>
+    <link rel="stylesheet" href="SHWS.css">
+</head>
+<body>
+
+    <div id="game-container">
+        
+        <img id="bg" class="layer" src="../iconos/shawarma/obj/swbg.png" alt="Fondo">
+        <img id="stand" class="layer" src="../iconos/shawarma/obj/swst.png" alt="Stand">
+        
+        <div id="client-area" class="layer">
+            <img id="client-img" src="" alt="Cliente">
+            <div id="dialogue-bubble" class="hidden"></div>
+        </div>
+
+        <img id="btn-denunciar" class="layer hidden" src="../iconos/shawarma/obj/swbtn.png" alt="Denunciar">
+
+        <img id="gate" class="layer gate-up" src="../iconos/shawarma/obj/swrj.png" alt="Reja">
+
+        <div id="game-ui" class="layer hidden">
+            <div id="lives-container">
+                <span class="heart">❤️</span>
+                <span class="heart">❤️</span>
+                <span class="heart">❤️</span>
+            </div>
+            
+            <div id="questions-container" class="hidden"></div>
+
+            <div id="ingredients-panel">
+                <img src="../iconos/shawarma/ingredientes/swtll.png" id="ing-tortilla" class="draggable-ing" draggable="true" data-type="tortilla">
+                <img src="../iconos/shawarma/ingredientes/swsl.png" id="ing-salsa" class="draggable-ing" draggable="true" data-type="salsa">
+                <img src="../iconos/shawarma/ingredientes/swvr.png" id="ing-verdura" class="draggable-ing" draggable="true" data-type="verdura">
+                <img src="../iconos/shawarma/ingredientes/swcr.png" id="ing-carne" class="draggable-ing" draggable="true" data-type="carne">
+            </div>
+
+            <div id="table-area">
+                <img src="../iconos/shawarma/ingredientes/swtb.png" id="preparation-table" alt="Tabla">
+                <img src="../iconos/shawarma/ingredientes/shawarma.png" id="final-shawarma" class="hidden" draggable="true">
+            </div>
+        </div>
+
+        <div id="intro-screen" class="screen layer active">
+            <button id="btn-salir" onclick="window.location.href='../secciones/explora.html'">Salir</button>
+            <button id="btn-instrucciones">Instrucciones</button>
+            <img id="logo" src="../iconos/shawarma/obj/swlogo.png" alt="Logo">
+            <button id="btn-jugar" class="pulse">Jugar</button>
+        </div>
+
+        <div id="message-overlay" class="screen layer hidden">
+            <div class="message-box">
+                <h2 id="message-title">Título</h2>
+                <p id="message-text">Texto educativo...</p>
+                <button id="btn-next">Continuar</button>
+                <button id="btn-restart" class="hidden">Reiniciar Partida</button>
+                <button id="btn-menu" class="hidden">Volver al Menú</button>
+            </div>
+        </div>
+
+        <div id="damage-overlay" class="layer hidden"></div>
+    </div>
+
+    <script src="SHWS.js"></script>
+</body>
+</html>
