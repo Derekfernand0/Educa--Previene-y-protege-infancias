@@ -2,72 +2,61 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shawarma Safety Simulator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Shawarma Tycoon - Simulador</title>
     <link rel="stylesheet" href="SHWS.css">
 </head>
 <body>
+
     <div id="game-container">
-        <img id="bg" class="layer z-bg" src="../iconos/shawarma/obj/swbg.png">
+        <div class="layer background"></div>
+        <img src="../iconos/shawarma/obj/swst.png" class="layer stand" alt="Stand">
         
-        <div id="client-container" class="layer z-client">
-            <img id="client-img" src="" alt="Cliente">
-            <div id="speech-bubble" class="hidden"></div>
-        </div>
-
-        <img id="stand" class="layer z-stand" src="../iconos/shawarma/obj/swst.png">
-        <img id="gate" class="layer z-gate gate-up" src="../iconos/shawarma/obj/swrj.png">
-        
-        <div id="wall-button-area" class="layer z-ui-elements">
-            <img id="btn-denunciar" src="../iconos/shawarma/obj/swbtn.png">
-        </div>
-
-        <div id="game-interface" class="layer z-ui-top hidden">
-            <div class="top-bar">
-                <div id="lives-container"></div>
-                <div id="counter-container">Clientes: <span id="clients-count">0</span>/10</div>
-                <button id="btn-pausa">⏸️</button>
-            </div>
-
-            <div id="questions-panel" class="hidden">
-                <p class="panel-title">Entrevistar cliente</p>
-                <div id="questions-list"></div>
-            </div>
-
-            <div id="work-station">
-                <div id="ingredients-shelf">
-                    <img src="../iconos/shawarma/ingredientes/swtll.png" class="ing" draggable="true" data-type="tortilla">
-                    <img src="../iconos/shawarma/ingredientes/swsl.png" class="ing" draggable="true" data-type="salsa">
-                    <img src="../iconos/shawarma/ingredientes/swvr.png" class="ing" draggable="true" data-type="verdura">
-                    <img src="../iconos/shawarma/ingredientes/swcr.png" class="ing" draggable="true" data-type="carne">
-                </div>
-                
-                <div id="table-area">
-                    <img src="../iconos/shawarma/ingredientes/swtb.png" id="main-table">
-                    <img src="../iconos/shawarma/ingredientes/shawarma.png" id="final-shawarma" class="hidden" draggable="true">
-                </div>
+        <div id="customer-zone">
+            <img id="customer-img" src="" alt="Cliente" class="hidden">
+            <div id="dialogue-box" class="hidden">
+                <p id="dialogue-text"></p>
             </div>
         </div>
 
-        <div id="intro-screen" class="overlay active">
-            <img id="logo" src="../iconos/shawarma/obj/swlogo.png">
-            <div class="menu-btns">
-                <button id="btn-jugar" class="btn-main pulse">EMPEZAR TURNO</button>
-                <button onclick="window.location.href='../secciones/explora.html'" class="btn-sec">SALIR</button>
+        <img src="../iconos/shawarma/obj/swrj.png" class="layer fence" alt="Reja">
+
+        <div id="ui-top">
+            <div id="lives-container"></div>
+            <div id="score-display">Clientes: 0/10</div>
+            <div id="controls">
+                <button id="btn-instr">Instrucciones</button>
+                <button id="btn-exit">Salir</button>
             </div>
         </div>
 
-        <div id="msg-overlay" class="overlay hidden">
-            <div class="msg-box">
-                <h2 id="msg-title"></h2>
-                <p id="msg-text"></p>
-                <button id="btn-continuar" class="btn-main">SIGUIENTE</button>
-                <button id="btn-reiniciar" class="btn-sec hidden">REINTENTAR</button>
+        <div id="interaction-area">
+            <div id="preparation-table">
+                <img id="table-img" src="../iconos/shawarma/ingredientes/swtb.png" alt="Tabla">
+            </div>
+
+            <div id="ingredients-grid">
+                <img src="../iconos/shawarma/ingredientes/swtll.png" class="ing-btn" data-ing="1" alt="Tortilla">
+                <img src="../iconos/shawarma/ingredientes/swsl.png" class="ing-btn" data-ing="2" alt="Salsa">
+                <img src="../iconos/shawarma/ingredientes/swvr.png" class="ing-btn" data-ing="3" alt="Verdura">
+                <img src="../iconos/shawarma/ingredientes/swcr.png" class="ing-btn" data-ing="4" alt="Carne">
+            </div>
+
+            <div id="action-buttons">
+                <img src="../iconos/shawarma/obj/swbtn.png" id="btn-report" alt="Denunciar">
             </div>
         </div>
-        
-        <div id="damage-flash"></div>
+
+        <div id="overlay" class="overlay">
+            <div class="modal">
+                <img src="../iconos/shawarma/obj/swlogo.png" id="game-logo" alt="Logo">
+                <h2 id="modal-title">¡Bienvenido!</h2>
+                <p id="modal-desc">Atiende a los clientes buenos y denuncia a los sospechosos.</p>
+                <button id="btn-start">EMPEZAR JUEGO</button>
+            </div>
+        </div>
     </div>
+
     <script src="SHWS.js"></script>
 </body>
 </html>
