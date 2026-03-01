@@ -3,67 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador: Preparación de Shawarmas</title>
+    <title>Shawarma Safety Simulator</title>
     <link rel="stylesheet" href="SHWS.css">
 </head>
 <body>
-
     <div id="game-container">
+        <img id="bg" class="layer z-bg" src="../iconos/shawarma/obj/swbg.png">
         
-        <img id="bg" class="layer" src="../iconos/shawarma/obj/swbg.png" alt="Fondo">
-        <img id="stand" class="layer" src="../iconos/shawarma/obj/swst.png" alt="Stand">
-        
-        <div id="client-area" class="layer">
+        <div id="client-container" class="layer z-client">
             <img id="client-img" src="" alt="Cliente">
-            <div id="dialogue-bubble" class="hidden"></div>
+            <div id="speech-bubble" class="hidden"></div>
         </div>
 
-        <img id="btn-denunciar" class="layer hidden" src="../iconos/shawarma/obj/swbtn.png" alt="Denunciar">
-
-        <img id="gate" class="layer gate-up" src="../iconos/shawarma/obj/swrj.png" alt="Reja">
-
-        <div id="game-ui" class="layer hidden">
-            <div id="lives-container">
-                <span class="heart">❤️</span>
-                <span class="heart">❤️</span>
-                <span class="heart">❤️</span>
-            </div>
-            
-            <div id="questions-container" class="hidden"></div>
-
-            <div id="ingredients-panel">
-                <img src="../iconos/shawarma/ingredientes/swtll.png" id="ing-tortilla" class="draggable-ing" draggable="true" data-type="tortilla">
-                <img src="../iconos/shawarma/ingredientes/swsl.png" id="ing-salsa" class="draggable-ing" draggable="true" data-type="salsa">
-                <img src="../iconos/shawarma/ingredientes/swvr.png" id="ing-verdura" class="draggable-ing" draggable="true" data-type="verdura">
-                <img src="../iconos/shawarma/ingredientes/swcr.png" id="ing-carne" class="draggable-ing" draggable="true" data-type="carne">
-            </div>
-
-            <div id="table-area">
-                <img src="../iconos/shawarma/ingredientes/swtb.png" id="preparation-table" alt="Tabla">
-                <img src="../iconos/shawarma/ingredientes/shawarma.png" id="final-shawarma" class="hidden" draggable="true">
-            </div>
+        <img id="stand" class="layer z-stand" src="../iconos/shawarma/obj/swst.png">
+        <img id="gate" class="layer z-gate gate-up" src="../iconos/shawarma/obj/swrj.png">
+        
+        <div id="wall-button-area" class="layer z-ui-elements">
+            <img id="btn-denunciar" src="../iconos/shawarma/obj/swbtn.png">
         </div>
 
-        <div id="intro-screen" class="screen layer active">
-            <button id="btn-salir" onclick="window.location.href='../secciones/explora.html'">Salir</button>
-            <button id="btn-instrucciones">Instrucciones</button>
-            <img id="logo" src="../iconos/shawarma/obj/swlogo.png" alt="Logo">
-            <button id="btn-jugar" class="pulse">Jugar</button>
-        </div>
+        <div id="game-interface" class="layer z-ui-top hidden">
+            <div class="top-bar">
+                <div id="lives-container"></div>
+                <div id="counter-container">Clientes: <span id="clients-count">0</span>/10</div>
+                <button id="btn-pausa">⏸️</button>
+            </div>
 
-        <div id="message-overlay" class="screen layer hidden">
-            <div class="message-box">
-                <h2 id="message-title">Título</h2>
-                <p id="message-text">Texto educativo...</p>
-                <button id="btn-next">Continuar</button>
-                <button id="btn-restart" class="hidden">Reiniciar Partida</button>
-                <button id="btn-menu" class="hidden">Volver al Menú</button>
+            <div id="questions-panel" class="hidden">
+                <p class="panel-title">Entrevistar cliente</p>
+                <div id="questions-list"></div>
+            </div>
+
+            <div id="work-station">
+                <div id="ingredients-shelf">
+                    <img src="../iconos/shawarma/ingredientes/swtll.png" class="ing" draggable="true" data-type="tortilla">
+                    <img src="../iconos/shawarma/ingredientes/swsl.png" class="ing" draggable="true" data-type="salsa">
+                    <img src="../iconos/shawarma/ingredientes/swvr.png" class="ing" draggable="true" data-type="verdura">
+                    <img src="../iconos/shawarma/ingredientes/swcr.png" class="ing" draggable="true" data-type="carne">
+                </div>
+                
+                <div id="table-area">
+                    <img src="../iconos/shawarma/ingredientes/swtb.png" id="main-table">
+                    <img src="../iconos/shawarma/ingredientes/shawarma.png" id="final-shawarma" class="hidden" draggable="true">
+                </div>
             </div>
         </div>
 
-        <div id="damage-overlay" class="layer hidden"></div>
+        <div id="intro-screen" class="overlay active">
+            <img id="logo" src="../iconos/shawarma/obj/swlogo.png">
+            <div class="menu-btns">
+                <button id="btn-jugar" class="btn-main pulse">EMPEZAR TURNO</button>
+                <button onclick="window.location.href='../secciones/explora.html'" class="btn-sec">SALIR</button>
+            </div>
+        </div>
+
+        <div id="msg-overlay" class="overlay hidden">
+            <div class="msg-box">
+                <h2 id="msg-title"></h2>
+                <p id="msg-text"></p>
+                <button id="btn-continuar" class="btn-main">SIGUIENTE</button>
+                <button id="btn-reiniciar" class="btn-sec hidden">REINTENTAR</button>
+            </div>
+        </div>
+        
+        <div id="damage-flash"></div>
     </div>
-
     <script src="SHWS.js"></script>
 </body>
 </html>

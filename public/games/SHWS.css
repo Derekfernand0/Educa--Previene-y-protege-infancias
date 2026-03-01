@@ -1,91 +1,111 @@
-/* Variables y reseteo base */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Arial', sans-serif;
+:root {
+    --glass: rgba(255, 255, 255, 0.15);
+    --glass-border: rgba(255, 255, 255, 0.3);
 }
 
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #222;
-    overflow: hidden;
+body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #1a1a1a; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+#game-container { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+
+.layer { position: absolute; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.z-bg { z-index: 1; }
+.z-client { z-index: 2; pointer-events: auto; }
+.z-stand { z-index: 3; }
+.z-gate { z-index: 10; transition: transform 0.6s ease-in; }
+.z-ui-elements { z-index: 4; }
+.z-ui-top { z-index: 5; pointer-events: auto; }
+
+/* CLIENTE POSICIÓN */
+#client-img {
+    position: absolute;
+    bottom: 220px;
+    left: 50%;
+    transform: translateX(-50%) translateY(600px);
+    height: 480px;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+#client-img.active { transform: translateX(-50%) translateY(0); }
+
+/* BURBUJA DE DIÁLOGO */
+#speech-bubble {
+    position: absolute;
+    bottom: 650px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    padding: 15px 25px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    max-width: 300px;
+    text-align: center;
+    font-weight: 500;
+    z-index: 100;
+}
+#speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    border-width: 10px 10px 0;
+    border-style: solid;
+    border-color: white transparent;
+    transform: translateX(-50%);
 }
 
-#game-container {
-    position: relative;
-    width: 800px;
-    height: 600px;
-    background-color: #000;
-    overflow: hidden;
+/* BOTÓN DE PARED */
+#wall-button-area { display: flex; justify-content: flex-end; align-items: center; padding-right: 80px; }
+#btn-denunciar { width: 90px; cursor: pointer; pointer-events: auto; transition: 0.2s; filter: drop-shadow(0 5px 10px black); }
+#btn-denunciar:hover { transform: scale(1.1) rotate(5deg); }
+
+/* PREGUNTAS */
+#questions-panel {
+    position: absolute;
+    top: 100px;
+    right: 30px;
+    width: 300px;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid var(--glass-border);
+    color: white;
+}
+.btn-q {
+    width: 100%;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    color: white;
+    padding: 12px;
+    margin: 8px 0;
     border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: left;
 }
+.btn-q:hover { transform: scale(1.03); background: rgba(255,255,255,0.3); }
 
-/* Sistema de Capas (Z-Index) */
-.layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-#bg { z-index: 1; }
-#stand { z-index: 2; }
-#client-area { z-index: 3; }
-#btn-denunciar { z-index: 4; cursor: pointer; pointer-events: auto; top: 50%; left: 80%; width: 100px; height: auto;}
-#gate { z-index: 5; transition: transform 1s ease-in-out; }
-#game-ui { z-index: 6; pointer-events: auto; }
-.screen { z-index: 10; pointer-events: auto; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-#damage-overlay { z-index: 20; background: rgba(255, 0, 0, 0.5); pointer-events: none; opacity: 0; transition: opacity 0.5s; }
+/* TRABAJO */
+#work-station { position: absolute; bottom: 30px; width: 100%; display: flex; justify-content: space-around; align-items: flex-end; }
+#ingredients-shelf { background: rgba(0,0,0,0.5); padding: 15px; border-radius: 25px; display: flex; gap: 20px; }
+.ing { width: 80px; cursor: grab; }
+#table-area { width: 300px; position: relative; }
+#main-table { width: 100%; }
+#final-shawarma { position: absolute; top: -50px; left: 100px; width: 110px; cursor: grab; }
 
-/* Utilidades */
-.hidden { display: none !important; }
-.active { display: flex !important; }
-
-/* --- PANTALLA INTRO --- */
-#intro-screen {
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(5px);
-    transition: backdrop-filter 1s, background 1s;
-}
-#intro-screen.fade-out { backdrop-filter: blur(0px); background: transparent; pointer-events: none; }
-#logo { width: 300px; transition: transform 1s ease; }
-#logo.slide-up { transform: translateY(-150px); opacity: 0; }
-#btn-jugar { margin-top: 50px; padding: 15px 40px; font-size: 24px; cursor: pointer; border-radius: 20px; border: none; background: #ff0000; color: white; transition: transform 1s; }
-#btn-jugar.slide-down { transform: translateY(150px); opacity: 0; }
-#btn-salir { position: absolute; top: 20px; left: 20px; padding: 10px; cursor: pointer;}
-#btn-instrucciones { position: absolute; top: 20px; right: 20px; padding: 10px; cursor: pointer;}
-
-/* Animaciones */
-.pulse { animation: pulse 1.5s infinite; }
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-}
-
-/* --- CLIENTE Y ANIMACIONES --- */
-#client-img { position: absolute; bottom: 150px; left: 300px; width: 200px; height: auto; transition: transform 1s ease-in-out; transform: translateX(500px); /* Inicia fuera de pantalla */ pointer-events: auto;}
-.slide-in { transform: translateX(0) !important; }
-.slide-out { transform: translateX(-500px) !important; }
-
-/* --- DIÁLOGOS --- */
-#dialogue-bubble { position: absolute; bottom: 400px; left: 250px; background: white; padding: 15px; border-radius: 10px; max-width: 250px; border: 2px solid #ccc; font-size: 14px; }
-#questions-container { position: absolute; top: 60px; right: 20px; display: flex; flex-direction: column; gap: 10px; }
-.btn-pregunta { padding: 10px; cursor: pointer; background: #fff; border: 1px solid #ccc; border-radius: 5px; }
-
-/* --- INTERFAZ DEL JUEGO --- */
-#lives-container { position: absolute; top: 20px; left: 20px; font-size: 24px; }
-#ingredients-panel { position: absolute; bottom: 20px; left: 20px; display: flex; gap: 10px; }
-.draggable-ing { width: 60px; height: auto; cursor: grab; }
-#table-area { position: absolute; bottom: 20px; left: 350px; width: 150px; height: 100px; cursor: pointer;}
-#preparation-table { width: 100%; height: 100%; }
-#final-shawarma { position: absolute; top: -30px; left: 20px; width: 80px; cursor: grab; z-index: 10; }
-
-/* --- REJA --- */
+/* REJA */
 .gate-up { transform: translateY(-100%); }
 .gate-down { transform: translateY(0); }
 
-/* --- MODALES --- */
-#message-overlay { background: rgba(0,0,0,0.8); }
-.message-box { background: white; padding: 30px; border-radius: 10px; text-align: center; max-width: 400px; }
-.message-box h2 { margin-bottom: 15px; }
-.message-box button { margin-top: 20px; padding: 10px 20px; cursor: pointer; }
+/* UI */
+.top-bar { position: absolute; top: 20px; width: 100%; display: flex; justify-content: space-between; padding: 0 40px; color: white; font-weight: bold; font-size: 1.4rem; }
+.hidden { display: none !important; }
+
+/* MODALES */
+.overlay { position: absolute; z-index: 1000; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); display: flex; flex-direction: column; justify-content: center; align-items: center; }
+.msg-box { background: white; padding: 40px; border-radius: 30px; text-align: center; max-width: 500px; border: 5px solid #4cd137; }
+.btn-main { background: #4cd137; color: white; border: none; padding: 18px 45px; border-radius: 40px; font-weight: bold; cursor: pointer; font-size: 1.3rem; margin-top: 20px; }
+.btn-sec { background: #ff4757; color: white; border: none; padding: 12px 30px; border-radius: 30px; cursor: pointer; margin-top: 15px; }
+
+#damage-flash { position: absolute; top: 0; width: 100%; height: 100%; background: red; opacity: 0; pointer-events: none; z-index: 2000; }
+.pulse { animation: pulse 2s infinite; }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }

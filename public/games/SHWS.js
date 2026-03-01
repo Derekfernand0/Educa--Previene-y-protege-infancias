@@ -1,336 +1,245 @@
-// ==========================================
-// 1. BASE DE DATOS DE CLIENTES
-// ==========================================
-// Fácil de expandir agregando nuevos objetos aquí.
-const BASE_CLIENTES = [
-    // CLIENTES BUENOS (Mínimo 4 para asegurar variedad al elegir 3)
-    { id: 1, imagen: '../iconos/shawarma/ppl/pp1.png', tipo: 'bueno', dificultad: 'obvia', 
-      preguntas: [{ id: 1, texto: "¿Cómo estás hoy?", respuesta: "Muy bien, salí de la escuela y tengo hambre." }],
-      mensajesError: { siFueAtendido: "¡Gracias, está delicioso!", siFueDenunciado: "Oh no, el cliente solo quería comer. Ten cuidado, juzgar mal también afecta." }
+const CLIENTES_DB = [
+    {
+        id: "pp1", tipo: "bueno", imagen: "../iconos/shawarma/ppl/pp1.png",
+        preguntas: [
+            { q: "¿Cómo estás hoy?", a: "Un poco cansado, pero con mucha hambre." },
+            { q: "¿Qué tal el trabajo?", a: "Mucho movimiento hoy, por fin salí de mi turno." },
+            { q: "¿Para llevar?", a: "Sí, por favor, me espera mi esposa en casa." }
+        ],
+        error: "Este hombre solo tenía hambre tras un largo día de trabajo."
     },
-    { id: 2, imagen: '../iconos/shawarma/ppl/pp2.png', tipo: 'bueno', dificultad: 'sutil', 
-      preguntas: [{ id: 1, texto: "¿Vienes solo?", respuesta: "Sí, mi mamá me espera en el auto de enfrente." }],
-      mensajesError: { siFueAtendido: "¡Qué rico, gracias!", siFueDenunciado: "Te precipitaste. No había indicios de riesgo reales." }
+    {
+        id: "pp2", tipo: "bueno", imagen: "../iconos/shawarma/ppl/pp2.png",
+        preguntas: [
+            { q: "¿Vienes de la escuela?", a: "No, acabo de salir de mi clase de yoga." },
+            { q: "¿Te gusta el picante?", a: "Un poco está bien, me gusta el sabor fuerte." },
+            { q: "¿Vives por aquí?", a: "Sí, a tres cuadras, soy vecina del barrio hace años." }
+        ],
+        error: "Era una vecina del barrio. No había nada sospechoso en ella."
     },
-    { id: 3, imagen: '../iconos/shawarma/ppl/pp1.png', tipo: 'bueno', dificultad: 'obvia', 
-      preguntas: [{ id: 1, texto: "¿Qué tal el día?", respuesta: "Normal, jugando fútbol con mis amigos." }],
-      mensajesError: { siFueAtendido: "¡Gracias maestro!", siFueDenunciado: "Esa persona no representaba un peligro. Observa mejor." }
+    {
+        id: "pp3", tipo: "malo", imagen: "../iconos/shawarma/ppl/pp3.png",
+        preguntas: [
+            { q: "¿Esperas a alguien?", a: "A un niño... me dijo por chat que vendría a esta hora." },
+            { q: "¿Lo conoces de antes?", a: "No en persona, pero hablamos mucho por el juego de cubos." },
+            { q: "¿Saben sus padres?", a: "No, es un secreto entre nosotros dos." }
+        ],
+        exito: "¡Bien hecho! Citar menores por chats de juegos es una alerta clara de Grooming.",
+        error: "Atendiste a alguien que estaba captando a un menor por internet. ¡Cuidado!"
     },
-    { id: 4, imagen: '../iconos/shawarma/ppl/pp2.png', tipo: 'bueno', dificultad: 'sutil', 
-      preguntas: [{ id: 1, texto: "¿Mucho calor hoy?", respuesta: "Sí, uf. Vine corriendo desde mi casa." }],
-      mensajesError: { siFueAtendido: "Justo lo que necesitaba.", siFueDenunciado: "Una falsa alarma. Evalúa con calma las respuestas." }
+    {
+        id: "pp4", tipo: "bueno", imagen: "../iconos/shawarma/ppl/pp4.png",
+        preguntas: [
+            { q: "¿Algún ingrediente extra?", a: "Ponle mucha cebolla, me encanta." },
+            { q: "¿Día pesado?", a: "Un poco, pero el clima está excelente para caminar." },
+            { q: "¿Mucho trabajo?", a: "Por suerte sí, el negocio de carpintería va bien." }
+        ],
+        error: "El carpintero del barrio solo quería cenar. No era una amenaza."
     },
-    // CLIENTES MALOS (Comportamiento sospechoso de violencia/acoso. Mínimo 8 para elegir 7)
-    { id: 5, imagen: '../iconos/shawarma/ppl/pp1.png', tipo: 'malo', dificultad: 'obvia', 
-      preguntas: [{ id: 1, texto: "¿A quién esperas?", respuesta: "A un niño que conocí por internet, le dije que le daría regalos." }],
-      mensajesError: { siFueAtendido: "Atendiste a alguien peligroso. Identificar estas señales a tiempo protege a los demás.", siFueDenunciado: "¡Bien hecho! Citar a menores por internet ofreciendo regalos es una señal de grooming." }
+    {
+        id: "pp5", tipo: "malo", imagen: "../iconos/shawarma/ppl/pp5.png",
+        preguntas: [
+            { q: "¿Buscas alguna dirección?", a: "No, solo espero a que los niños salgan del colegio de enfrente." },
+            { q: "¿Vienes por tu hijo?", a: "No tengo hijos, solo me gusta observar a qué hora caminan solos." },
+            { q: "¿Vives cerca?", a: "No, vengo de otro distrito solo para esto." }
+        ],
+        exito: "¡Correcto! Vigilar horarios de menores sin motivo es una conducta de alto riesgo.",
+        error: "Ese sujeto estaba vigilando a menores que caminan solos. ¡Debiste reportarlo!"
     },
-    { id: 6, imagen: '../iconos/shawarma/ppl/pp2.png', tipo: 'malo', dificultad: 'sutil', 
-      preguntas: [{ id: 1, texto: "¿Llevas prisa?", respuesta: "Sí, estoy siguiendo a ese grupo de estudiantes, quiero tomarles unas fotos sin que me vean." }],
-      mensajesError: { siFueAtendido: "Ignoraste una señal clave. Tomar fotos a menores a escondidas es acoso.", siFueDenunciado: "¡Excelente! Has prevenido una situación de acoso." }
+    {
+        id: "pp6", tipo: "bueno", imagen: "../iconos/shawarma/ppl/pp6.png",
+        preguntas: [
+            { q: "¿Qué tal el día?", a: "Muy productivo, acabo de terminar mi turno en la biblioteca." },
+            { q: "¿Te gusta el shawarma?", a: "Es mi comida favorita desde que era niña." },
+            { q: "¿Vas a casa?", a: "Sí, a ver una película con mis amigas." }
+        ],
+        error: "Era una bibliotecaria joven. No cometió ninguna falta."
     },
-    // Nota: Agrega los clientes malos restantes (hasta tener 8 o más en total en la DB) siguiendo esta misma estructura.
-    { id: 7, imagen: '../iconos/shawarma/ppl/pp1.png', tipo: 'malo', dificultad: 'obvia', preguntas: [{ id: 1, texto: "¿Te ayudo con algo?", respuesta: "No, solo observo a qué hora salen los niños solos del colegio." }], mensajesError: { siFueAtendido: "Vigilar los horarios de menores solos es una alerta grave.", siFueDenunciado: "¡Muy bien! Actuaste frente a una conducta muy sospechosa." } },
-    { id: 8, imagen: '../iconos/shawarma/ppl/pp2.png', tipo: 'malo', dificultad: 'sutil', preguntas: [{ id: 1, texto: "¿Busca a alguien?", respuesta: "Sí, le envié mensajes a una niña pidiéndole fotos, vengo a ver si llegó." }], mensajesError: { siFueAtendido: "Pedir fotos a menores es violencia digital.", siFueDenunciado: "¡Correcto! Bloquear y reportar este acoso es fundamental." } },
-    { id: 9, imagen: '../iconos/shawarma/ppl/pp1.png', tipo: 'malo', dificultad: 'obvia', preguntas: [{ id: 1, texto: "¿Todo bien?", respuesta: "Sí, le dije a un niño que si no viene conmigo lastimaré a su perro." }], mensajesError: { siFueAtendido: "El chantaje y las amenazas son formas de coerción.", siFueDenunciado: "¡Gran trabajo! Denunciar estas amenazas salva vidas." } },
-    { id: 10, imagen: '../iconos/shawarma/ppl/pp2.png', tipo: 'malo', dificultad: 'sutil', preguntas: [{ id: 1, texto: "¿Para llevar?", respuesta: "Sí, para un chico de secundaria. Le dije que no le cuente a sus padres de nuestra amistad." }], mensajesError: { siFueAtendido: "Exigir secretos a un menor sobre amistades adultas es manipulación.", siFueDenunciado: "¡Detectaste la manipulación! Los secretos entre adultos y niños son alertas." } },
-    { id: 11, imagen: '../iconos/shawarma/ppl/pp1.png', tipo: 'malo', dificultad: 'obvia', preguntas: [{ id: 1, texto: "¿Disfrutando la tarde?", respuesta: "Buscando niños para invitarlos a mi camioneta." }], mensajesError: { siFueAtendido: "Dejaste pasar un intento de sustracción.", siFueDenunciado: "¡Denuncia rápida! Salvaste a alguien de un peligro inminente." } },
+    {
+        id: "pp7", tipo: "malo", imagen: "../iconos/shawarma/ppl/pp7.png",
+        preguntas: [
+            { q: "¿A quién esperas?", a: "A una chica, le dije que si venía conmigo le daría un pase VIP para el concierto." },
+            { q: "¿Eres promotor?", a: "Algo así, prefiero hablar con ellas cuando no hay adultos cerca." },
+            { q: "¿Tienes oficina?", a: "No, prefiero hacer mis 'negocios' aquí en la calle." }
+        ],
+        exito: "¡Excelente! Ofrecer regalos costosos a menores a cambio de ir a lugares solos es captación.",
+        error: "Esa mujer estaba usando carnadas para atraer adolescentes. ¡Peligro!"
+    },
+    {
+        id: "pp8", tipo: "bueno", imagen: "../iconos/shawarma/ppl/pp8.png",
+        preguntas: [
+            { q: "¿Cómo está, señor?", a: "Muy bien, disfrutando de mi jubilación." },
+            { q: "¿Mucho calor?", a: "Para nada, el viento está refrescante hoy." },
+            { q: "¿Va para su casa?", a: "Sí, a alimentar a mis gatitos." }
+        ],
+        error: "El anciano solo disfrutaba de su tarde. Mal reporte."
+    },
+    {
+        id: "pp9", tipo: "malo", imagen: "../iconos/shawarma/ppl/pp9.png",
+        preguntas: [
+            { q: "¿Buscas a alguien?", a: "A mi sobrina... o eso le dije al guardia para que me dejara pasar." },
+            { q: "¿No es tu sobrina?", a: "Es una amiga de internet, pero si digo eso no me dejan verla." },
+            { q: "¿Qué vas a hacer?", a: "Llevarla a dar una vuelta en mi auto sin que sus padres se enteren." }
+        ],
+        exito: "¡Muy bien! Mentir sobre el parentesco para sacar a un menor de su entorno es señal de secuestro.",
+        error: "Esa persona intentaba engañar a una menor para subirla a un auto. ¡Muy peligroso!"
+    }
 ];
 
-// ==========================================
-// 2. VARIABLES GLOBALES Y ESTADO
-// ==========================================
-let estadoJuego = 'intro'; // intro, jugando, cliente_entrando, cliente_activo, cliente_saliendo, victoria, derrota
 let vidas = 3;
-let clientesPartida = [];
-let clienteActualIndex = 0;
-let pasoIngrediente = 0; // 0: nada, 1: tortilla, 2: salsa, 3: verdura, 4: carne
+let mazo = [];
+let clienteActual = null;
+let pasoPrep = 0;
+let clientesAtendidosCount = 0;
+let estado = "intro";
 
-// Referencias del DOM
-const DOM = {
-    introScreen: document.getElementById('intro-screen'),
-    btnJugar: document.getElementById('btn-jugar'),
-    logo: document.getElementById('logo'),
-    gameUi: document.getElementById('game-ui'),
+const UI = {
     clientImg: document.getElementById('client-img'),
-    dialogueBubble: document.getElementById('dialogue-bubble'),
-    questionsContainer: document.getElementById('questions-container'),
-    btnDenunciar: document.getElementById('btn-denunciar'),
+    qList: document.getElementById('questions-list'),
+    qPanel: document.getElementById('questions-panel'),
+    bubble: document.getElementById('speech-bubble'),
+    table: document.getElementById('main-table'),
+    shawarma: document.getElementById('final-shawarma'),
     gate: document.getElementById('gate'),
-    livesContainer: document.getElementById('lives-container'),
-    prepTable: document.getElementById('preparation-table'),
-    tableArea: document.getElementById('table-area'),
-    finalShawarma: document.getElementById('final-shawarma'),
-    damageOverlay: document.getElementById('damage-overlay'),
-    messageOverlay: document.getElementById('message-overlay'),
-    msgTitle: document.getElementById('message-title'),
-    msgText: document.getElementById('message-text'),
-    btnNext: document.getElementById('btn-next'),
-    btnRestart: document.getElementById('btn-restart'),
-    btnMenu: document.getElementById('btn-menu'),
-    draggables: document.querySelectorAll('.draggable-ing')
+    lives: document.getElementById('lives-container'),
+    count: document.getElementById('clients-count'),
+    overlay: document.getElementById('msg-overlay'),
+    msgTit: document.getElementById('msg-title'),
+    msgTxt: document.getElementById('msg-text'),
+    btnCont: document.getElementById('btn-continuar'),
+    btnRein: document.getElementById('btn-reiniciar'),
+    flash: document.getElementById('damage-flash')
 };
 
-// ==========================================
-// 3. INICIALIZACIÓN
-// ==========================================
-DOM.btnJugar.addEventListener('click', iniciarTransicionIntro);
-DOM.btnNext.addEventListener('click', continuarDespuesMensaje);
-DOM.btnRestart.addEventListener('click', () => location.reload());
-DOM.btnDenunciar.addEventListener('click', manejarDenuncia);
-DOM.tableArea.addEventListener('click', generarShawarmaFinal);
-
-function iniciarTransicionIntro() {
-    DOM.logo.classList.add('slide-up');
-    DOM.btnJugar.classList.add('slide-down');
-    DOM.introScreen.classList.add('fade-out');
+// INICIO
+document.getElementById('btn-jugar').onclick = () => {
+    document.getElementById('intro-screen').classList.add('hidden');
+    document.getElementById('game-interface').classList.remove('hidden');
     
-    setTimeout(() => {
-        DOM.introScreen.classList.add('hidden');
-        DOM.gameUi.classList.remove('hidden');
-        iniciarPartida();
-    }, 1000);
-}
-
-function iniciarPartida() {
-    vidas = 3;
-    clienteActualIndex = 0;
+    // Preparar mazo: 3 buenos y 6 malos (para completar 9 o repetir hasta 10)
+    let buenos = CLIENTES_DB.filter(c => c.tipo === "bueno").sort(() => Math.random() - 0.5).slice(0, 3);
+    let malos = CLIENTES_DB.filter(c => c.tipo === "malo").sort(() => Math.random() - 0.5).slice(0, 7);
+    mazo = [...buenos, ...malos].sort(() => Math.random() - 0.5);
+    
     actualizarVidas();
-    generarMazoClientes();
-    siguienteCliente();
-}
+    proximoCliente();
+};
 
-function generarMazoClientes() {
-    // Filtrar, mezclar y tomar 3 buenos y 7 malos
-    let buenos = BASE_CLIENTES.filter(c => c.tipo === 'bueno').sort(() => 0.5 - Math.random()).slice(0, 3);
-    let malos = BASE_CLIENTES.filter(c => c.tipo === 'malo').sort(() => 0.5 - Math.random()).slice(0, 7);
-    
-    // Unir y mezclar la partida
-    clientesPartida = [...buenos, ...malos].sort(() => 0.5 - Math.random());
-}
-
-function actualizarVidas() {
-    DOM.livesContainer.innerHTML = '';
-    for(let i=0; i<vidas; i++) {
-        let heart = document.createElement('span');
-        heart.className = 'heart';
-        heart.innerText = '❤️';
-        DOM.livesContainer.appendChild(heart);
-    }
-}
-
-function perderVida(mensajeTexto) {
-    vidas--;
-    actualizarVidas();
-    
-    // Animación de daño
-    DOM.damageOverlay.style.opacity = 1;
-    setTimeout(() => DOM.damageOverlay.style.opacity = 0, 500);
-
-    if(vidas <= 0) {
-        mostrarMensaje("Fin del juego", mensajeTexto + " Te has quedado sin vidas.", true);
-        estadoJuego = 'derrota';
-    } else {
-        mostrarMensaje("Cuidado", mensajeTexto, false);
-    }
-}
-
-// ==========================================
-// 4. CICLO DEL CLIENTE
-// ==========================================
-function siguienteCliente() {
-    if (clienteActualIndex >= clientesPartida.length) {
-        mostrarMensaje("¡Turno terminado!", "Has completado la jornada demostrando gran empatía y atención.", true);
+function proximoCliente() {
+    if(clientesAtendidosCount >= 10 || mazo.length === 0) {
+        finalizarJuego("¡VICTORIA!", "Has completado tu turno protegiendo a los menores de la zona con éxito.", true);
         return;
     }
 
-    estadoJuego = 'cliente_entrando';
-    let cliente = clientesPartida[clienteActualIndex];
+    limpiarEscena();
+    clienteActual = mazo.pop();
+    UI.clientImg.src = clienteActual.imagen;
+    UI.clientImg.classList.add('active');
     
-    // Resetear UI
-    limpiarMesa();
-    DOM.dialogueBubble.classList.add('hidden');
-    DOM.questionsContainer.innerHTML = '';
-    DOM.btnDenunciar.classList.add('hidden');
-    
-    // Animar entrada
-    DOM.clientImg.src = cliente.imagen;
-    DOM.clientImg.className = ''; // Quitar clases viejas
-    setTimeout(() => {
-        DOM.clientImg.classList.add('slide-in');
-        setTimeout(() => {
-            estadoJuego = 'cliente_activo';
-            DOM.btnDenunciar.classList.remove('hidden');
-            mostrarPreguntas(cliente);
-        }, 1000); // Tiempo de animación CSS
-    }, 50);
-}
-
-function mostrarPreguntas(cliente) {
-    DOM.questionsContainer.classList.remove('hidden');
-    cliente.preguntas.forEach(p => {
+    // Generar preguntas
+    UI.qList.innerHTML = "";
+    clienteActual.preguntas.forEach(p => {
         let btn = document.createElement('button');
-        btn.innerText = p.texto;
-        btn.className = 'btn-pregunta';
+        btn.className = "btn-q";
+        btn.innerText = p.q;
         btn.onclick = () => {
-            DOM.dialogueBubble.innerText = p.respuesta;
-            DOM.dialogueBubble.classList.remove('hidden');
+            UI.bubble.innerText = p.a;
+            UI.bubble.classList.remove('hidden');
         };
-        DOM.questionsContainer.appendChild(btn);
+        UI.qList.appendChild(btn);
     });
+
+    UI.qPanel.classList.remove('hidden');
+    estado = "activo";
 }
 
-function retirarCliente(esDenuncia) {
-    estadoJuego = 'cliente_saliendo';
-    DOM.btnDenunciar.classList.add('hidden');
-    DOM.questionsContainer.classList.add('hidden');
-    DOM.dialogueBubble.classList.add('hidden');
+function limpiarEscena() {
+    pasoPrep = 0;
+    UI.table.src = "../iconos/shawarma/ingredientes/swtb.png";
+    UI.shawarma.classList.add('hidden');
+    UI.bubble.classList.add('hidden');
+    UI.qPanel.classList.add('hidden');
+    UI.clientImg.classList.remove('active');
+}
 
-    if(esDenuncia) {
-        // Animación Reja
-        DOM.gate.classList.remove('gate-up');
-        DOM.gate.classList.add('gate-down');
+// DRAG AND DROP
+document.querySelectorAll('.ing').forEach(i => {
+    i.ondragstart = (e) => e.dataTransfer.setData("ing", e.target.dataset.type);
+});
+
+UI.table.parentElement.ondragover = (e) => e.preventDefault();
+UI.table.parentElement.ondrop = (e) => {
+    const orden = ["tortilla", "salsa", "verdura", "carne"];
+    if(e.dataTransfer.getData("ing") === orden[pasoPrep]) {
+        pasoPrep++;
+        UI.table.src = `../iconos/shawarma/ingredientes/swtb${pasoPrep}.png`;
+        if(pasoPrep === 4) UI.shawarma.classList.remove('hidden');
+    }
+};
+
+UI.shawarma.ondragstart = (e) => e.dataTransfer.setData("item", "wrap");
+UI.clientImg.ondragover = (e) => e.preventDefault();
+UI.clientImg.ondrop = (e) => {
+    if(e.dataTransfer.getData("item") === "wrap" && estado === "activo") {
+        if(clienteActual.tipo === "malo") {
+            quitarVida(clienteActual.error);
+        } else {
+            exito("¡Gracias! Buen servicio.");
+        }
+    }
+};
+
+// BOTON DENUNCIA
+document.getElementById('btn-denunciar').onclick = () => {
+    if(estado !== "activo") return;
+    if(clienteActual.tipo === "malo") {
+        UI.gate.classList.replace('gate-up', 'gate-down');
         setTimeout(() => {
-            DOM.clientImg.classList.add('slide-out'); // Cliente se va oculto
-            setTimeout(() => {
-                DOM.gate.classList.remove('gate-down');
-                DOM.gate.classList.add('gate-up');
-                clienteActualIndex++;
-                siguienteCliente();
-            }, 1000);
-        }, 1500);
+            exito(clienteActual.exito);
+            UI.gate.classList.replace('gate-down', 'gate-up');
+        }, 800);
     } else {
-        // Salida normal lateral
-        DOM.clientImg.classList.replace('slide-in', 'slide-out');
-        setTimeout(() => {
-            clienteActualIndex++;
-            siguienteCliente();
-        }, 1000);
+        quitarVida(clienteActual.error);
+    }
+};
+
+function quitarVida(txt) {
+    vidas--;
+    actualizarVidas();
+    UI.flash.style.opacity = 1;
+    setTimeout(() => UI.flash.style.opacity = 0, 300);
+    if(vidas > 0) popUp("¡Cuidado!", txt, false);
+}
+
+function exito(txt) {
+    clientesAtendidosCount++;
+    UI.count.innerText = clientesAtendidosCount;
+    popUp("Buen trabajo", txt, false);
+}
+
+function popUp(tit, txt, fin) {
+    estado = "pausa";
+    UI.msgTit.innerText = tit;
+    UI.msgTxt.innerText = txt;
+    UI.overlay.classList.remove('hidden');
+    if(fin) {
+        UI.btnCont.classList.add('hidden');
+        UI.btnRein.classList.remove('hidden');
     }
 }
 
-// ==========================================
-// 5. SISTEMA DE SHAWARMA (DRAG & DROP)
-// ==========================================
-DOM.draggables.forEach(ing => {
-    ing.addEventListener('dragstart', (e) => {
-        e.dataTransfer.setData('tipo', e.target.dataset.type);
-    });
-});
+UI.btnCont.onclick = () => {
+    UI.overlay.classList.add('hidden');
+    proximoCliente();
+};
 
-DOM.tableArea.addEventListener('dragover', (e) => e.preventDefault());
+UI.btnRein.onclick = () => location.reload();
 
-DOM.tableArea.addEventListener('drop', (e) => {
-    e.preventDefault();
-    if (estadoJuego !== 'cliente_activo') return;
-    
-    const tipo = e.dataTransfer.getData('tipo');
-    procesarIngrediente(tipo);
-});
-
-function procesarIngrediente(tipo) {
-    // Orden lógico: tortilla(1) -> salsa(2) -> verdura(3) -> carne(4)
-    if (tipo === 'tortilla' && pasoIngrediente === 0) {
-        pasoIngrediente = 1;
-        DOM.prepTable.src = '../iconos/shawarma/ingredientes/swtb1.png';
-    } else if (tipo === 'salsa' && pasoIngrediente === 1) {
-        pasoIngrediente = 2;
-        DOM.prepTable.src = '../iconos/shawarma/ingredientes/swtb2.png';
-    } else if (tipo === 'verdura' && pasoIngrediente === 2) {
-        pasoIngrediente = 3;
-        DOM.prepTable.src = '../iconos/shawarma/ingredientes/swtb3.png';
-    } else if (tipo === 'carne' && pasoIngrediente === 3) {
-        pasoIngrediente = 4;
-        DOM.prepTable.src = '../iconos/shawarma/ingredientes/swtb4.png';
-    }
+function actualizarVidas() {
+    UI.lives.innerHTML = "❤️".repeat(vidas);
+    if(vidas <= 0) finalizarJuego("PARTIDA TERMINADA", "No lograste identificar las amenazas a tiempo.", true);
 }
 
-function generarShawarmaFinal() {
-    if(pasoIngrediente === 4) {
-        DOM.prepTable.src = '../iconos/shawarma/ingredientes/swtb.png'; // Vacía
-        DOM.finalShawarma.classList.remove('hidden');
-        pasoIngrediente = 5; // Listo para entregar
-    }
-}
-
-// Entregar al cliente
-DOM.finalShawarma.addEventListener('dragstart', (e) => {
-    e.dataTransfer.setData('item', 'shawarma');
-});
-
-DOM.clientImg.addEventListener('dragover', (e) => e.preventDefault());
-
-DOM.clientImg.addEventListener('drop', (e) => {
-    e.preventDefault();
-    const item = e.dataTransfer.getData('item');
-    if(item === 'shawarma' && estadoJuego === 'cliente_activo') {
-        DOM.finalShawarma.classList.add('hidden');
-        evaluarAtencion();
-    }
-});
-
-function limpiarMesa() {
-    pasoIngrediente = 0;
-    DOM.prepTable.src = '../iconos/shawarma/ingredientes/swtb.png';
-    DOM.finalShawarma.classList.add('hidden');
-}
-
-// ==========================================
-// 6. LÓGICA DE DECISIONES Y MENSAJES
-// ==========================================
-function evaluarAtencion() {
-    let cliente = clientesPartida[clienteActualIndex];
-    if(cliente.tipo === 'bueno') {
-        // Correcto
-        DOM.dialogueBubble.innerText = cliente.mensajesError.siFueAtendido;
-        DOM.dialogueBubble.classList.remove('hidden');
-        setTimeout(() => retirarCliente(false), 2000);
-    } else {
-        // Incorrecto (Atendió a un malo)
-        perderVida(cliente.mensajesError.siFueAtendido);
-        // El cliente se va después de cerrar el modal de perder vida
-    }
-}
-
-function manejarDenuncia() {
-    if(estadoJuego !== 'cliente_activo') return;
-    
-    let cliente = clientesPartida[clienteActualIndex];
-    if(cliente.tipo === 'malo') {
-        // Correcto
-        mostrarMensaje("¡Acción Preventiva!", cliente.mensajesError.siFueDenunciado, false);
-        // La reja baja después del mensaje
-    } else {
-        // Incorrecto (Denunció a un bueno)
-        perderVida(cliente.mensajesError.siFueDenunciado);
-    }
-}
-
-function mostrarMensaje(titulo, texto, esFinDeJuego) {
-    estadoJuego = 'error'; // Pausa la interacción de juego
-    DOM.msgTitle.innerText = titulo;
-    DOM.msgText.innerText = texto;
-    DOM.messageOverlay.classList.remove('hidden');
-    
-    if(esFinDeJuego) {
-        DOM.btnNext.classList.add('hidden');
-        DOM.btnRestart.classList.remove('hidden');
-        DOM.btnMenu.classList.remove('hidden');
-    } else {
-        DOM.btnNext.classList.remove('hidden');
-        DOM.btnRestart.classList.add('hidden');
-        DOM.btnMenu.classList.add('hidden');
-    }
-}
-
-function continuarDespuesMensaje() {
-    DOM.messageOverlay.classList.add('hidden');
-    let cliente = clientesPartida[clienteActualIndex];
-    
-    // Si se denunció a un malo exitosamente, o si perdimos vida, el cliente se va.
-    if(cliente.tipo === 'malo' && DOM.msgTitle.innerText === "¡Acción Preventiva!") {
-        retirarCliente(true);
-    } else {
-        retirarCliente(false);
-    }
+function finalizarJuego(tit, txt) {
+    popUp(tit, txt, true);
 }
