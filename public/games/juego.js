@@ -225,7 +225,13 @@ function actualizarPosiciones() {
     // Mover el contenedor "World" para seguir al jugador (Efecto Cámara)
     const world = document.getElementById('world');
     const alturaTotalJugador = bloquesJugador * ALTO_BLOQUE; 
-    const puntoVista = window.innerHeight * 0.4; 
+    
+    // --- AJUSTE DINÁMICO DE CÁMARA ---
+    // En PC (pantalla ancha) usamos 0.4 (40% de la pantalla)
+    // En Móvil (pantalla estrecha) usamos 0.2 (20% de la pantalla) para subir al jugador
+    let proporcionVista = window.innerWidth < 600 ? 0.7 : 0.4;
+    
+    const puntoVista = window.innerHeight * proporcionVista; 
     const offset = alturaTotalJugador - puntoVista;
 
     if (offset > 0) {

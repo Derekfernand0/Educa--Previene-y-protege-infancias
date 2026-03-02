@@ -64,7 +64,7 @@ body {
 /* Animaciones Pantalla Inicial */
 #titulo-imagen {
     max-width: 50%;
-    margin-bottom: 30px;
+    margin-bottom: 0px;
     transition: transform 1s ease, opacity 1s ease;
 }
 .mover-arriba { transform: translateY(-100px); opacity: 0; }
@@ -226,4 +226,82 @@ body {
     #contenedor-puertas { gap: 20px; flex-direction: column; align-items: center; justify-content: flex-start; }
     .imagen-puerta { width: 180px; }
     #texto-pregunta { font-size: 20px; }
+}
+
+/* --- Ajustes Responsive para Celulares --- */
+@media (max-width: 768px) {
+    /* Hacer el título de inicio más grande y visible en móvil */
+    #titulo-imagen {
+        max-width: 150%;
+    }
+
+    /* Ajustar la barra superior para que los botones y corazones quepan */
+    .barra-superior {
+        padding: 5px;
+    }
+
+    #btn-volver, #btn-instrucciones {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+
+    #contenedor-corazones {
+        font-size: 16px; /* Corazones más pequeños */
+        letter-spacing: 2px;
+    }
+
+    #temporizador {
+        font-size: 16px;
+        margin-top: 5px;
+    }
+
+    /* Reducir márgenes y tamaño de la pregunta para ahorrar espacio vertical */
+    #contenedor-pregunta {
+        margin: 10px 0; /* Menos margen vertical */
+        min-height: 50px;
+    }
+
+    #texto-pregunta { 
+        font-size: 15px; /* Texto más pequeño de la pregunta */
+        padding: 8px;
+    }
+
+    /* Mantener las puertas lado a lado aprovechando el ancho máximo */
+    #contenedor-puertas { 
+        gap: 5px; /* Casi nada de espacio entre las puertas */
+        flex-direction: row; 
+        padding-bottom: 10px; 
+        width: 100%;
+        padding-left: 5px;
+        padding-right: 5px;
+        align-items: flex-end;
+    }
+
+    .opcion-puerta {
+        width: 50%; /* Cada puerta toma exactamente la mitad de la pantalla */
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    .texto-opcion {
+        font-size: 12px;
+        padding: 5px;
+        margin-bottom: 5px;
+        width: 95%; /* Se ajusta al ancho de la puerta */
+    }
+
+    .imagen-puerta { 
+        width: 100%; /* La imagen se estira para llenar todo su lado */
+        max-width: 220px; /* Límite alto para que se vean enormes en móvil */
+        height: auto;
+    }
+
+    /* Ajustar el modal de instrucciones para que no se salga de la pantalla */
+    .modal-contenido {
+        width: 95%; /* Más ancho en móvil */
+        padding: 15px;
+        font-size: 13px;
+    }
 }

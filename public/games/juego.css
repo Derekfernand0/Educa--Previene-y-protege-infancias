@@ -309,3 +309,29 @@ body, html {
     background: white;
     color: #4facfe;
 }
+
+/* --- AJUSTES PARA MÓVIL --- */
+@media (max-width: 600px) {
+    .ui-juego {
+        bottom: 2%; /* Pegamos la UI un poco más al borde inferior */
+    }
+
+    .pregunta-card {
+        padding: 15px; /* Reducimos el relleno para ganar espacio */
+    }
+
+    .pregunta-card h2 {
+        font-size: 1.1rem; /* Texto un poco más pequeño */
+        margin-bottom: 10px;
+    }
+
+    .btn-opcion {
+        padding: 25px; /* Botones más compactos */
+        font-size: 0.9rem;
+    }
+
+    .stats-bar {
+        font-size: 0.8rem;
+        padding: 5px 15px;
+    }
+}

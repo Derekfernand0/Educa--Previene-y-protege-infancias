@@ -2,60 +2,93 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Shawarma Tycoon - Simulador</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shawarma Seguro - Juego Educativo</title>
     <link rel="stylesheet" href="SHWS.css">
 </head>
 <body>
-
-    <div id="game-container">
-        <div class="layer background"></div>
-        <img src="../iconos/shawarma/obj/swst.png" class="layer stand" alt="Stand">
+    
+    <section id="pantalla-juego">
         
-        <div id="customer-zone">
-            <img id="customer-img" src="" alt="Cliente" class="hidden">
-            <div id="dialogue-box" class="hidden">
-                <p id="dialogue-text"></p>
+        <div id="fondo-lejos"></div>
+
+        <div class="zona-cliente">
+            <div id="cliente-contenedor">
+                <img id="imagen-cliente" src="" alt="Cliente" class="oculto">
+                <div id="globo-dialogo" class="oculto">
+                    <p id="texto-dialogo"></p>
+                </div>
             </div>
         </div>
 
-        <img src="../iconos/shawarma/obj/swrj.png" class="layer fence" alt="Reja">
+        <div id="estructura-local"></div>
 
-        <div id="ui-top">
-            <div id="lives-container"></div>
-            <div id="score-display">Clientes: 0/10</div>
-            <div id="controls">
-                <button id="btn-instr">Instrucciones</button>
-                <button id="btn-exit">Salir</button>
+        <div class="zona-preparacion">
+            <div id="mesa-preparacion">
+                <img id="base-shawarma" src="../iconos/shawarma/ingredientes/swtbl.png" alt="Tabla">
+                <img id="shawarma-listo" src="../iconos/shawarma/ingredientes/shawarma.png" alt="Shawarma Listo" class="oculto arrastrable" draggable="false">
+            </div>
+            <div class="contenedor-ingredientes">
+                <img src="../iconos/shawarma/ingredientes/swtll.png" id="ing-tll" class="ingrediente arrastrable" data-id="1" draggable="false" alt="Tortilla">
+                <img src="../iconos/shawarma/ingredientes/swsl.png" id="ing-sl" class="ingrediente arrastrable" data-id="2" draggable="false" alt="Salsa">
+                <img src="../iconos/shawarma/ingredientes/swvr.png" id="ing-vr" class="ingrediente arrastrable" data-id="3" draggable="false" alt="Verde">
+                <img src="../iconos/shawarma/ingredientes/swcr.png" id="ing-cr" class="ingrediente arrastrable" data-id="4" draggable="false" alt="Roja">
             </div>
         </div>
 
-        <div id="interaction-area">
-            <div id="preparation-table">
-                <img id="table-img" src="../iconos/shawarma/ingredientes/swtb.png" alt="Tabla">
+        <header class="ui-header">
+            <div class="ui-botones-top">
+                <button id="btn-salir" class="btn-ui">Salir</button>
+                <button id="btn-instrucciones" class="btn-ui">?</button>
             </div>
+            <div class="ui-vidas" id="contenedor-vidas"></div>
+        </header>
 
-            <div id="ingredients-grid">
-                <img src="../iconos/shawarma/ingredientes/swtll.png" class="ing-btn" data-ing="1" alt="Tortilla">
-                <img src="../iconos/shawarma/ingredientes/swsl.png" class="ing-btn" data-ing="2" alt="Salsa">
-                <img src="../iconos/shawarma/ingredientes/swvr.png" class="ing-btn" data-ing="3" alt="Verdura">
-                <img src="../iconos/shawarma/ingredientes/swcr.png" class="ing-btn" data-ing="4" alt="Carne">
-            </div>
-
-            <div id="action-buttons">
-                <img src="../iconos/shawarma/obj/swbtn.png" id="btn-report" alt="Denunciar">
-            </div>
+        <button id="boton-rojo" class="oculto"></button>
+        
+        <div id="reja-seguridad" class="oculto"></div>
+        
+        <div id="overlay-feedback" class="oculto"></div>
+        <div id="overlay-error" class="oculto"></div> <div id="panel-preguntas-flotante" class="oculto">
+            <h3>Preguntar:</h3>
+            <div id="panel-preguntas"></div>
         </div>
+        
+    </section>
 
-        <div id="overlay" class="overlay">
-            <div class="modal">
-                <img src="../iconos/shawarma/obj/swlogo.png" id="game-logo" alt="Logo">
-                <h2 id="modal-title">¡Bienvenido!</h2>
-                <p id="modal-desc">Atiende a los clientes buenos y denuncia a los sospechosos.</p>
-                <button id="btn-start">EMPEZAR JUEGO</button>
-            </div>
+    <section id="pantalla-intro" class="modal-full activa transparente">
+        <div class="contenido-intro">
+            <img src="../iconos/shawarma/obj/swlogo.png" id="logo-intro" alt="Shawarma Seguro">
+            <br><br>
+            <button id="btn-jugar" class="btn-rojo anim-latido">Jugar</button>
+        </div>
+    </section>
+
+    <div id="modal-instrucciones" class="modal-full oculto">
+        <div class="contenido-modal">
+            <h2>Instrucciones</h2>
+            <p>Prepara el shawarma arrastrando ingredientes a la tabla en orden (Tortilla -> Salsa -> Verde -> Roja). Da click en la tabla para terminar y arrástralo al cliente.</p>
+            <p>Usa las preguntas de la derecha. Si notas peligro, presiona el BOTÓN ROJO en la pared izquierda.</p>
+            <button id="btn-cerrar-instrucciones" class="btn-principal">Entendido</button>
         </div>
     </div>
+
+    <section id="pantalla-evaluacion" class="modal-full oculto">
+        <div class="contenido-modal">
+            <h2 id="titulo-evaluacion"></h2>
+            <p id="mensaje-evaluacion"></p>
+            <button id="btn-continuar" class="btn-principal">Continuar</button>
+        </div>
+    </section>
+
+    <section id="pantalla-final" class="modal-full oculto">
+        <div class="contenido-modal">
+            <h1 id="titulo-final"></h1>
+            <p id="mensaje-final"></p>
+            <button id="btn-reiniciar" class="btn-principal">Reiniciar</button>
+            <button id="btn-volver-menu" class="btn-ui">Menú</button>
+        </div>
+    </section>
 
     <script src="SHWS.js"></script>
 </body>

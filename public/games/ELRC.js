@@ -33,7 +33,7 @@ const bancoPreguntas = [
 ];
 
 // --- VARIABLES DE ESTADO ---
-let vidas = 10;
+let vidas = 5;
 let rondaActual = 0;
 let tiempoRestante = 15;
 let temporizador;
@@ -76,7 +76,7 @@ function transicionInicio() {
 }
 
 function iniciarJuego() {
-    vidas = 10;
+    vidas = 5;
     rondaActual = 0;
     actualizarCorazones();
     domPantallaFin.classList.add('oculto');
@@ -134,7 +134,7 @@ function procesarRespuesta(indiceSeleccionado) {
 
     if (indiceSeleccionado === preguntaActual.correcta) {
         esCorrecto = true;
-        vidas = Math.min(vidas + 1, 10);
+        vidas = Math.min(vidas + 1, 5);
         mostrarEfecto('brillo-verde');
     } else {
         vidas -= 1;
@@ -175,7 +175,7 @@ function animarTransicionRonda() {
 
 function actualizarCorazones() {
     let corazonesHTML = "";
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 5; i++) {
         if (i < vidas) {
             corazonesHTML += "❤️";
         } else {

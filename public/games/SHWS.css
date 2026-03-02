@@ -1,147 +1,419 @@
+/* ================= Reset y Base ================= */
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
     user-select: none;
+    -webkit-touch-callout: none;
 }
 
 body {
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #000;
+    color: white;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    background-color: #1a1a1a;
 }
 
-#game-container {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
+#pantalla-juego {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 1;
+}
+
+/* ================= Sistema de Capas Absolutas ================= */
+
+#fondo-lejos {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
     background-image: url('../iconos/shawarma/obj/swbg.png');
     background-size: cover;
     background-position: center;
+    z-index: 1;
 }
 
-.layer {
+.zona-cliente {
     position: absolute;
+    bottom: 12%; 
+    left: 0;
     width: 100%;
-    bottom: 0;
-    pointer-events: none;
+    height: 55%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    z-index: 2;
 }
 
-.stand { z-index: 10; height: 60vh; object-fit: contain; }
-.fence { z-index: 30; height: 30vh; object-fit: contain; }
-
-/* Cliente */
-#customer-zone {
-    position: absolute;
-    top: 25%;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 20;
-    text-align: center;
-    width: 80%;
+#cliente-contenedor {
+    position: relative;
+    height: 100%;
+    display: flex;
+    justify-content: center;
 }
 
-#customer-img {
-    max-height: 35vh;
+/* COMO CAMBIAR TAMAÑOS: Aquí cambias el tamaño de las personas */
+#imagen-cliente {
+    height: 100%; /* Si lo bajas a 90% o 80%, el personaje se hará más pequeño */
     object-fit: contain;
+    /* Animación de entrada/salida fluida */
+    transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out; 
+}
+
+#estructura-local {
+    position: absolute;
+    top: 0; left: 0; width: 100vw; height: 100vh; 
+    background-image: url('../iconos/shawarma/obj/swst.png');
+    background-size: 100% 100%; 
+    background-repeat: no-repeat;
+    z-index: 10;
+    pointer-events: none; 
+}
+
+.zona-preparacion {
+    position: absolute;
+    bottom: 11vh; 
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row; 
+    justify-content: center;
+    align-items: center; 
+    gap: 40px; 
+    z-index: 15;
+    pointer-events: none; 
+}
+
+/* COMO CAMBIAR TAMAÑOS: Aquí cambias el tamaño de la tabla/shawarma */
+#mesa-preparacion {
+    position: relative;
+    width: 250px; /* Cambia esto para hacer la tabla más ancha o angosta */
+    height: 150px; /* Cambia esto para hacerla más alta o baja */
+    pointer-events: auto; 
+}
+
+#base-shawarma, #shawarma-listo {
+    width: 100%; height: 100%;
+    object-fit: contain;
+    position: absolute;
+    top: 0; left: 0;
+    filter: drop-shadow(0 8px 6px rgba(0,0,0,0.5)); 
     transition: transform 0.3s ease;
 }
 
-#dialogue-box {
-    background: rgba(255, 255, 255, 0.9);
-    border: 3px solid #333;
-    padding: 10px;
-    border-radius: 15px;
-    margin-top: 10px;
+.contenedor-ingredientes {
+    display: flex;
+    gap: 15px;
+    pointer-events: auto; 
 }
 
-/* UI Superior */
-#ui-top {
+/* COMO CAMBIAR TAMAÑOS: Aquí cambias el tamaño de los ingredientes sueltos */
+.ingrediente {
+    width: 120px;  /* Modifica esto */
+    height: 120px; /* Modifica esto */
+    object-fit: contain;
+    cursor: grab;
+    filter: drop-shadow(0 6px 4px rgba(0,0,0,0.6));
+    touch-action: none;
+    transition: transform 0.2s ease, opacity 0.3s ease; /* Transición suave */
+}
+
+.ingrediente:active { cursor: grabbing; transform: scale(1.1); } /* Efecto al agarrar */
+.ingrediente.usado { opacity: 0.3; pointer-events: none; filter: none; }
+
+/* ================= UI Superior y Vidas ================= */
+.ui-header {
     position: absolute;
-    top: 10px;
-    width: 100%;
+    top: 0; left: 0; width: 100%;
+    padding: 15px 25px;
     display: flex;
     justify-content: space-between;
-    padding: 0 20px;
-    z-index: 100;
-}
-
-#lives-container { font-size: 24px; }
-#controls button {
-    padding: 5px 10px;
-    cursor: pointer;
-    background: #ffcc00;
-    border: 2px solid #000;
-    font-weight: bold;
-}
-
-/* Interacción Inferior */
-#interaction-area {
-    position: absolute;
-    bottom: 2vh;
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
     align-items: center;
-    z-index: 40;
-    padding: 0 10px;
+    z-index: 100;
+    pointer-events: none;
 }
 
-#preparation-table img {
-    max-height: 20vh;
-    object-fit: contain;
-}
+.ui-botones-top { display: flex; gap: 10px; pointer-events: auto; }
 
-#ingredients-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-}
-
-.ing-btn {
-    height: 10vh;
+.btn-ui {
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 1rem;
     cursor: pointer;
-    transition: transform 0.1s;
+    transition: all 0.3s ease;
 }
+.btn-ui:hover { background: rgba(0, 0, 0, 0.8); transform: scale(1.05); }
 
-.ing-btn:active { transform: scale(0.9); }
+.ui-vidas { display: flex; gap: 10px; pointer-events: auto; }
 
-#btn-report {
-    max-height: 12vh;
+.corazon {
+    width: 45px; 
+    height: 45px;
+    background-image: url('../iconos/shawarma/obj/swht.png');
+    background-size: cover;
+    transition: all 0.5s ease;
+}
+.corazon.perdido { opacity: 0.2; filter: grayscale(100%); transform: scale(0.8); }
+
+/* ================= Botón Rojo ================= */
+#boton-rojo {
+    position: absolute;
+    top: 22%; 
+    left: 1%;  
+    width: 80px;
+    height: 80px;
+    background-image: url('../iconos/shawarma/obj/swbtn.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    border: none;
+    z-index: 90;
     cursor: pointer;
+    filter: drop-shadow(0 0 10px rgba(231, 76, 60, 0.6));
+    transition: transform 0.2s ease, filter 0.3s ease;
 }
 
-/* Modales */
-.overlay {
+#boton-rojo:hover { filter: drop-shadow(0 0 20px rgba(231, 76, 60, 0.9)); }
+#boton-rojo:active { transform: scale(0.9); }
+
+/* ================= Panel Preguntas FLOTANTE ================= */
+#panel-preguntas-flotante {
+    position: absolute;
+    bottom: 30%; 
+    left: 270px;  
+    width: 400px;
+    max-height: 50%;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    border-radius: 12px;
+    padding: 15px;
+    z-index: 80;
+    border: 1px solid rgba(255,255,255,0.15);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    overflow-y: auto;
+    transition: opacity 0.5s ease;
+}
+
+#panel-preguntas-flotante h3 {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding-bottom: 8px;
+    color: #f1c40f; 
+}
+
+.btn-pregunta {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.1);
+    text-align: left;
+    margin-bottom: 8px;
+    width: 100%;
+    padding: 10px;
+    font-size: 0.95rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-pregunta:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateX(5px);
+}
+
+/* ================= Globo Diálogo ================= */
+#globo-dialogo {
+    position: absolute;
+    top: -20px;
+    right: -200px;
+    background: white;
+    color: black;
+    padding: 15px;
+    border-radius: 15px;
+    max-width: 200px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+    z-index: 25; 
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: opacity 0.3s ease;
+}
+
+/* ================= Reja y Overlays (Bordes) ================= */
+#reja-seguridad {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url('../iconos/shawarma/obj/swrj.png');
+    background-size: cover;
+    z-index: 200;
+    transform: translateY(-100%);
+}
+
+#overlay-error {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: radial-gradient(circle, transparent 50%, rgba(231, 76, 60, 0.5) 100%);
+    pointer-events: none; z-index: 150;
+    opacity: 0; transition: opacity 0.3s ease;
+}
+
+/* Nuevo Overlay para bordes verdes/rojos */
+#overlay-feedback {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 150;
+    box-shadow: inset 0 0 0px rgba(0,0,0,0); /* Sin sombra por defecto */
+    transition: box-shadow 0.5s ease, opacity 0.5s ease;
+}
+
+.borde-verde { box-shadow: inset 0 0 80px 20px rgba(46, 204, 113, 0.8) !important; }
+.borde-rojo { box-shadow: inset 0 0 80px 20px rgba(231, 76, 60, 0.8) !important; }
+
+/* ================= Modales y Pantallas ================= */
+.modal-full {
     position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.8);
-    display: flex;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 300;
+    display: none; /* Oculto por defecto */
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    background: rgba(0,0,0,0.85); 
+    opacity: 0; transition: opacity 0.5s ease; /* Entrada suave */
 }
 
-.modal {
-    background: white;
-    padding: 30px;
-    border-radius: 20px;
+.modal-full.activa {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-full.transparente {
+    background: transparent !important;
+}
+
+.contenido-intro {
     text-align: center;
-    max-width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-#game-logo { max-width: 200px; margin-bottom: 20px; }
+/* COMO CAMBIAR TAMAÑOS: Tamaño del logo de inicio */
+#logo-intro {
+    width: 600px; /* Cambia esto si el logo se ve muy grande o chico */
+    max-width: 90vw;
+    height: auto;
+    filter: drop-shadow(0 10px 10px rgba(0,0,0,0.8));
+    transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out;
+}
 
-.hidden { display: none !important; }
+.btn-rojo {
+    background-color: #e74c3c;
+    color: white;
+    font-size: 1.8rem;
+    font-weight: bold;
+    padding: 15px 50px;
+    border-radius: 12px;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+    transition: all 0.5s ease-in-out;
+}
 
-/* Responsive Móvil */
-@media (max-width: 600px) {
-    #interaction-area {
-        flex-direction: column;
-        bottom: 5vh;
+.btn-rojo:hover { background-color: #c0392b; transform: scale(1.05); }
+
+.contenido-modal {
+    background: #1e272e;
+    padding: 30px;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+}
+
+.btn-principal {
+    background-color: #3498db; color: white;
+    font-size: 1.1rem; padding: 12px 24px; margin-top: 15px;
+    border-radius: 8px; cursor: pointer; border: none;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+.btn-principal:hover { background-color: #2980b9; transform: scale(1.05); }
+
+h1 { font-size: 2rem; margin-bottom: 10px; }
+h2 { color: #f1c40f; margin-bottom: 15px; }
+p { margin-bottom: 15px; line-height: 1.5; color: #4b3ff5; }
+
+/* ================= Animaciones ================= */
+.oculto { display: none !important; opacity: 0; }
+
+@keyframes rejaCierra { from { transform: translateY(-100%); } to { transform: translateY(0); } }
+.anim-latido { animation: latido 1.5s infinite; }
+@keyframes latido { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+.anim-logo-arriba { transform: translateY(-100vh); opacity: 0; }
+.anim-boton-abajo { transform: translateY(100vh); opacity: 0; }
+
+/* ================= Responsive Móvil ================= */
+@media (max-width: 768px) {
+    /* Tus ajustes originales para la mesa y los ingredientes (¡Están perfectos!) */
+    .zona-preparacion { flex-direction: column; gap: 5px; bottom: 2vh; }
+    #reja-seguridad{ background-image: url('../iconos/shawarma/obj/swrjm.png'); }
+    .ingrediente { width: 65px; height: 65px; }
+    #mesa-preparacion { width: 150px; height: 70px; }
+
+    /* ====== EL NUEVO AJUSTE DEL PANEL DE PREGUNTAS ====== */
+    #panel-preguntas-flotante { 
+        width: 200px;        /* Lo hacemos más delgado */
+        left: auto;          /* Quitamos el left que lo empujaba al centro */
+        right: 10px;         /* Lo pegamos a la orilla derecha */
+        bottom: auto;        /* Quitamos el bottom */
+        top: 60px;           /* Lo bajamos un poquito para que no toque las vidas */
+        padding: 10px;       /* Reducimos el espacio interior */
+        max-height: 55%;
     }
-    #customer-zone { top: 15%; }
-    #customer-img { max-height: 25vh; }
+
+    /* Hacemos la letra y botones más pequeñitos solo en celular */
+    #panel-preguntas-flotante h3 {
+        font-size: 0.95rem;  
+        margin-bottom: 8px;
+    }
+    .btn-pregunta {
+        font-size: 0.8rem;   
+        padding: 8px;        
+        margin-bottom: 6px;
+    }
+    /* ==================================================== */
+
+    #boton-rojo { width: 60px; height: 60px; top: 20%; left: 2%; }
+    
+    /* Ajusté un poco tu globo de diálogo para que quede cerca de la cabeza del cliente */
+    #globo-dialogo { 
+        max-width: 150px; 
+        right: auto; 
+        left: 10%; 
+        top: 150px; /* Antes tenías 150px, lo que lo mandaba a la panza del cliente */
+        font-size: 0.85rem;
+        padding: 10px;
+    }
+    
+    .zona-cliente { bottom: 15%; } 
+    #logo-intro { width: 300px; }
+}
+
+/* ================= EFECTO BORROSO DEL INTRO ================= */
+#pantalla-intro.modal-full.activa.transparente {
+    /* Le ponemos un fondo negrito pero muy transparente para que el texto y logo resalten */
+    background-color: rgba(0, 0, 0, 0.4) !important; 
+    
+    /* Aquí está la magia que hace que el fondo se vea borroso */
+    backdrop-filter: blur(8px) !important; 
+    -webkit-backdrop-filter: blur(8px) !important; /* Para que funcione perfecto en Safari y iPhone */
+}
+
+.contenido-intro {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }
